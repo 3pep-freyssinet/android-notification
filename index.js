@@ -45,6 +45,10 @@ const JWT_EXPIRY     = '1d';
 
 console.log("REFRESH_EXPIRY = ", REFRESH_EXPIRY, " JWT_EXPIRY = ", JWT_EXPIRY);
 
+
+// Serve static files from the "public" directory
+app.use(express.static('public'));
+
 // Import routes
 const users_routes       = require('./routes/users');
 const tokens_routes      = require('./routes/tokens');
