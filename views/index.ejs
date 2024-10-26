@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>FCM Tokens Table</title>
+  <style>
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    table, th, td {
+      border: 1px solid black;
+    }
+    th, td {
+      padding: 10px;
+      text-align: left;
+    }
+  </style>
+</head>
+<body>
+  <h1>FCM Tokens</h1>
+
+  <!-- Message input and Send to All button -->
+  <form action="/send-to-all" method="POST">
+    <label for="message">Message:</label><br>
+    <input type="text" id="message" name="message" placeholder="Enter your notification message" required><br><br>
+    <button type="submit">Send to All</button>
+  </form>
+
+  <h2>Token List</h2>
+  <% if (tokens.length > 0) { %>
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+		  <th>UserID</th>
+          <th>FCM Token</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% tokens.forEach(token => { %>
+          <tr>
+            <td><%= token.id %></td>
+			<td><%= token.user_id %></td>
+            <td><%= token.device_token %></td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  <% } else { %>
+    <p>No FCM tokens found in the database.</p>
+  <% } %>
+
+</body>
+</html>

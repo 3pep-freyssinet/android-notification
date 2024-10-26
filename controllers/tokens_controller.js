@@ -1,0 +1,146 @@
+require('dotenv').config();
+const pool   = require('../db'); // Assuming you use a database pool for Postgres or MySQL
+const bcrypt = require('bcryptjs');
+const jwt    = require('jsonwebtoken');
+const crypto = require('crypto');
+
+const JWT_SECRET 			= process.env.JWT_SECRET;
+const REFRESH_TOKEN_SECRET 	= process.env.REFRESH_TOKEN_SECRET;
+
+const REFRESH_EXPIRY = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days in the future
+const JWT_EXPIRY     = '1d'; 
+const ALERT_TIME     = 3 * 24 * 60 * 60 * 1000 //3 days, trigger
+
+//console.log('process.env.DATABASE_URL = ' + process.env.DATABASE_URL);
+console.log('pool = ' + pool);
+
+// Register a new user
+exports.refreshJWTToken = async (req, res) => {
+	// refresh JWT Token endpoint
+    
+    console.log('refresh JWT Token\n');
+	
+	const refreshToken = req.body.refreshToken;
+	
+	console.log("refresh-jwt-token : refreshToken : ", refreshToken );
+	
+    // Verify the refresh token
+	const {userId, expires_at} = await verifyRefreshToken(refreshToken);
+	
+	console.log("refresh-jwt-token : refreshToken : userId = ",userId, " expires_at = ", expires_at);
+	
+	// Create a Date object from the string
+    const date = new Date(expires_at);
+
+    // Subtract 3 days (3 days * 24 hours * 60 minutes * 60 seconds * 1000 milliseconds)
+    date.setTime(date.getTime() - ALERT_TIME);
+
+    // Print the new date
+    const triggerTime = date.toISOString();
+	
+	var isRefreshTokenExpired = Date.now() > triggerTime;
+	
+	console.log("refresh-jwt-token : is refreshToken expired  : ", isRefreshTokenExpired );
+	
+	var newRefreshToken;
+	if(isRefreshTokenExpired){//the 'refresh-token' is not expired but it remains less than 3 days to dead date.
+		//Generate new 'refresh-token'
+		newRefreshToken = generateRefreshToken();
+		
+		//update the db
+		await updateRefreshToken(userId, newRefreshToken);
+	}
+	
+	console.log("refresh-jwt-token : newRefreshToken : ",newRefreshToken);
+	
+	// Generate a new jwt token (JWT)
+    newJWTToken = jwt.sign({ userId: userId }, JWT_SECRET, { expiresIn: JWT_EXPIRY });
+    res.json({ new_jwt_token: newJWTToken, new_refresh_token: newRefreshToken, new_refresh_token_expiry: REFRESH_EXPIRY});
+			
+	//update the jwt_tokens table
+	if(newJWTToken != null){
+		const result = await updateJWTToken(userId, newJWTToken);
+	}
+};
+
+   // Function to generate a random refresh token
+	function generateRefreshToken() {
+		// Create a random string of 64 characters
+		const refreshToken = crypto.randomBytes(64).toString('hex');
+    return refreshToken;
+	}
+	
+   // Function to update the new refresh token in the database
+   async function updateRefreshToken(userId, newRefreshToken) {
+	  
+	  console.log('updateRefreshToken : userId = ', userId, " newRefreshToken = ", newRefreshToken);
+	  
+	  //const expiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days in the future
+	  
+	  const query = 
+		'UPDATE refresh_tokens SET refresh_token = $1, number_update = number_update + 1, expires_at = $2 WHERE user_id = $3';
+
+  try {
+		// Execute the query with userId and 'newRefreshToken' as parameters
+		await pool.query(query, [newRefreshToken, REFRESH_EXPIRY, userId]);
+		
+		console.log('refresh token updated successfully');
+		
+		return { success: true };
+  } catch (error) {
+		console.error('Error updating JWT token:', error);
+    return { success: false, error };
+  }
+}
+	
+
+// Verify the refresh token using the secret key. 
+//Since this refresh token has been generated randomly, we cannot use 'REFRESH_TOKEN_SECRET'. 
+//We will compare the provided refresh token with the stored in db.
+async function verifyRefreshToken(refreshToken) {
+    /*
+	return new Promise((resolve, reject) => {
+        jwt.verify(refreshToken, REFRESH_TOKEN_SECRET, (err, user) => {
+            if (err) {
+                // If there's an error (e.g., token expired, invalid), reject the promise
+				console.log("refresh-token : error : ", err );
+                return reject(err);
+            }
+
+            // If token is valid, resolve the promise with the decoded payload
+			console.log("refresh-token : user.userId : ", user.userId );
+            resolve(user);
+        });
+    });
+	*/
+	
+	const result = await pool.query('SELECT * FROM refresh_tokens WHERE refresh_token = $1', [refreshToken]);
+    if (result.rows.length === 0) {
+        throw new Error('Invalid refresh token');
+		console.log('verifyRefreshToken : Invalid refresh token');
+    }
+    // Token is valid
+	console.log('verifyRefreshToken : successful refresh token : user_id : ', result.rows[0].user_id);
+	return {userId:result.rows[0].user_id, expires_at:result.rows[0].expires_at};
+}
+
+// Function to update the JWT token in the database
+  async function updateJWTToken(userId, newJWTToken) {
+	  
+	  console.log('updateJWTToken : userId = ', userId, " newJWTToken = ", newJWTToken);
+	  
+	  const query = 
+		'UPDATE jwt_tokens SET jwt_token = $1, number_update = number_update + 1 WHERE user_id = $2';
+
+  try {
+		// Execute the query with userId and fcmToken as parameters
+		await pool.query(query, [newJWTToken, userId]);
+		
+		console.log('JWT token updated successfully');
+		
+		return { success: true };
+  } catch (error) {
+		console.error('Error updating JWT token:', error);
+    return { success: false, error };
+  }
+}
