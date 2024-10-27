@@ -2,6 +2,16 @@
   <head>
     <title>hCaptcha Demo</title>
     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+    script type="text/javascript">
+        function onCaptchaSuccess(token) {
+            // Pass the hCaptcha token to Android
+            HCaptchaInterface.onCaptchaSuccess(token);
+        }
+        function onCaptchaError() {
+          console.log("Captcha failed");
+          HCaptchaInterface.onCaptchaError();
+        }
+    </script>
   </head>
   <body>
 <!--
@@ -17,7 +27,11 @@
     <form action="" method="POST">
       <input type="text" name="email" placeholder="Email" />
       <input type="password" name="password" placeholder="Password" />
-      <div class="h-captcha" data-sitekey="b3cc2364-8074-4f4c-9226-91cce6360200"></div>
+      <div class="h-captcha"
+              data-sitekey="b3cc2364-8074-4f4c-9226-91cce6360200"
+              data-callback="onCaptchaSuccess"
+              data-error-callback="onCaptchaError">
+         </div>
       <br />
       <input type="submit" value="Submit" />
     </form>
