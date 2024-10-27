@@ -25,6 +25,7 @@ httpServer.listen(PORT, () => console.log(`   Listening on ${ PORT }`));
 const jwt        = require('jsonwebtoken');
 const bcrypt     = require('bcryptjs');
 const crypto     = require('crypto');
+const path       = require('path');
 
 // Secret key for signing the token (keep this secret)
 //const JWT_SECRET = 'your_jwt_secret_key';
@@ -48,6 +49,29 @@ console.log("REFRESH_EXPIRY = ", REFRESH_EXPIRY, " JWT_EXPIRY = ", JWT_EXPIRY);
 
 // Serve static files from the "public" directory
 app.use(express.static('public'));
+
+app
+  .get('/', (req, res) => {
+	  const options = {
+        root: path.join(__dirname)
+    };
+	console.log('__dirname:', __dirname);
+	
+	const message = 'Hello World from express listening on ' + PORT;
+	const fileName = 'captcha.html';//do not put 'public' branch in front of the name like this : "public/captcha.html"
+	//res.send(message);
+	
+	
+    res.sendFile(fileName, options, function (err) {
+        if (err) {
+            console.error('Error sending file:', err);
+        } else {
+            console.log('Sent:', fileName);
+        }
+    });
+	
+  })
+
 
 // Import routes
 const users_routes       = require('./routes/users');
