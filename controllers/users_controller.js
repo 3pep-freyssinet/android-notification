@@ -27,8 +27,8 @@ const JWT_EXPIRY     = '1d';
 const MAX_ATTEMPTS = 3;
 const LOCKOUT_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
 
-const CAPTCHA_SECRET = process.env.CAPTCHA_SECRET; //"ES_b8e0f825b9d04712ae1b5611e35c28fe";
-CAPTCHA_SITE_KEY     = process.env.CAPTCHA_SITE_KEY;"b3cc2364-8074-4f4c-9226-91cce6360200";
+const CAPTCHA_SECRET   = process.env.CAPTCHA_SECRET;
+const CAPTCHA_SITE_KEY = process.env.CAPTCHA_SITE_KEY;"b3cc2364-8074-4f4c-9226-91cce6360200";
 
 //console.log('process.env.DATABASE_URL = ' + process.env.DATABASE_URL);
 
@@ -276,15 +276,15 @@ exports.loginUser = async (req, res) => {
     
 	try {
         // Send the token to the CAPTCHA provider (hCaptcha, reCAPTCHA) for verification
-        
+        /*
 	const response = await axios.post('https://hcaptcha.com/siteverify', null, {
             params: {
                 secret: CAPTCHA_SECRET,   // Your secret key for CAPTCHA verification
                 response: captchaToken    // The token received from the client
             }
         });
+	*/
 	
-	/*
 	const response = await axios.post(
             'https://hcaptcha.com/siteverify',
             new URLSearchParams({
@@ -297,8 +297,7 @@ exports.loginUser = async (req, res) => {
                 },
             }
         );
-	*/
-		
+	console.log('verify captcha : CAPTCHA_SECRET : ', CAPTCHA_SECRET); 	
 	console.log('verify captcha : ', response.data); // Check for errors or unexpected responses
 
         // Check if CAPTCHA verification was successful
