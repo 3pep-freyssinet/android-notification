@@ -50,7 +50,6 @@ console.log("REFRESH_EXPIRY = ", REFRESH_EXPIRY, " JWT_EXPIRY = ", JWT_EXPIRY);
 // Serve static files from the "public" directory
 app.use(express.static('public'));
 
-/*
 app
   .get('/', (req, res) => {
 	  const options = {
@@ -72,7 +71,7 @@ app
     });
 	
   })
-*/
+
 
 // Import routes
 const users_routes       = require('./routes/users');
