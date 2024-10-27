@@ -288,7 +288,7 @@ exports.loginUser = async (req, res) => {
             'https://hcaptcha.com/siteverify',
             new URLSearchParams({
                 secret: 'CAPTCHA_SECRET',
-                response: token,
+                response: captchaToken,
             }).toString(),
             {
                 headers: {
