@@ -276,12 +276,28 @@ exports.loginUser = async (req, res) => {
     
 	try {
         // Send the token to the CAPTCHA provider (hCaptcha, reCAPTCHA) for verification
-        const response = await axios.post('https://hcaptcha.com/siteverify', null, {
+        /*
+	const response = await axios.post('https://hcaptcha.com/siteverify', null, {
             params: {
                 secret: CAPTCHA_SECRET,   // Your secret key for CAPTCHA verification
                 response: captchaToken    // The token received from the client
             }
         });
+	*/
+	const response = await axios.post(
+            'https://hcaptcha.com/siteverify',
+            new URLSearchParams({
+                secret: 'CAPTCHA_SECRET',
+                response: token,
+            }).toString(),
+            {
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+            }
+        );
+		
+	console.log('verify captcha : ', response.data); // Check for errors or unexpected responses
 
         // Check if CAPTCHA verification was successful
         if (response.data.success) {
