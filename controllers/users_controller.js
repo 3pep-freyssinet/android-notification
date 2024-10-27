@@ -285,12 +285,14 @@ exports.loginUser = async (req, res) => {
 
         // Check if CAPTCHA verification was successful
         if (response.data.success) {
+	    console.error('verify captcha : success');
             return res.status(200).json({ success: true });
         } else {
+	    console.error('verify captcha : failed');
             return res.status(400).json({ success: false, message: 'CAPTCHA verification failed' });
         }
     } catch (error) {
-        console.error(error);
+        console.error('verify captcha : error : ', error);
         return res.status(500).json({ success: false, message: 'Server error' });
     }
 };
