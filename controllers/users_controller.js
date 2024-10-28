@@ -293,7 +293,8 @@ exports.loginUser = async (req, res) => {
 	const response = await axios.post(
             'https://hcaptcha.com/siteverify',
             new URLSearchParams({
-                secret: 'CAPTCHA_SECRET',
+                //secret: 'CAPTCHA_SECRET',
+		    secret: 'ES_7a8796dc994c43c891a0c09b0db75fae'
                 response: captchaToken,
             }).toString(),
             {
