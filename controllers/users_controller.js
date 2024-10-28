@@ -284,7 +284,8 @@ exports.loginUser = async (req, res) => {
             }
         });
 	*/
-	
+
+	/*
 	const response = await axios.post(
             'https://hcaptcha.com/siteverify',
             new URLSearchParams({
@@ -297,9 +298,22 @@ exports.loginUser = async (req, res) => {
                 },
             }
         );
-	
-	console.log('verify captcha : CAPTCHA_SECRET : ', CAPTCHA_SECRET); 	
-	console.log('verify captcha : ', response.data); // Check for errors or unexpected responses
+	*/
+
+//solution 3
+const VERIFY_URL = "https://api.hcaptcha.com/siteverify"
+
+# Build payload with secret key and token.
+data = { 'secret': CAPTCHA_SECRET, 'response': captchaToken }
+
+# Make POST request with data payload to hCaptcha API endpoint.
+response = http.post(url=VERIFY_URL, data=data)
+
+# Parse JSON from response. Check for success or error codes.
+response_json = JSON.parse(response.content)	
+
+console.log('verify captcha : CAPTCHA_SECRET : ', CAPTCHA_SECRET); 	
+console.log('verify captcha : ', response.data); // Check for errors or unexpected responses
 
         // Check if CAPTCHA verification was successful
         if (response.data.success) {
