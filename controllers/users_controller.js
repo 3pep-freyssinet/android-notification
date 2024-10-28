@@ -293,8 +293,8 @@ exports.loginUser = async (req, res) => {
 	const response = await axios.post(
             'https://hcaptcha.com/siteverify',
             new URLSearchParams({
-                //secret: 'CAPTCHA_SECRET',
-		secret: 'ES_7a8796dc994c43c891a0c09b0db75fae',
+                secret: CAPTCHA_SECRET,
+		//secret: 'ES_7a8796dc994c43c891a0c09b0db75fae',
                 response: captchaToken,
             }).toString(),
             {
@@ -319,6 +319,7 @@ response_json = JSON.parse(response.content)
 */
 	
 console.log('verify captcha : CAPTCHA_SECRET : ', CAPTCHA_SECRET); 	
+log('test : (CAPTCHA_SECRET == 'ES_7a8796dc994c43c891a0c09b0db75fae') : ', (CAPTCHA_SECRET == 'ES_7a8796dc994c43c891a0c09b0db75fae'));
 console.log('verify captcha : ', response.data); // Check for errors or unexpected responses
 
         // Check if CAPTCHA verification was successful
