@@ -288,7 +288,7 @@ exports.loginUser = async (req, res) => {
         });
 	*/
 
-	/*
+	//solution 2
 	const response = await axios.post(
             'https://hcaptcha.com/siteverify',
             new URLSearchParams({
@@ -301,8 +301,8 @@ exports.loginUser = async (req, res) => {
                 },
             }
         );
-	*/
-
+	
+/*
 //solution 3
 const VERIFY_URL = "https://api.hcaptcha.com/siteverify"
 
@@ -314,7 +314,8 @@ response = http.post(url=VERIFY_URL, data=data)
 
 //Parse JSON from response. Check for success or error codes.
 response_json = JSON.parse(response.content)	
-
+*/
+	
 console.log('verify captcha : CAPTCHA_SECRET : ', CAPTCHA_SECRET); 	
 console.log('verify captcha : ', response.data); // Check for errors or unexpected responses
 
