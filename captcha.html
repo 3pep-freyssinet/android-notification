@@ -23,12 +23,12 @@
       }
     </script>
    -->   
-    
+    <!--  data-sitekey="b3cc2364-8074-4f4c-9226-91cce6360200"-->
     <form action="" method="POST">
       <input type="text" name="email" placeholder="Email" />
       <input type="password" name="password" placeholder="Password" />
       <div class="h-captcha"
-              data-sitekey="b3cc2364-8074-4f4c-9226-91cce6360200"
+              data-sitekey= `${process.env.CAPTCHA_SITE_KEY}`
               data-callback="onCaptchaSuccess"
               data-error-callback="onCaptchaError">
          </div>
