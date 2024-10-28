@@ -326,7 +326,8 @@ console.log('verify captcha : ', response.data); // Check for errors or unexpect
             return res.status(400).json({ success: false, message: 'CAPTCHA verification failed' });
         }
     } catch (error) {
-        console.error('verify captcha : error : ', error);
+        //console.error('verify captcha : error : ', error);
+	console.log('verify captcha : error : ', error); 
         return res.status(500).json({ success: false, message: 'Server error' });
     }
 };
