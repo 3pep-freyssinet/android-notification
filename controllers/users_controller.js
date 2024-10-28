@@ -274,8 +274,9 @@ exports.loginUser = async (req, res) => {
     const captchaToken = req.body.captcha_token;
     
 	console.log('verifyCaptcha : captchaToken : ' + captchaToken);
-       res.status(200).json({ success: true })
-	
+       //res.status(200).json({ success: true })
+	//return
+	 
 	 try {
         // Send the token to the CAPTCHA provider (hCaptcha, reCAPTCHA) for verification
         /*
@@ -328,6 +329,6 @@ console.log('verify captcha : ', response.data); // Check for errors or unexpect
     } catch (error) {
         //console.error('verify captcha : error : ', error);
 	console.log('verify captcha : error : ', error); 
-        return res.status(500).json({ success: false, message: 'Server error' });
+        return res.status(500).json({ success: false, message: 'Server error from HCaptcha' });
     }
 };
