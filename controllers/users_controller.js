@@ -303,13 +303,13 @@ exports.loginUser = async (req, res) => {
 //solution 3
 const VERIFY_URL = "https://api.hcaptcha.com/siteverify"
 
-# Build payload with secret key and token.
+// Build payload with secret key and token.
 data = { 'secret': CAPTCHA_SECRET, 'response': captchaToken }
 
-# Make POST request with data payload to hCaptcha API endpoint.
+// Make POST request with data payload to hCaptcha API endpoint.
 response = http.post(url=VERIFY_URL, data=data)
 
-# Parse JSON from response. Check for success or error codes.
+//Parse JSON from response. Check for success or error codes.
 response_json = JSON.parse(response.content)	
 
 console.log('verify captcha : CAPTCHA_SECRET : ', CAPTCHA_SECRET); 	
