@@ -274,8 +274,9 @@ exports.loginUser = async (req, res) => {
     const captchaToken = req.body.captcha_token;
     
 	console.log('verifyCaptcha : captchaToken : ' + captchaToken);
-    
-	try {
+       res.status(200).json({ success: true })
+	
+	 try {
         // Send the token to the CAPTCHA provider (hCaptcha, reCAPTCHA) for verification
         /*
 	const response = await axios.post('https://hcaptcha.com/siteverify', null, {
