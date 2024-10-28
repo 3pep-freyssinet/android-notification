@@ -9,9 +9,9 @@ const pgsql     = require('pgsql');
 const cors      = require('cors');
 
 // Set up express app and http server
-const app 		= express();
+const app 	= express();
 //const server 	= http.createServer(app);
-//const io 		= socketIo(server);
+//const io 	= socketIo(server);
 const { Server } = require("socket.io");
 const PORT      = process.env.PORT || 5000
 
@@ -29,7 +29,7 @@ const path       = require('path');
 
 // Secret key for signing the token (keep this secret)
 //const JWT_SECRET = 'your_jwt_secret_key';
-const JWT_SECRET 			= process.env.JWT_SECRET;
+const JWT_SECRET 		= process.env.JWT_SECRET;
 const REFRESH_TOKEN_SECRET 	= process.env.REFRESH_TOKEN_SECRET;
 
 console.log("JWT_SECRET : ", JWT_SECRET, " REFRESH_TOKEN_SECRET : ", REFRESH_TOKEN_SECRET);
@@ -61,7 +61,6 @@ app
 	const fileName = 'captcha.html';//do not put 'public' branch in front of the name like this : "public/captcha.html"
 	//res.send(message);
 	
-	
     res.sendFile(fileName, options, function (err) {
         if (err) {
             console.error('Error sending file:', err);
@@ -69,14 +68,12 @@ app
             console.log('Sent:', fileName);
         }
     });
-	
   })
 
 
 // Import routes
-const users_routes       = require('./routes/users');
-const tokens_routes      = require('./routes/tokens');
-
+const users_routes  = require('./routes/users');
+const tokens_routes = require('./routes/tokens');
 
 // Use routes
 app.use('/users', users_routes);
