@@ -19,7 +19,7 @@ const crypto = require('crypto');
 const axios  = require('axios');
 const http   = require('http');
 
-const JWT_SECRET 			= process.env.JWT_SECRET;
+const JWT_SECRET 		= process.env.JWT_SECRET;
 const REFRESH_TOKEN_SECRET 	= process.env.REFRESH_TOKEN_SECRET;
 
 const REFRESH_EXPIRY = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days in the future
@@ -29,7 +29,7 @@ const MAX_ATTEMPTS = 3;
 const LOCKOUT_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
 
 const CAPTCHA_SECRET   = process.env.CAPTCHA_SECRET;
-const CAPTCHA_SITE_KEY = process.env.CAPTCHA_SITE_KEY;"b3cc2364-8074-4f4c-9226-91cce6360200";
+const CAPTCHA_SITE_KEY = process.env.CAPTCHA_SITE_KEY;
 
 //console.log('process.env.DATABASE_URL = ' + process.env.DATABASE_URL);
 
@@ -273,9 +273,7 @@ exports.loginUser = async (req, res) => {
  exports.verifyCaptcha = async (req, res) => {
     const captchaToken = req.body.captcha_token;
     
-	console.log('verifyCaptcha : captchaToken : ' + captchaToken);
-       //res.status(200).json({ success: true })
-	//return
+	//console.log('verifyCaptcha : captchaToken : ' + captchaToken);
 	 
 	 try {
         // Send the token to the CAPTCHA provider (hCaptcha, reCAPTCHA) for verification
@@ -294,7 +292,6 @@ exports.loginUser = async (req, res) => {
             'https://hcaptcha.com/siteverify',
             new URLSearchParams({
                 secret: CAPTCHA_SECRET,
-		//secret: 'ES_7a8796dc994c43c891a0c09b0db75fae',
                 response: captchaToken,
             }).toString(),
             {
@@ -318,21 +315,18 @@ response = http.post(url=VERIFY_URL, data=data)
 response_json = JSON.parse(response.content)	
 */
 	
-console.log('verify captcha : CAPTCHA_SECRET : ', CAPTCHA_SECRET); 	
-console.log("test : (CAPTCHA_SECRET == 'ES_7a8796dc994c43c891a0c09b0db75fae') : ", (CAPTCHA_SECRET == 'ES_7a8796dc994c43c891a0c09b0db75fae'));
 console.log('verify captcha : ', response.data); // Check for errors or unexpected responses
 
         // Check if CAPTCHA verification was successful
         if (response.data.success) {
-	    console.error('verify captcha : success');
+	    console.log('verify captcha : success');
             return res.status(200).json({ success: true });
         } else {
 	    console.error('verify captcha : failed');
             return res.status(400).json({ success: false, message: 'CAPTCHA verification failed' });
         }
     } catch (error) {
-        //console.error('verify captcha : error : ', error);
-	console.log('verify captcha : error : ', error); 
+        console.error('verify captcha : error : ', error);
         return res.status(500).json({ success: false, message: 'Server error from HCaptcha' });
     }
 };
