@@ -77,7 +77,7 @@ app
 
 app.get('/', (req, res) => {
     // Path to your captcha.html file
-    const filePath = path.join(__dirname, 'captcha.html');
+    const filePath = path.join(__dirname, 'public', 'captcha.html');
 
     // Read the HTML file
     fs.readFile(filePath, 'utf8', (err, data) => {
