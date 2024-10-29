@@ -6,6 +6,9 @@
         function onCaptchaSuccess(token) {
             // Pass the hCaptcha token to Android
             HCaptchaInterface.onCaptchaSuccess(token);
+
+          // You can enable the 'Submit' button here or proceed with form submission
+          document.getElementById('submit').disabled = false;
         }
         function onCaptchaError() {
           console.log("Captcha failed");
@@ -33,7 +36,7 @@
               data-error-callback="onCaptchaError">
          </div>
       <br />
-      <input type="submit" value="Submit" />
+      <input id="submit" type="submit" value="Submit" />
     </form>
   
   </body>
