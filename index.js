@@ -34,6 +34,9 @@ const REFRESH_TOKEN_SECRET 	= process.env.REFRESH_TOKEN_SECRET;
 
 console.log("JWT_SECRET : ", JWT_SECRET, " REFRESH_TOKEN_SECRET : ", REFRESH_TOKEN_SECRET);
 
+const CAPTCHA_SITE_KEY = process.env.CAPTCHA_SITE_KEY;
+console.log('CAPTCHA_SITE_KEY:', CAPTCHA_SITE_KEY);
+
 // Middleware to parse application/x-www-form-urlencoded data
 //The data are sent in FormBody, use : 'app.use(express.urlencoded({ extended: true }))'
 //if the data are sent in Json, use : 'app.use(express.json());'
