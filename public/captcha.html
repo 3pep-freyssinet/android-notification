@@ -4,14 +4,18 @@
     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
     <script type="text/javascript">
         function onCaptchaSuccess(token) {
-            // Pass the hCaptcha token to Android
-            HCaptchaInterface.onCaptchaSuccess(token);
+            // Get email and password values using their IDs
+            var email    = document.getElementById('emailInput').value;
+            var password = document.getElementById('passwordInput').value;
+
+            // Send values to Android
+            HCaptchaInterface.onCaptchaSuccess(email, password, token)
 
             //alert("document.getElementById('submit') : " + document.getElementById('submit'));
-            alert('Hello The World');
+            alert("Hello The World");
           
           // You can enable the 'Submit' button here or proceed with form submission
-          //document.getElementById('submit').disabled = false;
+          document.getElementById('submit').disabled = true;
         }
         function onCaptchaError() {
           console.log("Captcha failed");
@@ -32,15 +36,15 @@
    -->   
     <!--  data-sitekey="b3cc2364-8074-4f4c-9226-91cce6360200"-->
     <form action="" method="POST">
-      <input type="text" name="email" placeholder="Email" />
-      <input type="password" name="password" placeholder="Password" />
-      <div class="h-captcha"
-              data-sitekey= 'CAPTCHA_SITE_KEY'
-              data-callback="onCaptchaSuccess"
-              data-error-callback="onCaptchaError">
-         </div>
-      <br />
-      <input id="submit" type="submit" value="Submit" />
+        <input id="emailInput" type="text" placeholder="Email" required />
+        <input id="passwordInput" type="password" placeholder="Password" required />
+        <div class="h-captcha"
+            data-sitekey="CAPTCHA_SITE_KEY"
+            data-callback="onCaptchaSuccess"
+            data-error-callback="onCaptchaError">
+        </div>
+        <br />
+        <input id="submit" type="submit" value="Submit" />
     </form>
   
   </body>
