@@ -50,6 +50,7 @@ console.log("REFRESH_EXPIRY = ", REFRESH_EXPIRY, " JWT_EXPIRY = ", JWT_EXPIRY);
 // Serve static files from the "public" directory
 app.use(express.static('public'));
 
+/*
 app
   .get('/', (req, res) => {
 	  const options = {
@@ -69,7 +70,32 @@ app
         }
     });
   })
+  */
 
+app.get('/', (req, res) => {
+    // Path to your captcha.html file
+    const filePath = path.join(__dirname, 'captcha.html');
+
+    // Read the HTML file
+    fs.readFile(filePath, 'utf8', (err, data) => {
+        if (err) {
+            return res.status(500).send('Error reading HTML file.');
+        }
+
+        // Replace the placeholder with the environment variable
+        const updatedHtml = data.replace(/data-sitekey=\s*['"]?CAPTCHA_SITE_KEY['"]?/g,  `data-sitekey="${CAPTCHA_SITE_KEY}"`)
+		//const updatedHtml = data.replace(/data-sitekey=\s*['"]?HCAPTCHA_SITEKEY['"]?/g, `data-sitekey="${process.env.HCAPTCHA_SITEKEY}"`);
+		//const updatedHtml = data.replace(/data-sitekey=\s*['"]?HCAPTCHA_SITEKEY['"]?/g, `data-sitekey="${process.env.HCAPTCHA_SITEKEY}"` 
+		//const updatedHtml = data.replace(/data-sitekey=\s*['"]?HCAPTCHA_SITEKEY['"]?/g, `data-sitekey='${process.env.CAPTCHA_SITE_KEY}'` // Use single quotes in the final HTML
+        //);
+		// Replacement string
+        //);
+		//const updatedHtml = data.replace(/data-sitekey=\s*['"]?HCAPTCHA_SITEKEY['"]?/g, `data-sitekey="${process.env.CAPTCHA_SITE_KEY}"`);
+
+        // Send the modified HTML
+        res.send(updatedHtml);
+    });
+});
 
 // Import routes
 const users_routes  = require('./routes/users');
