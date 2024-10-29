@@ -3,26 +3,35 @@
     <title>hCaptcha Demo</title>
     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
     <script type="text/javascript">
+        let email        = '';
+        let password     = '';
+        let captchaToken = '';
+
         function onCaptchaSuccess(token) {
-            // Get email and password values using their IDs
-            var email    = document.getElementById('emailInput').value;
-            var password = document.getElementById('passwordInput').value;
-
-            // Send values to Android
-            HCaptchaInterface.onCaptchaSuccess(email, password, token)
-
-            //alert("document.getElementById('submit') : " + document.getElementById('submit'));
-            alert("Hello The World");
-          
-          // You can enable the 'Submit' button here or proceed with form submission
-          document.getElementById('submit').disabled = true;
+            // This function is called when the hCaptcha challenge is successfully completed
+            // Store the captcha token
+            captchaToken = token;
+            document.getElementById('submit').disabled = false;
         }
-        function onCaptchaError() {
-          console.log("Captcha failed");
-          HCaptchaInterface.onCaptchaError();
+
+        function handleSubmit(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Get the email and password values from the input fields
+            email    = document.getElementById('emailInput').value;
+            password = document.getElementById('passwordInput').value;
+
+            // Check if the hCaptcha token is available
+            if (captchaToken) {
+                // Send email, password, and token to Android app
+                HCaptchaInterface.onCaptchaSuccess(email, password, captchaToken);
+                // Optionally, you can show a success message or redirect the user
+            } else {
+                alert('Please complete the captcha before submitting.');
+            }
         }
     </script>
-  </head>
+</head>
   <body>
     qqqqqqqqqqqqqqqqqqqqqqqqqqq
 <!--
@@ -35,7 +44,7 @@
     </script>
    -->   
     <!--  data-sitekey="b3cc2364-8074-4f4c-9226-91cce6360200"-->
-    <form action="" method="POST">
+    <form id="myForm" onsubmit="handleSubmit(event);" method="POST">
         <input id="emailInput" type="text" placeholder="Email" required />
         <input id="passwordInput" type="password" placeholder="Password" required />
         <div class="h-captcha"
