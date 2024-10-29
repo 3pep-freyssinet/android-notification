@@ -5,12 +5,13 @@
     <script type="text/javascript">
         function onCaptchaSuccess(token) {
             // Pass the hCaptcha token to Android
-            HCaptchaInterface.onCaptchaSuccess(token);
+            //HCaptchaInterface.onCaptchaSuccess(token);
 
-            alert("document.getElementById('submit') : " + document.getElementById('submit'));
-            
+            //alert("document.getElementById('submit') : " + document.getElementById('submit'));
+            alert('Hello The World'));
+          
           // You can enable the 'Submit' button here or proceed with form submission
-          document.getElementById('submit').disabled = false;
+          //document.getElementById('submit').disabled = false;
         }
         function onCaptchaError() {
           console.log("Captcha failed");
