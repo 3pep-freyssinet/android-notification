@@ -316,7 +316,7 @@ response_json = JSON.parse(response.content)
 */
 	
 console.log('verify captcha : ', response.data); // Check for errors or unexpected responses
-	/*
+	
         // Check if CAPTCHA verification was successful
         if (response.data.success) {
 	    console.log('verify captcha : success');
@@ -325,9 +325,6 @@ console.log('verify captcha : ', response.data); // Check for errors or unexpect
 	    console.error('verify captcha : failed');
             return res.status(400).json({ success: false, message: 'CAPTCHA verification failed' });
         }
-	*/
-	//test
-	return res.status(400).json({ success: false, message: 'CAPTCHA verification failed' });
 		 
     } catch (error) {
         console.error('verify captcha : error : ', error);
