@@ -7,6 +7,8 @@
             // Pass the hCaptcha token to Android
             HCaptchaInterface.onCaptchaSuccess(token);
 
+            alert("document.getElementById('submit') : " + document.getElementById('submit'));
+            
           // You can enable the 'Submit' button here or proceed with form submission
           document.getElementById('submit').disabled = false;
         }
