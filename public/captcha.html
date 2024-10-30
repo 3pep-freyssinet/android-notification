@@ -34,7 +34,7 @@
         
     function onCaptchaStart() {
         console.log('onCaptchaStart triggered.');
-        HCaptchaInterface.hideAndroidButton(); // Call Android to hide the button
+        //HCaptchaInterface.hideAndroidButton(); // Call Android to hide the button
     }
 
     // Start polling when the page loads
@@ -74,8 +74,7 @@
     <div class="h-captcha"
         data-sitekey="CAPTCHA_SITE_KEY"
         data-callback="onCaptchaSuccess"
-        data-error-callback="onCaptchaError"
-        data-open-callback="onCaptchaStart">
+        data-error-callback="onCaptchaError">
     </div>
 </div>
     
