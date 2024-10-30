@@ -24,7 +24,7 @@
     </style>
     <script type="text/javascript">
         let captchaToken = null;
-
+    /*
     // Fallback function to hide button when captcha starts (polling)
     function checkCaptchaStart() {
         const captchaIframe = document.querySelector('iframe[src*="hcaptcha.com"]');
@@ -36,14 +36,15 @@
         // Retry every 500ms if not started yet
         setTimeout(checkCaptchaStart, 500);
     }
-
+    */
+        
     function onCaptchaStart() {
         console.log('onCaptchaStart triggered.');
         HCaptchaInterface.hideAndroidButton(); // Call Android to hide the button
     }
 
     // Start polling when the page loads
-    window.onload = checkCaptchaStart;
+    //window.onload = checkCaptchaStart;
 
     // Called on successful completion of the challenge
     function onCaptchaSuccess(token) {
