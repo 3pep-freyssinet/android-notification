@@ -1,0 +1,46 @@
+<html>
+<head>
+    <title>hCaptcha</title>
+    <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+    <script type="text/javascript">
+        // Declare the captchaToken variable globally
+        let captchaToken = null;
+
+        function onCaptchaSuccess(token) {
+            // This function is called when the hCaptcha challenge is successfully completed
+            // Store the captcha token
+            captchaToken = token;
+            console.log("Captcha completed successfully."); // For debugging, remove in production
+        }
+
+        function onCaptchaError() {
+            alert("An error occurred with hCaptcha. Please try again.");
+            captchaToken = null; // Clear token on error to ensure a valid token is used
+        }
+
+        // This function is called when the 'Submit' button is pressed
+        function handleSubmit(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            // Check if the hCaptcha token is available
+            if (captchaToken) {
+                // Send token to Android app
+                HCaptchaInterface.onCaptchaSuccess(captchaToken);
+                console.log("Token sent to Android:", captchaToken); // For debugging
+            } else {
+                alert('Please complete the captcha before submitting.');
+            }
+        }
+    </script>
+</head>
+<body>
+    <form id="myForm" onsubmit="handleSubmit(event);" method="POST">
+        <div class="h-captcha"
+            data-sitekey="CAPTCHA_SITE_KEY"
+            data-callback="onCaptchaSuccess"
+            data-error-callback="onCaptchaError">
+        </div>
+        <input id="submit" type="submit" value="Submit" />
+    </form>
+</body>
+</html>
