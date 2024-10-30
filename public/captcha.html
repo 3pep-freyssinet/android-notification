@@ -57,6 +57,11 @@
     -->
     <script type="text/javascript">
         let captchaToken = null;
+       
+        // Show the spinner when the page loads (waiting for hCaptcha to load)
+        document.getElementById('spinner').style.display = 'block';
+        document.getElementById('overlay').style.display = 'block';
+        
     /*
     // Fallback function to hide button when captcha starts (polling)
     function checkCaptchaStart() {
@@ -73,6 +78,11 @@
         
     function onCaptchaStart() {
         console.log('onCaptchaStart triggered.');
+        // Hide the spinner once the challenge is ready
+        document.getElementById('spinner').style.display = 'none';
+        document.getElementById('overlay').style.display = 'none';
+        
+        HCaptchaInterface.hideAndroidButton(); // Example to hide button
         HCaptchaInterface.hideAndroidButton(); // Call Android to hide the button
     }
 
@@ -91,7 +101,18 @@
         alert("An error occurred with hCaptcha. Please try again.");
         HCaptchaInterface.hideAndroidButton(); // hide the button on error
     }
-   
+
+    function onCaptchaExpired() {
+        console.log('onCaptchaExpired triggered.');
+        alert("Captcha expired. Please try again.");
+    }
+
+    // Fallback: Hide the spinner after a delay if hCaptcha doesn't load in time
+    setTimeout(() => {
+        document.getElementById('spinner').style.display = 'none';
+        document.getElementById('overlay').style.display = 'none';
+    }, 10000); // Hide after 10 seconds, adjust as needed
+        
     // This function is called when the 'Submit' button is pressed
     function handleSubmit(event) {
         event.preventDefault(); // Prevent default form submission
