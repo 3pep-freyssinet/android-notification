@@ -2,6 +2,25 @@
 <head>
     <title>hCaptcha</title>
     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+    //load css script to manage hcaptcha challenge
+    <style>
+        .captcha-container {
+            width: 100%;
+            max-width: 350px;
+            height: auto;
+            display: flex;
+            justify-content: center;
+            margin: 0 auto;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .h-captcha iframe {
+            width: 100%;
+            height: 70vh;
+            max-height: 400px;
+        }
+    </style>
     <script type="text/javascript">
         // Declare the captchaToken variable globally
         let captchaToken = null;
@@ -38,11 +57,13 @@
 </head>
 <body>
     <!-- load hcaptcha challenge  -->
+<div class="captcha-container">
     <div class="h-captcha"
-            data-sitekey="CAPTCHA_SITE_KEY"
-            data-callback="onCaptchaSuccess"
-            data-error-callback="onCaptchaError">
+        data-sitekey="YOUR_SITE_KEY"
+        data-callback="onCaptchaSuccess"
+        data-error-callback="onCaptchaError">
     </div>
+</div>
     
     <!--
     <form id="myForm" onsubmit="handleSubmit(event);" method="POST">
