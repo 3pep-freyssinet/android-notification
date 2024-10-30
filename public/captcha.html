@@ -1,6 +1,6 @@
 <html>
   <head>
-    <title>hCaptcha Demo</title>
+    <title>hCaptcha</title>
     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
     <script type="text/javascript">
         let email        = '';
@@ -13,7 +13,13 @@
             captchaToken = token;
             //document.getElementById('submit').disabled = false;
         }
-
+      
+        function onCaptchaError() {
+          alert("An error occurred with hCaptcha. Please try again.");
+          // Additional error handling can be added here
+        }
+      
+        //this function is called when the 'Submit' button is pressed.
         function handleSubmit(event) {
             event.preventDefault(); // Prevent default form submission
 
@@ -46,6 +52,7 @@
     <!--  data-sitekey="b3cc2364-8074-4f4c-9226-91cce6360200"-->
     <form id="myForm" onsubmit="handleSubmit(event);" method="POST">
         <input id="emailInput" type="text" placeholder="Email" required />
+        <br>
         <input id="passwordInput" type="password" placeholder="Password" required />
         <div class="h-captcha"
             data-sitekey="CAPTCHA_SITE_KEY"
