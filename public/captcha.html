@@ -25,38 +25,52 @@
     <script type="text/javascript">
         let captchaToken = null;
 
-        // Called when the hCaptcha challenge starts
-        function onCaptchaStart() {
-            console.log('onCaptchaStart');
-            HCaptchaInterface.hideAndroidButton(); // Call Android to hide the button
+    // Fallback function to hide button when captcha starts (polling)
+    function checkCaptchaStart() {
+        const captchaIframe = document.querySelector('iframe[src*="hcaptcha.com"]');
+        if (captchaIframe) {
+            console.log('Captcha started.');
+            onCaptchaStart();
+            return;
         }
+        // Retry every 500ms if not started yet
+        setTimeout(checkCaptchaStart, 500);
+    }
 
-        // Called on successful completion of the challenge
-        function onCaptchaSuccess(token) {
-            captchaToken = token;
-            HCaptchaInterface.showAndroidButton(); // Call Android to show the button again
-            HCaptchaInterface.onCaptchaSuccess(token); // Send token to Android side
-        }
+    function onCaptchaStart() {
+        console.log('onCaptchaStart triggered.');
+        HCaptchaInterface.hideAndroidButton(); // Call Android to hide the button
+    }
 
-        // Called when an error occurs in the challenge
-        function onCaptchaError() {
-            alert("An error occurred with hCaptcha. Please try again.");
-            HCaptchaInterface.hideAndroidButton(); // hide the button on error
-        }
+    // Start polling when the page loads
+    window.onload = checkCaptchaStart;
+
+    // Called on successful completion of the challenge
+    function onCaptchaSuccess(token) {
+        captchaToken = token;
+        HCaptchaInterface.showAndroidButton(); // Call Android to show the button again
+        HCaptchaInterface.onCaptchaSuccess(token); // Send token to Android side
+    }
+
+    // Called when an error occurs in the challenge
+    function onCaptchaError() {
+        alert("An error occurred with hCaptcha. Please try again.");
+        HCaptchaInterface.hideAndroidButton(); // hide the button on error
+    }
    
-        // This function is called when the 'Submit' button is pressed
-        function handleSubmit(event) {
-            event.preventDefault(); // Prevent default form submission
+    // This function is called when the 'Submit' button is pressed
+    function handleSubmit(event) {
+        event.preventDefault(); // Prevent default form submission
 
-            // Check if the hCaptcha token is available
-            if (captchaToken) {
-                // Send token to Android app
-                HCaptchaInterface.onCaptchaSuccess(captchaToken);
-                console.log("Token sent to Android:", captchaToken); // For debugging
-            } else {
-                alert('Please complete the captcha before submitting.');
-            }
+        // Check if the hCaptcha token is available
+        if (captchaToken) {
+            // Send token to Android app
+            HCaptchaInterface.onCaptchaSuccess(captchaToken);
+            console.log("Token sent to Android:", captchaToken); // For debugging
+        } else {
+            alert('Please complete the captcha before submitting.');
         }
+    }
     </script>
 </head>
 <body>
