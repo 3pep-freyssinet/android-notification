@@ -37,6 +37,14 @@
     </script>
 </head>
 <body>
+    <!-- load hcaptcha challenge  -->
+    <div class="h-captcha"
+            data-sitekey="CAPTCHA_SITE_KEY"
+            data-callback="onCaptchaSuccess"
+            data-error-callback="onCaptchaError">
+    </div>
+    
+    <!--
     <form id="myForm" onsubmit="handleSubmit(event);" method="POST">
         <div class="h-captcha"
             data-sitekey="CAPTCHA_SITE_KEY"
@@ -45,5 +53,6 @@
         </div>
         <input id="submit" type="submit" value="Submit" />
     </form>
+    -->
 </body>
 </html>
