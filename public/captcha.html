@@ -7,11 +7,14 @@
         let captchaToken = null;
 
         function onCaptchaSuccess(token) {
-            // This function is called when the hCaptcha challenge is successfully completed
-            // Store the captcha token
-            captchaToken = token;
-            console.log("Captcha completed successfully."); // For debugging, remove in production
+            console.log("Token received in JavaScript: " + token); // Debugging line
+            try {
+                HCaptchaInterface.onCaptchaSuccess(token);
+            } catch (error) {
+                console.error("Error calling onCaptchaSuccess: " + error);
+            }
         }
+
 
         function onCaptchaError() {
             alert("An error occurred with hCaptcha. Please try again.");
