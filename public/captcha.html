@@ -56,6 +56,7 @@
     </style>
     -->
     <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function() {
         let captchaToken = null;
        
         // Show the spinner when the page loads (waiting for hCaptcha to load)
@@ -126,6 +127,7 @@
             alert('Please complete the captcha before submitting.');
         }
     }
+});
     </script>
 </head>
 <body>
