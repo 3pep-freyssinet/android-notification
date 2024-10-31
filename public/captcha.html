@@ -63,28 +63,28 @@
         document.getElementById('spinner').style.display = 'block';
         document.getElementById('overlay').style.display = 'block';
         
-    /*
-    // Fallback function to hide button when captcha starts (polling)
-    function checkCaptchaStart() {
-        const captchaIframe = document.querySelector('iframe[src*="hcaptcha.com"]');
-        if (captchaIframe) {
-            console.log('Captcha started.');
-            onCaptchaStart();
-            return;
+        /*
+        // Fallback function to hide button when captcha starts (polling)
+        function checkCaptchaStart() {
+            const captchaIframe = document.querySelector('iframe[src*="hcaptcha.com"]');
+            if (captchaIframe) {
+                console.log('Captcha started.');
+                onCaptchaStart();
+                return;
+            }
+            // Retry every 500ms if not started yet
+            setTimeout(checkCaptchaStart, 500);
         }
-        // Retry every 500ms if not started yet
-        setTimeout(checkCaptchaStart, 500);
-    }
-    */
+        */
         
     function onCaptchaStart() {
         console.log('onCaptchaStart triggered.');
         // Hide the spinner once the challenge is ready
         document.getElementById('spinner').style.display = 'none';
         document.getElementById('overlay').style.display = 'none';
-        
-        HCaptchaInterface.hideAndroidButton(); // Example to hide button
-        HCaptchaInterface.hideAndroidButton(); // Call Android to hide the button
+
+        // Call Android to hide the button
+        HCaptchaInterface.hideAndroidButton(); 
     }
 
     // Start polling when the page loads
@@ -136,15 +136,15 @@
     <div class="spinner" id="spinner"></div>
     
     <!-- load hcaptcha challenge  -->
-<div class="captcha-container" style="width: 100%; display: flex; justify-content: center; align-items: center;">
-    <div class="h-captcha"
-        data-sitekey="CAPTCHA_SITE_KEY"
-        data-callback="onCaptchaSuccess"
-        data-error-callback="onCaptchaError"
-        data-open-callback="onCaptchaStart"
-        data-expired-callback="onCaptchaExpired">
+    <div class="captcha-container" style="width: 100%; display: flex; justify-content: center; align-items: center;">
+        <div class="h-captcha"
+            data-sitekey="CAPTCHA_SITE_KEY"
+            data-callback="onCaptchaSuccess"
+            data-error-callback="onCaptchaError"
+            data-open-callback="onCaptchaStart"
+            data-expired-callback="onCaptchaExpired">
+        </div>
     </div>
-</div>
     
     <!-- 
     <form id="myForm" onsubmit="handleSubmit(event);" method="POST">
