@@ -72,14 +72,17 @@
 </head>
 <body>
     <!-- load hcaptcha challenge  -->
-<div class="captcha-container" style="width: 100%; display: flex; justify-content: center; align-items: center;">
+    <div class="loader"></div>
+    
+    <!-- load hcaptcha challenge  -->
+    <div class="captcha-container" style="width: 100%; display: flex; justify-content: center; align-items: center;">
     <div class="h-captcha"
         data-sitekey="CAPTCHA_SITE_KEY"
         data-callback="onCaptchaSuccess"
         data-error-callback="onCaptchaError"
         data-open-callback="onCaptchaStart">
     </div>
-</div>
+    </div>
     
     <!-- 
     <form id="myForm" onsubmit="handleSubmit(event);" method="POST">
