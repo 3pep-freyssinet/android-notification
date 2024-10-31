@@ -6,14 +6,15 @@
     
     <!--spinner-->
     <style>
+        /* Spinner container */
         .loader {
             display: none; /* Initially hidden */
-              border-top:   4px solid blue;
-              border-right: 4px solid green;
+              border-top:    4px solid blue;
+              border-right:  4px solid green;
               border-bottom: 4px solid red;
-              border-left: 4px solid pink;
+              border-left:   4px solid pink;
               border-radius: 50%;
-            width: 40px;
+            width:  40px;
             height: 40px;
             animation: spin 1s linear infinite;
             position: absolute;
@@ -22,6 +23,26 @@
             transform: translate(-50%, -50%);
             z-index: 10;
         }
+        
+        /* Spinner icon */
+        .spinner-icon {
+            border: 4px solid #f3f3f3; /* Light gray */
+            border-top: 4px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin-right: 8px; /* Spacing between icon and text */
+        }
+
+        /* Text style */
+        .spinner-text {
+            font-family: Arial, sans-serif;
+            font-size: 16px;
+            color: #333;
+        }
+
+        /* Animation */
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
@@ -119,8 +140,11 @@
         </div>
     </div>
     
-    <!-- load hcaptcha challenge  -->
-    <div class="loader" id="loader">Loading...</div>
+    <!-- Spinner with icon and text -->
+    <div class="loader" id="loader">
+        <div class="spinner-icon"></div>
+        <div class="spinner-text">Loading...</div>
+    </div>>
 
     <script>
         console.log("Checking at end of body:", document.getElementById('loader'));
