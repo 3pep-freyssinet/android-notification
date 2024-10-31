@@ -32,11 +32,21 @@
         document.addEventListener("DOMContentLoaded", function() {
 
         let captchaToken = null;
-        console.log("document.getElementById('loader')", document.getElementById('loader'));
-
         // Show the spinner when the page loads (waiting for hCaptcha to load)
         document.getElementById('loader').style.display = 'block';
         //document.getElementById('overlay').style.display = 'block';
+
+        // Polling function to check when the checkbox appears
+        const pollForCheckbox = setInterval(() => {
+                // Check if hCaptcha iframe is loaded
+                const hcaptchaFrame = document.querySelector('iframe[src*="hcaptcha.com"]');
+                
+                if (hcaptchaFrame) {
+                    // Hide spinner once the checkbox appears
+                    document.getElementById('loader').style.display = 'none';
+                    clearInterval(pollForCheckbox); // Stop polling
+                }
+        }, 100); // Check every 100ms
 
     /*
     // Fallback function to hide button when captcha starts (polling)
@@ -110,7 +120,7 @@
     </div>
     
     <!-- load hcaptcha challenge  -->
-    <div class="loader" id="loader"></div>
+    <div class="loader" id="loader">Loading...</div>
 
     <script>
         console.log("Checking at end of body:", document.getElementById('loader'));
