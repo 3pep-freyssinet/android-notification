@@ -7,22 +7,29 @@
     <!--spinner-->
     <style>
         /* Spinner container */
-        .loader {
-            display: none; /* Initially hidden */
-              border-top:    4px solid blue;
-              border-right:  4px solid green;
-              border-bottom: 4px solid red;
-              border-left:   4px solid pink;
-              border-radius: 50%;
-            width:  40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-            position: absolute;
+         
+        #loader {
+            position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            z-index: 10;
+            display: flex;
+            align-items: center;
         }
+
+        /* Spinner icon */
+        .spinner-icon {
+            border-top:    4px solid blue;
+              border-right:  4px solid green;
+              border-bottom: 4px solid red;
+              border-left:   4px solid pink;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            animation: spin 1s linear infinite;
+            margin-right: 8px; /* Spacing between icon and text */
+        }
+
         
         /* Spinner icon */
         .spinner-icon {
@@ -144,11 +151,7 @@
     <div class="loader" id="loader">
         <div class="spinner-icon"></div>
         <div class="spinner-text">Loading...</div>
-    </div>>
-
-    <script>
-        console.log("Checking at end of body:", document.getElementById('loader'));
-    </script>
+    </div>
     
     <!-- 
     <form id="myForm" onsubmit="handleSubmit(event);" method="POST">
