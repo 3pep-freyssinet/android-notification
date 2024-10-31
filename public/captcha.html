@@ -7,13 +7,17 @@
     <!--spinner-->
     <style>
         /* Spinner container */
-        .loader {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
+        #loader {
+            position: fixed; /* Make it fixed to cover the entire viewport */
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             display: flex;
+            justify-content: center;
             align-items: center;
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent background */
+            z-index: 1000; /* Ensure it appears above other elements */
         }
 
         /* Spinner icon */
@@ -54,6 +58,15 @@
         @keyframes spin {
           0% { transform: rotate(0deg); }
           100% { transform: rotate(360deg); }
+        }
+
+        /* hCaptcha container */
+        .captcha-container {
+            position: relative; /* Make it relative for proper layering */
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
     </style>
     
