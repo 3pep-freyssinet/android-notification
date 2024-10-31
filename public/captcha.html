@@ -29,6 +29,11 @@
     
     <script type="text/javascript">
         let captchaToken = null;
+        
+        // Show the spinner when the page loads (waiting for hCaptcha to load)
+        document.getElementById('loader').style.display = 'block';
+        //document.getElementById('overlay').style.display = 'block';
+
     /*
     // Fallback function to hide button when captcha starts (polling)
     function checkCaptchaStart() {
@@ -45,7 +50,13 @@
         
     function onCaptchaStart() {
         console.log('onCaptchaStart triggered.');
-        HCaptchaInterface.hideAndroidButton(); // Call Android to hide the button
+        
+        // Hide the spinner once the challenge is ready
+        document.getElementById('loader').style.display = 'none';
+        //document.getElementById('overlay').style.display = 'none';
+
+        // Call Android to hide the button
+        HCaptchaInterface.hideAndroidButton(); 
     }
 
     // Start polling when the page loads
