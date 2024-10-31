@@ -29,8 +29,11 @@
     </style>
     
     <script type="text/javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+
         let captchaToken = null;
         console.log("document.getElementById('loader')", document.getElementById('loader'));
+
         // Show the spinner when the page loads (waiting for hCaptcha to load)
         document.getElementById('loader').style.display = 'block';
         //document.getElementById('overlay').style.display = 'block';
@@ -75,7 +78,8 @@
         alert("An error occurred with hCaptcha. Please try again.");
         HCaptchaInterface.hideAndroidButton(); // hide the button on error
     }
-   
+
+    /*
     // This function is called when the 'Submit' button is pressed
     function handleSubmit(event) {
         event.preventDefault(); // Prevent default form submission
@@ -89,6 +93,8 @@
             alert('Please complete the captcha before submitting.');
         }
     }
+    */
+    });                           
     </script>
 </head>
 <body>
