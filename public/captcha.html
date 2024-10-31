@@ -75,7 +75,7 @@
 
         let captchaToken = null;
         // Show the spinner when the page loads (waiting for hCaptcha to load)
-        document.getElementById('loader').style.display = 'block';
+        document.getElementById('loader').style.display = 'flex'; //'block';
         //document.getElementById('overlay').style.display = 'block';
 
         // Polling function to check when the checkbox appears
@@ -151,6 +151,7 @@
 </head>
 <body>
     <!-- load hcaptcha challenge  -->
+    <!--
     <div class="captcha-container" style="width: 100%; display: flex; justify-content: center; align-items: center;">
         <div class="h-captcha"
             data-sitekey="CAPTCHA_SITE_KEY"
@@ -160,7 +161,7 @@
             data-expired-callback="onCaptchaExpired">
         </div>
     </div>
-    
+    -->
     <!-- Spinner with icon and text -->
     <div class="loader" id="loader">
         <div class="spinner-icon"></div>
