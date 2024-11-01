@@ -25,6 +25,22 @@
             // Start observing the hCaptcha container
             const captchaContainer = document.querySelector(".h-captcha");
             observer.observe(captchaContainer, { childList: true });
+
+    // Called on successful completion of the challenge
+    function onCaptchaSuccess(token) {
+        captchaToken = token;
+        console.log("onCaptchaSuccess.");
+        //HCaptchaInterface.showAndroidButton(); // Call Android to show the button again. No, it is showed after the token is verified.
+        HCaptchaInterface.onCaptchaSuccess(token); // Send token to Android side
+    }
+
+    // Called when an error occurs in the challenge
+    function onCaptchaError() {
+        alert("An error occurred with hCaptcha. Please try again.");
+        console.log("onCaptchaError.");
+        HCaptchaInterface.onCaptchaError(); // hide the button on error
+    }
+
         });
     </script>
 </head>
