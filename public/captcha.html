@@ -6,6 +6,12 @@
     <title>hCaptcha</title>
     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
     <script type="text/javascript">
+
+        function onCaptchaStart() {
+            console.log("onCaptchaStart.");
+            HCaptchaInterface.onCaptchaStart();
+        }
+        
         function onCaptchaSuccess(token) {
             console.log("onCaptchaSuccess.");
             // Assuming HCaptchaInterface is already defined and connected to Android
@@ -51,7 +57,8 @@
     <div class="h-captcha"
          data-sitekey="CAPTCHA_SITE_KEY"
          data-callback="onCaptchaSuccess"
-         data-error-callback="onCaptchaError">
+         data-error-callback="onCaptchaError"
+        data-open-callback="onCaptchaStart">
     </div>
 </body>
 </html>
