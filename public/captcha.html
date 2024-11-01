@@ -6,6 +6,24 @@
     <title>hCaptcha</title>
     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
     <script type="text/javascript">
+        function onCaptchaSuccess(token) {
+            console.log("onCaptchaSuccess.");
+            // Assuming HCaptchaInterface is already defined and connected to Android
+            if (typeof HCaptchaInterface !== 'undefined' && HCaptchaInterface.onCaptchaSuccess) {
+                HCaptchaInterface.onCaptchaSuccess(token);
+            } else {
+                console.error("HCaptchaInterface or onCaptchaSuccess method not found.");
+            }
+        }
+
+    // Called when an error occurs in the challenge
+    function onCaptchaError() {
+        alert("An error occurred with hCaptcha. Please try again.");
+        console.log("onCaptchaError.");
+        HCaptchaInterface.onCaptchaError(); // hide the button on error
+    }
+
+        
         document.addEventListener("DOMContentLoaded", function () {
             // Observe for the hCaptcha iframe appearance to detect when the checkbox is shown
             const observer = new MutationObserver((mutations) => {
@@ -25,22 +43,6 @@
             // Start observing the hCaptcha container
             const captchaContainer = document.querySelector(".h-captcha");
             observer.observe(captchaContainer, { childList: true });
-
-    // Called on successful completion of the challenge
-    function onCaptchaSuccess(token) {
-        captchaToken = token;
-        console.log("onCaptchaSuccess.");
-        //HCaptchaInterface.showAndroidButton(); // Call Android to show the button again. No, it is showed after the token is verified.
-        HCaptchaInterface.onCaptchaSuccess(token); // Send token to Android side
-    }
-
-    // Called when an error occurs in the challenge
-    function onCaptchaError() {
-        alert("An error occurred with hCaptcha. Please try again.");
-        console.log("onCaptchaError.");
-        HCaptchaInterface.onCaptchaError(); // hide the button on error
-    }
-
         });
     </script>
 </head>
