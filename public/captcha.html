@@ -8,13 +8,14 @@
     <script type="text/javascript">
         function onCaptchaStart() {
             // Notify Android that hCaptcha is fully loaded
+            console.log('onCaptchaStart...');
             HCaptchaInterface.onCaptchaLoaded();
         }
     </script>
 </head>
 <body>
     <div class="h-captcha"
-        data-sitekey="YOUR_SITE_KEY"
+        data-sitekey="CAPTCHA_SITE_KEY"
         data-callback="onCaptchaSuccess"
         data-error-callback="onCaptchaError"
         data-open-callback="onCaptchaStart">
