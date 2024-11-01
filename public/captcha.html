@@ -114,6 +114,9 @@
 
         // Call Android to hide the button
         HCaptchaInterface.hideAndroidButton(); 
+
+        //stop the progress bar
+        Android.onCaptchaLoaded();
     }
 
     // Start polling when the page loads
