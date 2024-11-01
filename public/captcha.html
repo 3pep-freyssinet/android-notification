@@ -15,7 +15,7 @@
                         if (document.querySelector(".h-captcha iframe")) {
                             console.log("hCaptcha widget loaded.");
                             // Call Android interface method to hide the spinner
-                            HCaptchaInterface.onCaptchaWidgetLoaded();
+                            HCaptchaInterface.onCaptchaLoaded();
                             observer.disconnect(); // Stop observing once iframe is loaded
                         }
                     }
@@ -44,12 +44,12 @@
         });
     </script>
 </head>
+    <!--data-open-callback="onCaptchaStart" -->
 <body>
     <div class="h-captcha"
          data-sitekey="CAPTCHA_SITE_KEY"
          data-callback="onCaptchaSuccess"
-         data-error-callback="onCaptchaError"
-         data-open-callback="onCaptchaStart">
+         data-error-callback="onCaptchaError">
     </div>
 </body>
 </html>
