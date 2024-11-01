@@ -1,121 +1,23 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>hCaptcha</title>
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
-    
-    
     <script type="text/javascript">
-        document.addEventListener("DOMContentLoaded", function() {
-
-        let captchaToken = null;
-        // Show the spinner when the page loads (waiting for hCaptcha to load)
-        document.getElementById('loader').style.display = 'flex'; //'block';
-        //document.getElementById('overlay').style.display = 'block';
-
-        // Polling function to check when the checkbox appears
-        const pollForCheckbox = setInterval(() => {
-                // Check if hCaptcha iframe is loaded
-                const hcaptchaFrame = document.querySelector('iframe[src*="hcaptcha.com"]');
-                
-                if (hcaptchaFrame) {
-                    // Hide spinner once the checkbox appears
-                    document.getElementById('loader').style.display = 'none';
-                    clearInterval(pollForCheckbox); // Stop polling
-                }
-        }, 100); // Check every 100ms
-
-    /*
-    // Fallback function to hide button when captcha starts (polling)
-    function checkCaptchaStart() {
-        const captchaIframe = document.querySelector('iframe[src*="hcaptcha.com"]');
-        if (captchaIframe) {
-            console.log('Captcha started.');
-            onCaptchaStart();
-            return;
+        function onCaptchaStart() {
+            // Notify Android that hCaptcha is fully loaded
+            HCaptchaInterface.onCaptchaLoaded();
         }
-        // Retry every 500ms if not started yet
-        setTimeout(checkCaptchaStart, 500);
-    }
-    */
-        
-    function onCaptchaStart() {
-        console.log('onCaptchaStart triggered.');
-        
-        // Hide the spinner once the challenge is ready
-        document.getElementById('loader').style.display = 'none';
-        //document.getElementById('overlay').style.display = 'none';
-
-        // Call Android to hide the button
-        HCaptchaInterface.hideAndroidButton(); 
-
-        //stop the progress bar
-        HCaptchaInterface.onCaptchaLoaded();
-    }
-
-    // Start polling when the page loads
-    //window.onload = checkCaptchaStart;
-
-    // Called on successful completion of the challenge
-    function onCaptchaSuccess(token) {
-        captchaToken = token;
-        //HCaptchaInterface.showAndroidButton(); // Call Android to show the button again
-        HCaptchaInterface.onCaptchaSuccess(token); // Send token to Android side
-    }
-
-    // Called when an error occurs in the challenge
-    function onCaptchaError() {
-        alert("An error occurred with hCaptcha. Please try again.");
-        HCaptchaInterface.hideAndroidButton(); // hide the button on error
-    }
-
-    /*
-    // This function is called when the 'Submit' button is pressed
-    function handleSubmit(event) {
-        event.preventDefault(); // Prevent default form submission
-
-        // Check if the hCaptcha token is available
-        if (captchaToken) {
-            // Send token to Android app
-            HCaptchaInterface.onCaptchaSuccess(captchaToken);
-            console.log("Token sent to Android:", captchaToken); // For debugging
-        } else {
-            alert('Please complete the captcha before submitting.');
-        }
-    }
-    */
-    });                           
     </script>
 </head>
 <body>
-    <!-- load hcaptcha challenge  -->
-    <!---->
-    <div class="captcha-container" style="width: 100%; display: flex; justify-content: center; align-items: center;">
-        <div class="h-captcha"
-            data-sitekey="CAPTCHA_SITE_KEY"
-            data-callback="onCaptchaSuccess"
-            data-error-callback="onCaptchaError"
-            data-open-callback="onCaptchaStart"
-            data-expired-callback="onCaptchaExpired">
-        </div>
+    <div class="h-captcha"
+        data-sitekey="YOUR_SITE_KEY"
+        data-callback="onCaptchaSuccess"
+        data-error-callback="onCaptchaError"
+        data-open-callback="onCaptchaStart">
     </div>
-    
-    <!-- Spinner with icon and text -->
-    <div class="loader" id="loader">
-        <div class="spinner-icon"></div>
-        <div class="spinner-text">Loading...</div>
-    </div>
-    
-    <!-- 
-    <form id="myForm" onsubmit="handleSubmit(event);" method="POST">
-        <div class="h-captcha"
-            data-sitekey="CAPTCHA_SITE_KEY"
-            data-callback="onCaptchaSuccess"
-            data-error-callback="onCaptchaError"
-            data-open-callback="onCaptchaStart">
-        </div>
-        <input id="submit" type="submit" value="Submit" />
-    </form>
-    -->
 </body>
 </html>
