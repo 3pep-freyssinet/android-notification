@@ -15,7 +15,7 @@
                         if (document.querySelector(".h-captcha iframe")) {
                             console.log("hCaptcha widget loaded.");
                             // Call Android interface method to hide the spinner
-                            Android.onCaptchaWidgetLoaded();
+                            HCaptchaInterface.onCaptchaWidgetLoaded();
                             observer.disconnect(); // Stop observing once iframe is loaded
                         }
                     }
