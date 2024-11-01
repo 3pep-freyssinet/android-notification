@@ -5,7 +5,29 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>hCaptcha</title>
     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
-    <script type="text/javascript">
+    <style>
+    /* Responsive container for hCaptcha */
+    .captcha-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        max-width: 100%; /* Ensures it fits the screen width */
+        overflow: hidden; /* Avoids content overflow on small screens */
+    }
+
+    .h-captcha {
+        transform: scale(0.85); /* Scale down the hCaptcha widget */
+        transform-origin: top; /* Keeps scaling aligned to the top */
+    }
+
+    /* Further scaling for very small screens */
+    @media (max-width: 480px) {
+        .h-captcha {
+            transform: scale(0.75);
+        }
+    }
+</style>
+<script type="text/javascript">
 
         function onCaptchaStart() {
             console.log("onCaptchaStart.");
@@ -54,11 +76,13 @@
 </head>
     <!--data-open-callback="onCaptchaStart" -->
 <body>
-    <div class="h-captcha"
-         data-sitekey="CAPTCHA_SITE_KEY"
-         data-callback="onCaptchaSuccess"
-         data-error-callback="onCaptchaError"
-        data-open-callback="onCaptchaStart">
+    <div class="captcha-container">
+        <div class="h-captcha"
+             data-sitekey="CAPTCHA_SITE_KEY"
+             data-callback="onCaptchaSuccess"
+             data-error-callback="onCaptchaError"
+            data-open-callback="onCaptchaStart">
+        </div>
     </div>
 </body>
 </html>
