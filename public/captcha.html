@@ -6,19 +6,34 @@
     <title>hCaptcha</title>
     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
     <script type="text/javascript">
-        function onCaptchaStart() {
-            // Notify Android that hCaptcha is fully loaded
-            console.log('onCaptchaStart...');
-            HCaptchaInterface.onCaptchaLoaded();
-        }
+        document.addEventListener("DOMContentLoaded", function () {
+            // Observe for the hCaptcha iframe appearance to detect when the checkbox is shown
+            const observer = new MutationObserver((mutations) => {
+                mutations.forEach((mutation) => {
+                    if (mutation.type === "childList") {
+                        // Check if an iframe is added to the hCaptcha container
+                        if (document.querySelector(".h-captcha iframe")) {
+                            console.log("hCaptcha widget loaded.");
+                            // Call Android interface method to hide the spinner
+                            Android.onCaptchaWidgetLoaded();
+                            observer.disconnect(); // Stop observing once iframe is loaded
+                        }
+                    }
+                });
+            });
+
+            // Start observing the hCaptcha container
+            const captchaContainer = document.querySelector(".h-captcha");
+            observer.observe(captchaContainer, { childList: true });
+        });
     </script>
 </head>
 <body>
     <div class="h-captcha"
-        data-sitekey="CAPTCHA_SITE_KEY"
-        data-callback="onCaptchaSuccess"
-        data-error-callback="onCaptchaError"
-        data-open-callback="onCaptchaStart">
+         data-sitekey="CAPTCHA_SITE_KEY"
+         data-callback="onCaptchaSuccess"
+         data-error-callback="onCaptchaError"
+         data-open-callback="onCaptchaStart">
     </div>
 </body>
 </html>
