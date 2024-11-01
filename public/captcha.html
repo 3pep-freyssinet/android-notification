@@ -6,36 +6,44 @@
     <title>hCaptcha</title>
     <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
     <style>
-    /* Responsive container for hCaptcha */
-    .captcha-container {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        max-width: 100%; /* Ensures it fits the screen width */
-        overflow: hidden; /* Avoids content overflow on small screens */
-    }
-
-    .h-captcha {
-        transform: scale(0.75); /* Scale down the hCaptcha widget */
-        transform-origin: top; /* Keeps scaling aligned to the top */
-    }
-
-    /* Further scaling for very small screens */
-    @media (max-width: 480px) {
-        .h-captcha {
-            transform: scale(0.75);
+        /* Standard form and hCaptcha layout */
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
         }
-    }
-</style>
+        .h-captcha {
+            margin-top: 20px;
+        }
+
+        /* Class for fullscreen hCaptcha layout */
+        .challenge-active .form-content {
+            display: none; /* Hide the input fields */
+        }
+        .challenge-active .h-captcha {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000; /* Bring hCaptcha to the front */
+        }
+    </style>
 <script type="text/javascript">
 
         function onCaptchaStart() {
             console.log("onCaptchaStart.");
             HCaptchaInterface.onCaptchaStart();
+            // Add class to body or main container to activate full-screen hCaptcha
+            document.body.classList.add('challenge-active');
         }
         
         function onCaptchaSuccess(token) {
             console.log("onCaptchaSuccess.");
+            // You can remove the 'challenge-active' class here if you want to reset the layout
+            document.body.classList.remove('challenge-active');
+            // Trigger any Android interface or further actions with the token
+       
             // Assuming HCaptchaInterface is already defined and connected to Android
             if (typeof HCaptchaInterface !== 'undefined' && HCaptchaInterface.onCaptchaSuccess) {
                 HCaptchaInterface.onCaptchaSuccess(token);
@@ -76,12 +84,17 @@
 </head>
     <!--data-open-callback="onCaptchaStart" -->
 <body>
-    <div class="captcha-container">
+    <div class="form-container">
+        <div class="form-content">
+            <!-- Username and Password fields -->
+            <input type="text" placeholder="Username" required />
+            <input type="password" placeholder="Password" required />
+        </div>
         <div class="h-captcha"
              data-sitekey="CAPTCHA_SITE_KEY"
              data-callback="onCaptchaSuccess"
              data-error-callback="onCaptchaError"
-            data-open-callback="onCaptchaStart">
+             data-open-callback="onCaptchaStart">
         </div>
     </div>
 </body>
