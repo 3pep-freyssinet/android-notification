@@ -75,6 +75,7 @@ app
   })
   */
 
+//Serve files from the root '/' directory. 'https://..../captcha.html', 'captcha.html' must be in ./captcha.html'
 app.get('/', (req, res) => {
     // Path to your captcha.html file
     const filePath = path.join(__dirname, 'public', 'captcha.html');
@@ -98,6 +99,21 @@ app.get('/', (req, res) => {
         // Send the modified HTML
         res.send(updatedHtml);
     });
+});
+
+//serves fcm tokens
+app.get('/fcm_tokens', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT id, user_id, device_token FROM fcm_tokens');
+    const tokens = result.rows;
+	
+    console.log('fcm_tokens / : tokens : ', JSON.stringify(tokens));
+	
+    res.render('index', { tokens });
+  } catch (err) {
+    console.error('Error retrieving FCM tokens:', err);
+    res.status(500).send('Internal server error');
+  }
 });
 
 // Import routes
