@@ -129,6 +129,9 @@ app.use('/users', users_routes);
 app.use('/tokens', tokens_routes);
 app.use('/fcm', fcm_routes);
 
+// Set EJS as the template engine
+app.set('view engine', 'ejs');
+
 return;
 
 //endpoint : login
