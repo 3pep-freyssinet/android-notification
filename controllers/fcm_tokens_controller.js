@@ -35,6 +35,8 @@ const CAPTCHA_SITE_KEY = process.env.CAPTCHA_SITE_KEY;
 
 console.log('pool = ' + pool);
 
+console.log('fcm_tokens_controler');
+
 // get all fcm tokens
 exports.getAllFCMTokens = async (req, res) => {
 	   
