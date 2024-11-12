@@ -46,9 +46,10 @@ console.log('getAllFCMTokens\n');
     const result = await pool.query('SELECT id, user_id, device_token FROM fcm_tokens');
     const tokens = result.rows;
 	
-	   //console.log('getAllFCMTokens / : tokens : ', JSON.stringify(tokens));
-	
-    res.render('index', { tokens });
+    console.log('getAllFCMTokens / : tokens : ', JSON.stringify(tokens));
+    res.status(200).json({tokens});
+	  
+    //res.render('index', { tokens });
   } catch (err) {
       console.error('Error retrieving FCM tokens:', err);
       res.status(500).send('Internal server error');
