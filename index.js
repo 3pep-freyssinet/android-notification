@@ -124,6 +124,7 @@ const fcm_routes    = require('./routes/fcm');
 // Use routes
 app.use('/users', users_routes);
 app.use('/tokens', tokens_routes);
+app.use('/fcm', fcm_routes);
 
 return;
 
