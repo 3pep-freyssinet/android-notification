@@ -119,6 +119,7 @@ app.get('/fcm_tokens', async (req, res) => {
 // Import routes
 const users_routes  = require('./routes/users');
 const tokens_routes = require('./routes/tokens');
+const fcm_routes    = require('./routes/fcm');
 
 // Use routes
 app.use('/users', users_routes);
