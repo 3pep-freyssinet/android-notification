@@ -77,6 +77,7 @@ app
 
 //Serve files from the root '/' directory. 'https://..../captcha.html', 'captcha.html' must be in ./captcha.html'
 app.get('/', (req, res) => {
+    console.log('Serving captcha.html');
     // Path to your captcha.html file
     const filePath = path.join(__dirname, 'public', 'captcha.html');
 
@@ -101,6 +102,7 @@ app.get('/', (req, res) => {
     });
 });
 
+/*
 //serves fcm tokens
 app.get('/fcm_tokens', async (req, res) => {
   try {
@@ -115,6 +117,7 @@ app.get('/fcm_tokens', async (req, res) => {
     res.status(500).send('Internal server error');
   }
 });
+*/
 
 // Import routes
 const users_routes  = require('./routes/users');
