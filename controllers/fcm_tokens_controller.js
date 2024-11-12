@@ -52,3 +52,21 @@ console.log('getAllFCMTokens\n');
       res.status(500).send('Internal server error');
   }
 }
+
+// post all fcm tokens
+exports.postAllFCMTokens = async (req, res) => {
+	   
+console.log('postAllFCMTokens\n');
+	
+  try {
+    const result = await pool.query('SELECT id, user_id, device_token FROM fcm_tokens');
+    const tokens = result.rows;
+	
+	   //console.log('getAllFCMTokens / : tokens : ', JSON.stringify(tokens));
+	
+    res.render('index', { tokens });
+  } catch (err) {
+      console.error('Error retrieving FCM tokens:', err);
+      res.status(500).send('Internal server error');
+  }
+}
