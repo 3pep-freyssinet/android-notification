@@ -47,9 +47,10 @@ console.log('getAllFCMTokens\n');
     const tokens = result.rows;
 	
     console.log('getAllFCMTokens / : tokens : ', JSON.stringify(tokens));
-    res.status(200).json({tokens});
+    
+    //res.status(200).json({tokens});
 	  
-    //res.render('index', { tokens });
+    res.render('index', { tokens });
   } catch (err) {
       console.error('Error retrieving FCM tokens:', err);
       res.status(500).send('Internal server error');
