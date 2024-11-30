@@ -50,7 +50,7 @@ exports.postNotificationsToAllUsers = async (req, res) => {
     console.error('Error sending FCM notification :', err);
     res.status(500).send('Failed to send notifications.');
   }
-});
+};
 
 // Function to send FCM notification
 	async function sendFcmNotification(fcmToken, payload) {
