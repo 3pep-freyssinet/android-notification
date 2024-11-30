@@ -8,7 +8,8 @@ const http   = require('http');
 const admin  = require('firebase-admin');
 
 // Initialize Firebase Admin SDK
-const serviceAccount = require('../android-firebase-634a8-firebase-adminsdk-ggw45-6b2ec92cde.json');
+//const serviceAccount = require('../android-firebase-634a8-firebase-adminsdk-ggw45-6b2ec92cde.json');
+const serviceAccount = require('../android-firebase-634a8-firebase-adminsdk-ggw45-2d2529b087.json');
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
