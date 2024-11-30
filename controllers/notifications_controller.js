@@ -1,3 +1,12 @@
+require('dotenv').config();
+const pool   = require('../db'); // Assuming you use a database pool for Postgres or MySQL
+const bcrypt = require('bcryptjs');
+const jwt    = require('jsonwebtoken');
+const crypto = require('crypto');
+const axios  = require('axios');
+const http   = require('http');
+
+
 // post all notifications to all users tokens
 exports.postNotificationsToAllUsers = async (req, res) => {
 
