@@ -5,7 +5,13 @@ const jwt    = require('jsonwebtoken');
 const crypto = require('crypto');
 const axios  = require('axios');
 const http   = require('http');
+const admin  = require('firebase-admin');
 
+// Initialize Firebase Admin SDK
+const serviceAccount = require('./android-firebase-634a8-firebase-adminsdk-ggw45-6b2ec92cde.json');
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
 
 // post all notifications to all users tokens
 exports.postNotificationsToAllUsers = async (req, res) => {
