@@ -18,8 +18,3 @@ router.post('/store-fcm-token', authMiddleware, fcmController.storeFCMToken);  /
 
 // Export the router
 module.exports = router;
-
-const authMiddleware = require('../middleware/auth');
-
-// Protect the store FCM token route
-router.post('/store-fcm-token', authMiddleware, fcmController.storeFCMToken);  // POST /fcm/store-fcm-tokens
