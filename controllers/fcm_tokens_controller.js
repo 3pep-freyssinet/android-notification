@@ -54,18 +54,20 @@ console.log('storeFCMTokens : user_id = ', userId, ' fcm_token = ', fcm_token, '
 	
   try {
     const result = await pool.query('INSERT into fcm_tokens (user_id, device_token) VALUES ($1, $2) RETURNING id', [
-				user_id,
-				device_token	
+				userId,
+				fcm_token	
 			]);
 	
     console.log('storeFCMTokens / : result : ', JSON.stringify(result));
 
     if(result.rowsCount == 1){
+	console.log('storeFCMTokens successfull');
     	res.status(200).json({ 
 			message: 'fcm registered successfully', 
 			id:result.rows[0].id
 		        });
     }else{
+	console.log('storeFCMTokens failed');
     	res.status(500).send('Internal server error : Error storing FCM tokens');
     }
   } catch (err) {
