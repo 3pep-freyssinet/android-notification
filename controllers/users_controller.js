@@ -57,14 +57,15 @@ exports.registerUser = async (req, res) => {
             console.log('register : the user already exists');
 			return res.status(400).json({ message: 'Username already exists' });
         }
-		
-		// Check if androidId already exists
+
+	/*
+	// Check if device androidId already exists
         const deviceId = await pool.query('SELECT android_id FROM users_notification WHERE android_id = $1', [androidId]);
         if ((deviceId.rows.length != 0) && (deviceId.rows.length > 0)) {
             console.log('deviceId : the androidId already exists');
 			return res.status(400).json({ message: 'Unauthorized login username' });
         }
-		
+	*/	
 		
         // Hash the password
         const saltRounds     = 10;
