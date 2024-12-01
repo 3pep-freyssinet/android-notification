@@ -37,6 +37,43 @@ console.log('pool = ' + pool);
 
 console.log('fcm_tokens_controler');
 
+//store FCM tokens
+exports.storeFCMToken = async (req, res) => {
+
+// Extract token and user information
+const { fcm_token } = req.body;
+
+// Validate input
+if (!fcm_token) {
+	return res.status(400).json({ error: 'FCM token is required' });
+}	
+
+const userId = req.user.id; // Assuming user ID comes from middleware after verifying the JWT
+	
+console.log('storeFCMTokens : user_id = ', userId, ' fcm_token = ', fcm_token\n');
+	
+  try {
+    const result = await pool.query('INSERT into fcm_tokens (user_id, device_token) VALUES ($1, $2) RETURNING id', [
+				user_id,
+				device_token	
+			]);
+	
+    console.log('storeFCMTokens / : result : ', JSON.stringify(result));
+
+    if(result.rowsCount == 1){
+    	res.status(200).json({ 
+			message: 'fcm registered successfully', 
+			id:result.rows[0].id
+		        });
+    }else{
+    	res.status(500).send('Internal server error : Error storing FCM tokens');
+    }
+  } catch (err) {
+      console.error('Error storing FCM tokens :', err);
+      res.status(500).send('Internal server error : Error storing FCM tokens');
+  }
+}
+
 // get all fcm tokens
 exports.getAllFCMTokens = async (req, res) => {
 	   
@@ -66,7 +103,7 @@ console.log('postAllFCMTokens\n');
     const result = await pool.query('SELECT id, user_id, device_token FROM fcm_tokens');
     const tokens = result.rows;
 	
-	   //console.log('getAllFCMTokens / : tokens : ', JSON.stringify(tokens));
+    //console.log('getAllFCMTokens / : tokens : ', JSON.stringify(tokens));
 	
     res.render('index', { tokens });
   } catch (err) {
