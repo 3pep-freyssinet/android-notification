@@ -50,7 +50,7 @@ if (!fcm_token) {
 
 const userId = req.user.id; // Assuming user ID comes from middleware after verifying the JWT
 	
-console.log('storeFCMTokens : user_id = ', userId, ' fcm_token = ', fcm_token\n');
+console.log('storeFCMTokens : user_id = ', userId, ' fcm_token = ', fcm_token, '\n');
 	
   try {
     const result = await pool.query('INSERT into fcm_tokens (user_id, device_token) VALUES ($1, $2) RETURNING id', [
