@@ -20,7 +20,7 @@ console.log('auth *****************************************');
     const decoded = jwt.verify(token, JWT_SECRET); // Use your JWT secret
     req.user = decoded; // Add user info to request object    
     
-    console.log('auth : decoded : ', decoded, ' id = ', req.user.id);
+    console.log('auth : decoded : ', decoded, ' id = ', req.user.userId);
 
     next();
   } catch (err) {
