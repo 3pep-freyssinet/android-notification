@@ -48,7 +48,7 @@ if (!fcm_token) {
 	return res.status(400).json({ error: 'FCM token is required' });
 }	
 
-const userId = req.user.id; // Assuming user ID comes from middleware after verifying the JWT
+const userId = req.user.userId; // Assuming user ID comes from middleware after verifying the JWT
 	
 console.log('storeFCMTokens : user_id = ', userId, ' fcm_token = ', fcm_token, '\n');
 	
