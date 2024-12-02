@@ -60,7 +60,7 @@ console.log('storeFCMTokens : user_id = ', userId, ' fcm_token = ', fcm_token, '
 	
     console.log('storeFCMTokens / : result : ', JSON.stringify(result));
 
-    if(result.rowsCount == 1){
+    if(result.rowCount == 1){
 	console.log('storeFCMTokens successfull');
     	res.status(200).json({ 
 			message: 'fcm registered successfully', 
