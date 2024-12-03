@@ -249,7 +249,7 @@ exports.loginUser = async (req, res) => {
 
 
         // Generate JWT tokens and refresh tokens.
-        const jwt_token = jwt.sign({ userId: user.id }, process.env.ACCESS_TOKEN_SECRET, { expiresIn: JWT_EXPIRY });
+        const jwt_token = jwt.sign({ userId: user.id }, JWT_SECRET , { expiresIn: JWT_EXPIRY });
         
 		//Generate a random refresh token
 		//const refreshToken = jwt.sign({ userId: user.id }, process.env.REFRESH_TOKEN_SECRET, { expiresIn: '7d' });
