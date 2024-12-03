@@ -46,17 +46,25 @@ exports.postNotificationsToAllUsers = async (req, res) => {
 			icon: "fcm_icon_fresh_transparent_2" // vect icon, working
 		}
 	
-      };
+       };
 
-		// Send notification to each token
-		for (let token of tokens) {
-		  console.log(`Sending notification to : ${token}`);
-		  const response = await sendFcmNotification(token, payload);
-		  
-		  console.log(response);
-		}
+	// Send notification to each token
+	notificationSentSuccessfully = true;
+	for (let token of tokens) {
+	  console.log(`Sending notification to : ${token}`);
+	  //const response = await sendFcmNotification(token, payload);
 
-		res.status(200).send('Notification sent to all.');
+	  try {
+    		const response = await sendFcmNotification(token, payload);
+		console.log('response : ', response);
+    		console.log("Notification sent successfully:", response);
+	  } catch (error) {
+		notificationSentSuccessfully = false;  
+    		console.error("Error sending notification:", error.message || error);
+	  }
+	}
+
+	if(notificationSentSuccessfully)res.status(200).send('Notification sent successfukky to all.');
     } else {
       res.send('No FCM tokens found.');
     }
