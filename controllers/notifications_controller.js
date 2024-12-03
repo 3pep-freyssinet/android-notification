@@ -64,7 +64,7 @@ exports.postNotificationsToAllUsers = async (req, res) => {
 	  }
 	}
 
-	if(notificationSentSuccessfully)res.status(200).send('Notification sent successfukky to all.');
+	if(notificationSentSuccessfully)res.status(200).send('Notification sent successfully to all.');
     } else {
       res.send('No FCM tokens found.');
     }
