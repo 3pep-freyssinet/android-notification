@@ -30,8 +30,8 @@ exports.postNotificationsToAllUsers = async (req, res) => {
   
   try {
     // Fetch all FCM tokens from the database
-    const result = await pool.query('SELECT device_token FROM fcm_tokens');
-    const tokens = result.rows.map(row => row.device_token); // Extract tokens
+    const result = await pool.query('SELECT fcm_token FROM fcm_tokens');
+    const tokens = result.rows.map(row => row.fcm_token); // Extract tokens
 	
 	console.log('Sending notification token : ', JSON.stringify(tokens));
 	
