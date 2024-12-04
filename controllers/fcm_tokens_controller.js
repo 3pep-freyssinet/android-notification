@@ -53,7 +53,7 @@ const userId = req.user.userId; // Assuming user ID comes from middleware after 
 console.log('storeFCMTokens : user_id = ', userId, ' fcm_token = ', fcm_token, '\n');
 	
   try {
-    const result = await pool.query('INSERT into fcm_tokens (user_id, device_token) VALUES ($1, $2) RETURNING id', [
+    const result = await pool.query('INSERT into fcm_tokens (user_id, fcm_token) VALUES ($1, $2) RETURNING id', [
 				userId,
 				fcm_token	
 			]);
@@ -82,7 +82,7 @@ exports.getAllFCMTokens = async (req, res) => {
 console.log('getAllFCMTokens\n');
 	
   try {
-    const result = await pool.query('SELECT id, user_id, device_token FROM fcm_tokens');
+    const result = await pool.query('SELECT id, user_id, fcm_token FROM fcm_tokens');
     const tokens = result.rows;
 	
     console.log('getAllFCMTokens / : tokens : ', JSON.stringify(tokens));
@@ -102,7 +102,7 @@ exports.postAllFCMTokens = async (req, res) => {
 console.log('postAllFCMTokens\n');
 	
   try {
-    const result = await pool.query('SELECT id, user_id, device_token FROM fcm_tokens');
+    const result = await pool.query('SELECT id, user_id, fcm_token FROM fcm_tokens');
     const tokens = result.rows;
 	
     //console.log('getAllFCMTokens / : tokens : ', JSON.stringify(tokens));
