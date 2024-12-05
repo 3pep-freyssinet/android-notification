@@ -8,7 +8,7 @@ const pinsController	= require('../controllers/pins_controller'); // Point to yo
 console.log('routes : pins');
 
 // Define routes
-router.post('/get-pins', pinsController.postGetPins);   // POST /pins/get-pins
+router.post('/get-pins', pinsController.getPins);   // POST /pins/get-pins
 
 //router.get('/get-all-fcm-tokens',   fcmController.getAllFCMTokens);    // GET /fcm/get-all-fcm-tokens
 //router.post('/store-fcm-tokens',    fcmController.storeFCMTokens);     // POST /fcm/store-fcm-tokens
