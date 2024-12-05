@@ -16,14 +16,14 @@ const ALERT_TIME     = 3 * 24 * 60 * 60 * 1000 //3 days, trigger
 console.log('pool = ' + pool);
 
 // Get SHA256 pins
-exports.refreshJWTToken = async (req, res) => {
-	// refresh JWT Token endpoint
+exports.getPins = async (req, res) => {
+    // get pins endpoint
     
-    console.log('refresh JWT Token\n');
+    console.log('get pins \n');
 	
-	const refreshToken = req.body.refreshToken;
+	const pins = req.body.pins;
 	
-	console.log("refresh-jwt-token : refreshToken : ", refreshToken );
+	console.log("get pins : pins : ", pins );
 	
     // Verify the refresh token
 	const {userId, expires_at} = await verifyRefreshToken(refreshToken);
