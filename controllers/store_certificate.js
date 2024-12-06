@@ -13,7 +13,8 @@ const pool = new Pool({
 */
 
 
-exports.storeCertificate = async (req, res) => {
+//exports.storeCertificate = async (req, res) => {
+    module.exports = async (req, res) => {
     try {
         const { domain, certificate } = req.body; // Input from fetch script
 
