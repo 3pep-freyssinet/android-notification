@@ -77,3 +77,29 @@ exports.fetchCertificate = async (req, res) => {
         res.status(500).json({ error: 'Error fetching certificate.' });
     }
 };
+
+exports.storeCertificate = async (req, res) => {
+    try {
+        const { domain, certificate } = req.body; // Input from fetch script
+
+        console.log('storeCerticate domain = ', domain, ' certificate = ', certificate);
+        
+        if (!domain || !certificate) {
+            return res.status(400).json({ error: 'Missing domain or certificate.' });
+        }
+
+        // Update database
+        const result = await pool.query(
+            'INSERT INTO pins (domain, sha256_pin) VALUES ($1, $2) ON CONFLICT (domain) DO UPDATE SET sha256_pin = $2',
+            [domain, certificate]
+        );
+
+        res.json({ message: 'Certificate stored successfully.', result });
+
+        console.log('storeCerticate result = ', result);
+        
+    } catch (error) {
+        console.error('Error storing certificate:', error);
+        res.status(500).json({ error: 'Error storing certificate.' });
+    }
+};
