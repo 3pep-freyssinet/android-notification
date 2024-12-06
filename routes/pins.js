@@ -9,6 +9,9 @@ console.log('routes : pins');
 
 // Define routes
 router.post('/get-pins', authMiddleware, pinsController.getPins);   // POST /pins/get-pins
+router.get('/fetch-certificate', authMiddleware, pinsController.fetchCertificate);   // GET /pins/fetch-certificate
+router.post('/store-certificate', authMiddleware, pinsController.storeCertificate);   // POST /pins/store-certificate
+
 
 //router.get('/get-all-fcm-tokens',   fcmController.getAllFCMTokens);    // GET /fcm/get-all-fcm-tokens
 //router.post('/store-fcm-tokens',    fcmController.storeFCMTokens);     // POST /fcm/store-fcm-tokens
