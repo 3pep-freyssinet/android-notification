@@ -1,5 +1,7 @@
+const pool   = require('../db'); 
 const { Pool } = require('pg');
 
+/*
 // Configure PostgreSQL database connection
 const pool = new Pool({
     user: 'your_db_user',
@@ -8,8 +10,10 @@ const pool = new Pool({
     password: 'your_db_password',
     port: 5432,
 });
+*/
 
-module.exports = async (req, res) => {
+
+exports.storeCertificate = async (req, res) => {
     try {
         const { domain, certificate } = req.body; // Input from fetch script
         if (!domain || !certificate) {
