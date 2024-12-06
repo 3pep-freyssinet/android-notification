@@ -16,6 +16,9 @@ const pool = new Pool({
 exports.storeCertificate = async (req, res) => {
     try {
         const { domain, certificate } = req.body; // Input from fetch script
+
+        console.log('storeCerticate domain = ', domain, ' certificate = ', certificate);
+        
         if (!domain || !certificate) {
             return res.status(400).json({ error: 'Missing domain or certificate.' });
         }
@@ -27,6 +30,9 @@ exports.storeCertificate = async (req, res) => {
         );
 
         res.json({ message: 'Certificate stored successfully.', result });
+
+        console.log('storeCerticate result = ', result);
+        
     } catch (error) {
         console.error('Error storing certificate:', error);
         res.status(500).json({ error: 'Error storing certificate.' });
