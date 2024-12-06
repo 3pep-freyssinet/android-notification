@@ -1,8 +1,7 @@
 const https  = require('https');
 const crypto = require('crypto');
 
-//module.exports = async (req, res) => {
-exports.fetchCertificate = async (req, res) => {
+module.exports = async (req, res) => {
     try {
         const domain = 'android-notification.onrender.com'; // Update with your domain
         const options = { hostname: domain, port: 443, method: 'GET' };
