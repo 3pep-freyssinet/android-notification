@@ -83,16 +83,18 @@ exports.fetchCertificate  = async (req, res) => {
 
         const cert = await certificatePromise;
 
-        // Log or process the certificate details
-        const sha256Fingerprint = cert.fingerprint256;
-        
-	console.log('Fetched Certificate:', cert);
-        console.log('SHA256 Fingerprint:', sha256Fingerprint);
+        // Convert to Base64 format
+        const hexToBase64 = (hexString) => {
+            const buffer = Buffer.from(hexString.replace(/:/g, ''), 'hex');
+            return buffer.toString('base64');
+        };
 
-        // Respond with the SHA256 fingerprint
+        const sha256FingerprintBase64 = `sha256/${hexToBase64(cert.fingerprint256)}`;
+        console.log('sha256FingerprintBase64 :', sha256FingerprintBase64);
+        // Send the response
         res.status(200).json({
             domain,
-            sha256Fingerprint,
+            sha256Fingerprint: sha256FingerprintBase64,
         });
     } catch (error) {
         console.error('Error fetching certificate:', error);
