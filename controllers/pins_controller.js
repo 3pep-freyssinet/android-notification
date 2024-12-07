@@ -4,9 +4,9 @@ const pool   = require('../db'); // Assuming you use a database pool for Postgre
 const bcrypt = require('bcryptjs');
 const jwt    = require('jsonwebtoken');
 const crypto = require('crypto');
+const https  = require('https');
 
-const JWT_SECRET 			= process.env.JWT_SECRET;
-const REFRESH_TOKEN_SECRET 	= process.env.REFRESH_TOKEN_SECRET;
+const JWT_SECRET     = process.env.JWT_SECRET;
 
 const REFRESH_EXPIRY = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days in the future
 const JWT_EXPIRY     = '1d'; 
@@ -51,30 +51,49 @@ try {
     }
 };
 
-exports.fetchCertificate = async (req, res) => {
+
+
+exports.fetchCertificate  = async (req, res) => {
     try {
-        const domain = 'android-notification.onrender.com'; // Update with your domain
-        const options = { hostname: domain, port: 443, method: 'GET' };
+        const domain = 'android-notification.onrender.com'; // Replace with your domain
+        const options = {
+            hostname: domain,
+            port: 443,
+            method: 'GET',
+            rejectUnauthorized: false, // Use cautiously in production
+        };
 
-        const certificate = await new Promise((resolve, reject) => {
-            const req = https.request(options, (res) => {
-                const cert = res.socket.getPeerCertificate();
-                if (!cert || !cert.raw) {
-                    return reject(new Error('Failed to fetch certificate.'));
+        const certificatePromise = new Promise((resolve, reject) => {
+            const req = https.request(options, (response) => {
+                const cert = response.socket.getPeerCertificate();
+                if (!cert || Object.keys(cert).length === 0) {
+                    return reject(new Error('No certificate retrieved'));
                 }
-
-                const sha256 = crypto.createHash('sha256').update(cert.raw).digest('base64');
-                resolve(`sha256/${sha256}`);
+                resolve(cert);
             });
 
-            req.on('error', (e) => reject(e));
+            req.on('error', (e) => {
+                reject(e);
+            });
+
             req.end();
         });
 
-        res.json({ domain, certificate });
+        const cert = await certificatePromise;
+
+        // Log or process the certificate details
+        const sha256Fingerprint = cert.fingerprint256;
+        console.log('Fetched Certificate:', cert);
+        console.log('SHA256 Fingerprint:', sha256Fingerprint);
+
+        // Respond with the SHA256 fingerprint
+        res.status(200).json({
+            domain,
+            sha256Fingerprint,
+        });
     } catch (error) {
         console.error('Error fetching certificate:', error);
-        res.status(500).json({ error: 'Error fetching certificate.' });
+        res.status(500).json({ message: 'Failed to fetch certificate', error: error.message });
     }
 };
 
