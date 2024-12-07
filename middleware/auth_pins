@@ -1,0 +1,31 @@
+const jwt = require('jsonwebtoken');
+
+// Replace this with your actual secret or public key
+const SECRET_KEY = process.env.JWT_SECRET_KEY || 'your-very-secure-secret';
+
+const authMiddleware = (req, res, next) => {
+    try {
+        // Extract the token from the Authorization header
+        const authHeader = req.headers.authorization;
+
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return res.status(401).json({ message: 'Authorization header missing or invalid' });
+        }
+
+        const token = authHeader.split(' ')[1]; // Extract the token part after "Bearer"
+
+        // Verify the token
+        const decoded = jwt.verify(token, SECRET_KEY);
+
+        // Attach the decoded payload to the request object for later use
+        req.user = decoded;
+
+        // Proceed to the next middleware or route handler
+        next();
+    } catch (error) {
+        console.error('JWT validation error:', error.message);
+        return res.status(403).json({ message: 'Invalid or expired token' });
+    }
+};
+
+module.exports = authMiddleware;
