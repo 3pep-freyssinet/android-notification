@@ -54,160 +54,85 @@ try {
     }
 };
 
-exports.fetchCertificate  = async (req, res) => {
-    console.log('fetchCertificate');
-	try {
-          const domain = 'android-notification.onrender.com'; // Replace with your domain
-	        const options = {
-	            hostname: domain,
-	            port: 443,
-	            method: 'GET',
-	            rejectUnauthorized: false, // Use cautiously in production
-	        };
+// Fetch Certificate (Logic Only)
+exports.fetchCertificate = async (req, res) => {
+    try {
+        const domain = req.query.domain || 'android-notification.onrender.com';
 
         const certificatePromise = new Promise((resolve, reject) => {
-            const req = https.request(options, (response) => {
+            const options = {
+                hostname: domain,
+                port: 443,
+                method: 'GET',
+            };
+
+            const request = https.request(options, (response) => {
                 const cert = response.socket.getPeerCertificate();
-		
-		console.log('fetchCertificate : cert ', cert);
-		    
-                if (!cert || Object.keys(cert).length === 0) {
-                    return reject(new Error('No certificate retrieved'));
+                if (cert) {
+                    resolve(cert);
+                } else {
+                    reject(new Error('No certificate found'));
                 }
-                resolve(cert);
             });
 
-            req.on('error', (e) => {
-		     console.log('fetchCertificate : certificatePromise : error : ', e.message);
-                reject(e);
+            request.on('error', (error) => {
+                reject(error);
             });
 
-            req.end();
+            request.end();
         });
 
         const cert = await certificatePromise;
 
-        // Convert to Base64 format
-        const hexToBase64 = (hexString) => {
-            const buffer = Buffer.from(hexString.replace(/:/g, ''), 'hex');
-            return buffer.toString('base64');
-        };
+        const sha256Fingerprint = `sha256/${crypto
+            .createHash('sha256')
+            .update(cert.raw)
+            .digest('base64')}`;
 
-        const sha256FingerprintBase64 = `sha256/${hexToBase64(cert.fingerprint256)}`;
-        console.log('sha256FingerprintBase64 :', sha256FingerprintBase64);
-        // Send the response
-        res.status(200).json({
-            domain,
-            sha256Fingerprint: sha256FingerprintBase64,
-        });
+	console.log('sha256Fingerprint : ', sha256Fingerprint);
+
+        // Respond with the result (useful if accessed directly)
+        res.json({ domain, sha256Fingerprint });
+        return { domain, sha256Fingerprint }; // For reuse in fetchStoreCertificate
     } catch (error) {
         console.error('Error fetching certificate:', error);
-        res.status(500).json({ message: 'Failed to fetch certificate', error: error.message });
+        res.status(500).json({ error: 'Failed to fetch certificate' });
+        throw error; // To be caught by fetchStoreCertificate
     }
 };
 
-exports.storeCertificate = async (req, res) => {
+// Store Certificate (Logic Only)
+exports.storeCertificate = async (domain, sha256Fingerprint) => {
     try {
-        const { domain, sha256Fingerprint } = req.body; // Expect domain and pin from the request body
-
-        if (!domain || !sha256Fingerprint) {
-            return res.status(400).json({ error: 'Domain and SHA256 fingerprint are required.' });
-        }
-
         const query = `
             INSERT INTO pins (domain, sha_256, updated_at)
             VALUES ($1, $2, NOW())
-            ON CONFLICT (domain)
-            DO UPDATE SET
-                sha_256 = EXCLUDED.sha_256,
-                updated_at = NOW()
-            RETURNING *;
+            ON CONFLICT (domain) DO UPDATE
+            SET sha_256 = $2, updated_at = NOW();
         `;
+        await pool.query(query, [domain, sha256Fingerprint]);
 
-        const values = [domain, sha256Fingerprint];
-
-        const result = await pool.query(query, values);
-
-        res.status(200).json({
-            message: 'Certificate stored successfully',
-            data: result.rows[0],
-        });
+        console.log('Certificate stored successfully:', { domain, sha256Fingerprint });
+        return { success: true };
     } catch (error) {
         console.error('Error storing certificate:', error);
-        res.status(500).json({ error: 'Failed to store certificate.' });
+        throw error;
     }
 };
 
+// Fetch and Store Certificate
+exports.fetchStoreCertificate = async (req, res) => {
+    try {
+        // Step 1: Fetch Certificate
+        const { domain, sha256Fingerprint } = await exports.fetchCertificate(req, res);
 
-exports.fetchStoreCertificate = async () => {
-	console.log('fetchStoreCertificate');
-        
-	// Step 1: Fetch the Certificate
-        
-	try {
-          	const domain = 'android-notification.onrender.com'; // Replace with your domain
-		const options = {
-		    hostname: domain,
-		    port: 443,
-		    method: 'GET',
-		    rejectUnauthorized: false, // Use cautiously in production
-		};
+        // Step 2: Store Certificate
+        await exports.storeCertificate(domain, sha256Fingerprint);
 
-        const certificatePromise = new Promise((resolve, reject) => {
-            const req = https.request(options, (response) => {
-                const cert = response.socket.getPeerCertificate();
-		
-		    console.log('fetchCertificate : cert : ', cert);
-		    
-                if (!cert || Object.keys(cert).length === 0) {
-                    return reject(new Error('No certificate retrieved'));
-                }
-                resolve(cert);
-            });
-
-            req.on('error', (e) => {
-		     console.log('fetchCertificate : certificatePromise : error : ', e.message);
-                reject(e);
-            });
-
-            req.end();
-        });
-
-        const cert = await certificatePromise;
-
-        // Convert to Base64 format
-        const hexToBase64 = (hexString) => {
-            const buffer = Buffer.from(hexString.replace(/:/g, ''), 'hex');
-            return buffer.toString('base64');
-        };
-
-        const sha256FingerprintBase64 = `sha256/${hexToBase64(cert.fingerprint256)}`;
-       
-	console.log('sha256FingerprintBase64 :', sha256FingerprintBase64);
-
-        // Step 2: Send the Data to Store Certificate Endpoint
-        const response = await fetch(STORE_CERTIFICATE_URL, {
-            method: 'POST',
-	    /*	
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${JWT_TOKEN}`,
-            },
-	    */
-            body: JSON.stringify({
-                domain,
-                sha256FingerprintBase64,
-            }),
-        });
-
-        if (!response.ok) {
-            throw new Error(`Failed to store certificate: ${response.statusText}`);
-        }
-
-        const result = await response.json();
-        console.log('Certificate stored successfully:', result);
+        // Respond with success
+        res.json({ success: true, domain, sha256Fingerprint });
     } catch (error) {
-        console.error('Error in fetchAndStoreCertificate:', error);
+        console.error('Error in fetchStoreCertificate:', error);
+        res.status(500).json({ error: 'Failed to fetch and store certificate' });
     }
 };
-
