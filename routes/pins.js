@@ -3,7 +3,7 @@
 const express 			  = require('express');
 const router  			  = express.Router();
 const pinsController	= require('../controllers/pins_controller'); // Point to your controller
-const authMiddleware  = require('../middleware/auth');
+const authMiddleware  = require('../middleware/auth_pins');
 
 console.log('routes : pins');
 
