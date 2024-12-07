@@ -12,7 +12,7 @@ router.post('/get-pins', authMiddleware, pinsController.getPins);   // POST /pin
 //router.get('/fetch-certificate', authMiddleware, pinsController.fetchCertificate);   // GET /pins/fetch-certificate
 router.get('/fetch-certificate', pinsController.fetchCertificate); 
 router.post('/store-certificate', authMiddleware, pinsController.storeCertificate);   // POST /pins/store-certificate
-router.post('/fetch-store-certificate', pinsController.fetchStoreCertificate);   // POST /pins/store-certificate
+router.get('/fetch-store-certificate', pinsController.fetchStoreCertificate);   // POST /pins/store-certificate
 
 
 //router.get('/get-all-fcm-tokens',   fcmController.getAllFCMTokens);    // GET /fcm/get-all-fcm-tokens
