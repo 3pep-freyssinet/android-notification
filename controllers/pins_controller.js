@@ -137,6 +137,7 @@ exports.storeCertificate = async (req, res) => {
 
 
 exports.fetchStoreCertificate = async () => {
+	console.log('fetchStoreCertificate');
     try {
         // Step 1: Fetch the Certificate
         const certificatePromise = new Promise((resolve, reject) => {
