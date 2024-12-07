@@ -164,7 +164,7 @@ exports.fetchStoreCertificate = async () => {
         });
 
         const cert = await certificatePromise;
-	    console.log("cert : ', cert);
+	    console.log('cert : ', cert);
 
         // Step 2: Compute the SHA256 fingerprint in Base64
         const sha256Fingerprint = `sha256/${crypto
