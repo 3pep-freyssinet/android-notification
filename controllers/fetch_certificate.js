@@ -45,7 +45,7 @@ module.exports = async (req, res) => {
             }
 
             const sha256Pin = `sha256/${stdout.trim()}`;
-            console.log('sha256Pin :', sha256Pin);
+            console.log('sha256Pinnnnnnnnnnnnnn :', sha256Pin);
             
             res.json({ domain, sha256Pin });
         });
