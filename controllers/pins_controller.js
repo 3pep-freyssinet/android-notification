@@ -54,14 +54,15 @@ try {
 
 
 exports.fetchCertificate  = async (req, res) => {
-    try {
-        const domain = 'android-notification.onrender.com'; // Replace with your domain
-        const options = {
-            hostname: domain,
-            port: 443,
-            method: 'GET',
-            rejectUnauthorized: false, // Use cautiously in production
-        };
+    console.log('fetchCertificate');
+	try {
+          const domain = 'android-notification.onrender.com'; // Replace with your domain
+	        const options = {
+	            hostname: domain,
+	            port: 443,
+	            method: 'GET',
+	            rejectUnauthorized: false, // Use cautiously in production
+	        };
 
         const certificatePromise = new Promise((resolve, reject) => {
             const req = https.request(options, (response) => {
@@ -73,6 +74,7 @@ exports.fetchCertificate  = async (req, res) => {
             });
 
             req.on('error', (e) => {
+		     console.log('fetchCertificate : certificatePromise : error : ', e.message);
                 reject(e);
             });
 
@@ -83,7 +85,8 @@ exports.fetchCertificate  = async (req, res) => {
 
         // Log or process the certificate details
         const sha256Fingerprint = cert.fingerprint256;
-        console.log('Fetched Certificate:', cert);
+        
+	console.log('Fetched Certificate:', cert);
         console.log('SHA256 Fingerprint:', sha256Fingerprint);
 
         // Respond with the SHA256 fingerprint
