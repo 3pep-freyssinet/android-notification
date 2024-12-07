@@ -18,7 +18,7 @@ const verifyToken = (req) => {
     const token = authHeader.split(' ')[1];
 
     return new Promise((resolve, reject) => {
-        jwt.verify(token, SECRET_KEY, (err, user) => {
+        jwt.verify(token, JWT_SECRET, (err, user) => {
             if (err) {
                 return reject(new Error('Unauthorized: Invalid token'));
             }
@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
         await verifyToken(req);
 
         // Define the domain to fetch the certificate for
-        const domain = 'your-domain.com'; // Replace with your domain
+        const domain  = 'android-notification.onrender.com'; // Replace with your domain
         const command = `echo | openssl s_client -showcerts -servername ${domain} -connect ${domain}:443 2>/dev/null | openssl x509 -inform pem -noout -pubkey | openssl rsa -pubin -outform der 2>/dev/null | openssl dgst -sha256 -binary | openssl enc -base64`;
 
         // Execute the command
@@ -45,6 +45,8 @@ module.exports = async (req, res) => {
             }
 
             const sha256Pin = `sha256/${stdout.trim()}`;
+            console.log('sha256Pin :', sha256Pin);
+            
             res.json({ domain, sha256Pin });
         });
     } catch (err) {
