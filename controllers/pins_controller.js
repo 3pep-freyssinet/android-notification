@@ -176,10 +176,12 @@ exports.fetchStoreCertificate = async () => {
         // Step 3: Send the Data to Store Certificate Endpoint
         const response = await fetch(STORE_CERTIFICATE_URL, {
             method: 'POST',
+	    /*	
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: `Bearer ${JWT_TOKEN}`,
             },
+	    */
             body: JSON.stringify({
                 domain,
                 sha256Fingerprint,
