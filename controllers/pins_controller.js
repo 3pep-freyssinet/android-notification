@@ -101,7 +101,7 @@ exports.fetchCertificate = async (req, res) => {
     }
 };
 
-// Store Certificate (Logic Only)
+// Store Certificate (Logic Only). If it is running separately, provide : domain, sha256Fingerprint.
 exports.storeCertificate = async (domain, sha256Fingerprint) => {
     try {
         const query = `
