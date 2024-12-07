@@ -68,6 +68,9 @@ exports.fetchCertificate  = async (req, res) => {
         const certificatePromise = new Promise((resolve, reject) => {
             const req = https.request(options, (response) => {
                 const cert = response.socket.getPeerCertificate();
+		
+		console.log('fetchCertificate : cert ', cert);
+		    
                 if (!cert || Object.keys(cert).length === 0) {
                     return reject(new Error('No certificate retrieved'));
                 }
