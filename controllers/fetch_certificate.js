@@ -6,7 +6,7 @@ const pool   = require('../db'); // Assuming you use a database pool for Postgre
 const bcrypt = require('bcryptjs');
 const crypto = require('crypto');
 
-const JWT_SECRET 		= process.env.JWT_SECRET;
+const JWT_SECRET = process.env.JWT_SECRET;
 
 // Middleware to verify JWT
 const verifyToken = (req) => {
