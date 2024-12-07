@@ -1,9 +1,11 @@
-const jwt = require('jsonwebtoken');
+require('dotenv').config();
+const jwt        = require('jsonwebtoken');
 
-// Replace this with your actual secret or public key
-const SECRET_KEY = process.env.JWT_SECRET_KEY || 'your-very-secure-secret';
+const JWT_SECRET = process.env.JWT_SECRET;
 
-const authMiddleware = (req, res, next) => {
+module.exports = (req, res, next) => {
+
+    const authMiddleware = (req, res, next) => {
     try {
         // Extract the token from the Authorization header
         const authHeader = req.headers.authorization;
@@ -26,6 +28,5 @@ const authMiddleware = (req, res, next) => {
         console.error('JWT validation error:', error.message);
         return res.status(403).json({ message: 'Invalid or expired token' });
     }
-};
-
-module.exports = authMiddleware;
+ };
+}
