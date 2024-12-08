@@ -8,15 +8,18 @@ module.exports = (req, res, next) => {
     try {
         // Extract the token from the Authorization header
         const authHeader = req.headers.authorization;
+        console.log('auth_pins : authHeader : ', authHeader);
 
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             return res.status(401).json({ message: 'Authorization header missing or invalid' });
         }
 
         const token = authHeader.split(' ')[1]; // Extract the token part after "Bearer"
+        console.log('auth_pins : token : ', token);
 
         // Verify the token
         const decoded = jwt.verify(token, SECRET_KEY);
+        console.log('auth_pins : decoded : ', decoded);
 
         // Attach the decoded payload to the request object for later use
         req.user = decoded;
