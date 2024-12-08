@@ -10,8 +10,9 @@ console.log('routes : pins');
 // Define routes
 router.post('/get-pins', authMiddleware, pinsController.getPins);   // POST /pins/get-pins
 //router.get('/fetch-certificate', authMiddleware, pinsController.fetchCertificate);   // GET /pins/fetch-certificate
+
 router.get('/fetch-certificate', pinsController.fetchCertificate); 
-router.post('/store-certificate', authMiddleware, pinsController.storeCertificate);   // POST /pins/store-certificate
+router.post('/store-certificate', pinsController.storeCertificate);   // POST /pins/store-certificate
 router.get('/fetch-store-certificate', pinsController.fetchStoreCertificate);   // POST /pins/store-certificate
 
 
