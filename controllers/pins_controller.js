@@ -57,7 +57,7 @@ try {
 // Fetch Certificate (Logic Only)
 exports.fetchCertificate = async (req, res) => {
     try {
-        const domain = req.query.domain || 'android-notification.onrender.com';
+        const domain = req.query.domain || 'android-notification.onrender.com'; // Accept domain as query param
 
         const certificatePromise = new Promise((resolve, reject) => {
             const options = {
@@ -83,23 +83,32 @@ exports.fetchCertificate = async (req, res) => {
         });
 
         const cert = await certificatePromise;
-       console.log('cert : ', cert);
+
         const sha256Fingerprint = `sha256/${crypto
             .createHash('sha256')
             .update(cert.raw)
             .digest('base64')}`;
 
-	console.log('sha256Fingerprint : ', sha256Fingerprint);
+        // If `res` exists (indicating a direct route invocation), respond with the result
+        if (res) {
+            res.json({ domain, sha256Fingerprint });
+        }
 
-        // Respond with the result (useful if accessed directly)
-        res.json({ domain, sha256Fingerprint });
-        return { domain, sha256Fingerprint }; // For reuse in fetchStoreCertificate
+        // Always return the result for internal use
+        return { domain, sha256Fingerprint };
     } catch (error) {
         console.error('Error fetching certificate:', error);
-        res.status(500).json({ error: 'Failed to fetch certificate' });
-        throw error; // To be caught by fetchStoreCertificate
+
+        // Send a response only if `res` is provided (direct invocation)
+        if (res) {
+            res.status(500).json({ error: 'Failed to fetch certificate' });
+        }
+
+        // Re-throw the error to allow the caller to handle it
+        throw error;
     }
 };
+
 
 // Store Certificate (Logic Only). If it is running separately, provide : domain, sha256Fingerprint.
 exports.storeCertificate = async (domain, sha256Fingerprint) => {
