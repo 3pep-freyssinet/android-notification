@@ -75,10 +75,10 @@ exports.fetchCertificate = async (req, res) => {
 
             const request = https.request(options, (response) => {
                 const cert = response.socket.getPeerCertificate();
-                if (cert) {
-                    resolve(cert);
+               if (Object.keys(cert).length === 0) {
+                    reject(new Error('The certificate was empty or unavailable.'));
                 } else {
-                    reject(new Error('No certificate found'));
+                    resolve(cert);
                 }
             });
 
