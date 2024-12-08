@@ -89,21 +89,25 @@ exports.fetchCertificate = async (req, res) => {
             .update(cert.raw)
             .digest('base64')}`;
 
+	/*
         // If `res` exists (indicating a direct route invocation), respond with the result
         if (res) {
             res.json({ domain, sha256Fingerprint });
         }
-
+	*/
+	    
         // Always return the result for internal use
         return { domain, sha256Fingerprint };
     } catch (error) {
         console.error('Error fetching certificate:', error);
 
+	/*
         // Send a response only if `res` is provided (direct invocation)
         if (res) {
             res.status(500).json({ error: 'Failed to fetch certificate' });
         }
-
+	*/
+	    
         // Re-throw the error to allow the caller to handle it
         throw error;
     }
