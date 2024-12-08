@@ -8,8 +8,10 @@ const authMiddleware  = require('../middleware/auth_pins');
 console.log('routes : pins');
 
 // Define routes
-router.get('/get-pins', authMiddleware, pinsController.getPins);                                   // GET /pins/get-pins
-//router.get('/fetch-certificate', authMiddleware, pinsController.fetchCertificate);               // GET /pins/fetch-certificate
+router.get('/get-pins', authMiddleware, pinsController.getPins);                           // GET /pins/get-pins
+router.get('/get-latest-sha256pin', authMiddleware, pinsController.getLatestSHA256Pin);    // GET /pins/get-latest-sha256pin
+
+             
 
 router.get('/fetch-certificate', authMiddleware, pinsController.fetchCertificate);                // GET /pins/fetch-certificate
 router.post('/store-certificate', authMiddleware, pinsController.storeCertificate);               // POST /pins/store-certificate
