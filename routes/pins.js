@@ -8,12 +8,12 @@ const authMiddleware  = require('../middleware/auth_pins');
 console.log('routes : pins');
 
 // Define routes
-router.post('/get-pins', authMiddleware, pinsController.getPins);   // POST /pins/get-pins
-//router.get('/fetch-certificate', authMiddleware, pinsController.fetchCertificate);   // GET /pins/fetch-certificate
+router.get('/get-pins', authMiddleware, pinsController.getPins);                                   // GET /pins/get-pins
+//router.get('/fetch-certificate', authMiddleware, pinsController.fetchCertificate);               // GET /pins/fetch-certificate
 
-router.get('/fetch-certificate', authMiddleware, pinsController.fetchCertificate);              // GET /pins/fetch-certificate
-router.post('/store-certificate', authMiddleware, pinsController.storeCertificate);             // POST /pins/store-certificate
-router.post('/fetch-store-certificate', authMiddleware, pinsController.fetchStoreCertificate);   // POST /pins/fetch-store-certificate
+router.get('/fetch-certificate', authMiddleware, pinsController.fetchCertificate);                // GET /pins/fetch-certificate
+router.post('/store-certificate', authMiddleware, pinsController.storeCertificate);               // POST /pins/store-certificate
+router.post('/fetch-store-certificate', authMiddleware, pinsController.fetchStoreCertificate);     // POST /pins/fetch-store-certificate
 
 
 //router.get('/get-all-fcm-tokens',   fcmController.getAllFCMTokens);    // GET /fcm/get-all-fcm-tokens
