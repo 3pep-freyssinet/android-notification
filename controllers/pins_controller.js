@@ -34,7 +34,7 @@ exports.getPins = async (req, res) => {
     //console.log("get pins : pins : ", pins );
     const userId = req.user.userId; // Assuming user ID comes from middleware after verifying the JWT
 	
-    onsole.log('get pins : user_id = ', userId, '\n');
+    console.log('get pins : user_id = ', userId, '\n');
 
 try {
         const result = await pool.query('SELECT domain, sha256_pin FROM pins');
