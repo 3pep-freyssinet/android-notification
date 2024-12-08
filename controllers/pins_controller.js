@@ -88,6 +88,8 @@ exports.fetchCertificate = async (req, res) => {
             .createHash('sha256')
             .update(cert.raw)
             .digest('base64')}`;
+	    
+	console.log('sha256Fingerprint : ', sha256Fingerprint);
 
 	/*
         // If `res` exists (indicating a direct route invocation), respond with the result
@@ -123,7 +125,10 @@ exports.storeCertificate = async (domain, sha256Fingerprint) => {
             ON CONFLICT (domain) DO UPDATE
             SET sha_256 = $2, updated_at = NOW();
         `;
-        await pool.query(query, [domain, sha256Fingerprint]);
+
+	console.log('storeCertificate : sha256Fingerprint : ', sha256Fingerprint, ' domain : ', domain);
+        
+	    await pool.query(query, [domain, sha256Fingerprint]);
 
         console.log('Certificate stored successfully:', { domain, sha256Fingerprint });
         return { success: true };
@@ -138,7 +143,9 @@ exports.fetchStoreCertificate = async (req, res) => {
     try {
         // Step 1: Fetch Certificate
         const { domain, sha256Fingerprint } = await exports.fetchCertificate(req, res);
-
+        
+	console.log('fetchStoreCertificate : sha256Fingerprint : ', sha256Fingerprint, ' domain : ', domain);
+	    
         // Step 2: Store Certificate
         await exports.storeCertificate(domain, sha256Fingerprint);
 
