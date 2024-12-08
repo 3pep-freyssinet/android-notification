@@ -59,6 +59,23 @@ try {
     }
 };
 
+exports.getLatestSHA256Pin = async (req, res) => {
+    console.log('getLatestSHA256Pin : start');
+try {
+        const result = await pool.query(
+            'SELECT sha256_pin FROM pins ORDER BY updated_at DESC LIMIT 1'
+        );
+        if (result.rows.length > 0) {
+            res.json({ sha256: result.rows[0].sha256_pin });
+        } else {
+            res.status(404).json({ error: 'No pins found in the database' });
+        }
+    } catch (error) {
+        console.error('Error fetching latest pin:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+}
+
 // Fetch Certificate (Logic Only)
 exports.fetchCertificate = async (req, res) => {
     console.log('fetchCertificate : start');
