@@ -56,6 +56,7 @@ try {
 
 // Fetch Certificate (Logic Only)
 exports.fetchCertificate = async (req, res) => {
+    console.log('fetchCertificate ');
     try {
         const domain = req.query.domain || 'android-notification.onrender.com'; // Accept domain as query param
 
@@ -83,13 +84,13 @@ exports.fetchCertificate = async (req, res) => {
         });
 
         const cert = await certificatePromise;
-
+        console.log('fetchCertificate : cert : ', cert);
         const sha256Fingerprint = `sha256/${crypto
             .createHash('sha256')
             .update(cert.raw)
             .digest('base64')}`;
 	    
-	console.log('sha256Fingerprint : ', sha256Fingerprint);
+	console.log('fetchCertificate : sha256Fingerprint : ', sha256Fingerprint);
 
 	/*
         // If `res` exists (indicating a direct route invocation), respond with the result
@@ -140,6 +141,7 @@ exports.storeCertificate = async (domain, sha256Fingerprint) => {
 
 // Fetch and Store Certificate
 exports.fetchStoreCertificate = async (req, res) => {
+	console.log('fetchStoreCertificate');
     try {
         // Step 1: Fetch Certificate
         const { domain, sha256Fingerprint } = await exports.fetchCertificate(req, res);
