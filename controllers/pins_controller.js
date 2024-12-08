@@ -57,7 +57,7 @@ try {
 // Fetch Certificate (Logic Only)
 exports.fetchCertificate = async (req, res) => {
     console.log('fetchCertificate : start');
-
+	return;
     try {
         const domain = req.query.domain || 'android-notification.onrender.com'; // Accept domain as query param
 
@@ -147,7 +147,8 @@ exports.fetchStoreCertificate = async (req, res) => {
     try {
         // Step 1: Fetch Certificate
         const { domain, sha256Fingerprint } = await exports.fetchCertificate(req, res);
-        
+        return;
+	    
 	console.log('fetchStoreCertificate : sha256Fingerprint : ', sha256Fingerprint, ' domain : ', domain);
 	    
         // Step 2: Store Certificate
