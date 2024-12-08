@@ -1,3 +1,8 @@
+/* test
+curl -X GET -H "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjoiY3Jvbi1qb2Itc2VydmljZSIsInJvbGUiOiJjcm9uIiwiaWF0IjoxNzMzNjQ4NjkxLCJleHAiOjE3MzYyNDA2OTF9.Y-vu3nzNmwoJQT-hKeJstQ17LpEqdkuy-xlWzhbOYIE" 
+-H "Content-Type: application/json" 
+https://android-notification.onrender.com/pins/fetch-store-certificate
+*/
 
 require('dotenv').config();
 const pool   = require('../db'); // Assuming you use a database pool for Postgres or MySQL
