@@ -122,7 +122,7 @@ exports.fetchCertificate = async (req, res) => {
 exports.storeCertificate = async (domain, sha256Fingerprint) => {
     try {
         const query = `
-            INSERT INTO pins (domain, sha_256, updated_at)
+            INSERT INTO pins (domain, sha256_pin, updated_at)
             VALUES ($1, $2, NOW())
             ON CONFLICT (domain) DO UPDATE
             SET sha_256 = $2, updated_at = NOW();
