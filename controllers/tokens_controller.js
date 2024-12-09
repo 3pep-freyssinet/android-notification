@@ -4,11 +4,13 @@ const bcrypt = require('bcryptjs');
 const jwt    = require('jsonwebtoken');
 const crypto = require('crypto');
 
-const JWT_SECRET 			= process.env.JWT_SECRET;
+const JWT_SECRET 		= process.env.JWT_SECRET;
 const REFRESH_TOKEN_SECRET 	= process.env.REFRESH_TOKEN_SECRET;
 
-const REFRESH_EXPIRY = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days in the future
-const JWT_EXPIRY     = '1d'; 
+//const REFRESH_EXPIRY = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days in the future
+//const JWT_EXPIRY     = '1d'; 
+
+
 const ALERT_TIME     = 3 * 24 * 60 * 60 * 1000 //3 days, trigger
 
 //console.log('process.env.DATABASE_URL = ' + process.env.DATABASE_URL);
