@@ -16,8 +16,12 @@ const STORE_CERTIFICATE_URL = 'https://android-notification.onrender.com/pins/st
 const domain                = 'android-notification.onrender.com'; // Replace with your actual domain
 
 
-const REFRESH_EXPIRY = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days in the future
-const JWT_EXPIRY     = '1d'; 
+//const REFRESH_EXPIRY = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days in the future
+//const JWT_EXPIRY     = '1d'; 
+
+const JWT_EXPIRY 		= process.env.JWT_EXPIRY;
+const REFRESH_EXPIRY 		= process.env.JWT_REFRESH_EXPIRY;
+
 const ALERT_TIME     = 3 * 24 * 60 * 60 * 1000 //3 days, trigger
 
 //console.log('process.env.DATABASE_URL = ' + process.env.DATABASE_URL);
