@@ -22,8 +22,11 @@ const http   = require('http');
 const JWT_SECRET 		= process.env.JWT_SECRET;
 const REFRESH_TOKEN_SECRET 	= process.env.REFRESH_TOKEN_SECRET;
 
-const REFRESH_EXPIRY = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days in the future
-const JWT_EXPIRY     = '7d'; //7 days
+//const REFRESH_EXPIRY = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days in the future
+//const JWT_EXPIRY     = '7d'; //7 days
+
+const JWT_EXPIRY 		= process.env.JWT_EXPIRY;
+const REFRESH_EXPIRY 		= process.env.JWT_REFRESH_EXPIRY;
 
 const MAX_ATTEMPTS = 3;
 const LOCKOUT_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
