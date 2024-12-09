@@ -163,16 +163,27 @@ const storeTokens = async (accessToken, refreshToken) => {
 exports.renewTokens = async (req, res) => {
     try {
         console.log('Token renewal process started...');
-        const userId = 'your_user_id'; // Replace with the real user ID or identifier
+        //const userId = 'your_user_id'; // Replace with the real user ID or identifier
+ 	
+	// Get the userId from the middleware (req.user is populated in auth.js)
+        const userId = req.user.id;
 
+        if (!userId) {
+            return res.status(400).json({ error: 'User ID is missing in the request' });
+        }
+
+  		= process.env.JWT_EXPIRY;
+const REFRESH_EXPIRY
+
+	    
         // Generate new Access Token
-        const accessToken = jwt.sign({ userId }, process.env.JWT_SECRET, {
-            expiresIn: process.env.JWT_EXPIRY || '1d', // Use "1d" as default if not in environment variables
+        const accessToken = jwt.sign({ userId }, JWT_SECRET, {
+            expiresIn: JWT_EXPIRY || '1d', // Use "1d" as default if not in environment variables
         });
 
         // Generate new Refresh Token
-        const refreshToken = jwt.sign({ userId }, process.env.JWT_REFRESH_SECRET, {
-            expiresIn: process.env.JWT_REFRESH_EXPIRY || '7d', // Use "7d" as default if not in environment variables
+        const refreshToken = jwt.sign({ userId }, JWT_REFRESH_SECRET, {
+            expiresIn: REFRESH_EXPIRY || '7d', // Use "7d" as default if not in environment variables
         });
 
         // Store the tokens (persist in DB, file, or environment variables)
