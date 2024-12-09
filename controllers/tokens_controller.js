@@ -171,11 +171,7 @@ exports.renewTokens = async (req, res) => {
         if (!userId) {
             return res.status(400).json({ error: 'User ID is missing in the request' });
         }
-
-  		= process.env.JWT_EXPIRY;
-const REFRESH_EXPIRY
-
-	    
+   
         // Generate new Access Token
         const accessToken = jwt.sign({ userId }, JWT_SECRET, {
             expiresIn: JWT_EXPIRY || '1d', // Use "1d" as default if not in environment variables
