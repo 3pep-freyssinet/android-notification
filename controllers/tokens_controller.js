@@ -148,3 +148,45 @@ async function verifyRefreshToken(refreshToken) {
     return { success: false, error };
   }
 }
+
+const jwt = require('jsonwebtoken');
+////////////////////////////////////////////////////////////////////////////////////////////////
+// Function to simulate storing tokens, e.g., updating in a database or environment variables
+const storeTokens = async (accessToken, refreshToken) => {
+    console.log('Storing Tokens...');
+    console.log('Access Token:', accessToken);
+    console.log('Refresh Token:', refreshToken);
+    // Add your logic to persist tokens in a database or environment variables
+};
+
+// Exported function to renew tokens
+exports.renewTokens = async (req, res) => {
+    try {
+        console.log('Token renewal process started...');
+        const userId = 'your_user_id'; // Replace with the real user ID or identifier
+
+        // Generate new Access Token
+        const accessToken = jwt.sign({ userId }, process.env.JWT_SECRET, {
+            expiresIn: process.env.JWT_EXPIRY || '1d', // Use "1d" as default if not in environment variables
+        });
+
+        // Generate new Refresh Token
+        const refreshToken = jwt.sign({ userId }, process.env.JWT_REFRESH_SECRET, {
+            expiresIn: process.env.JWT_REFRESH_EXPIRY || '7d', // Use "7d" as default if not in environment variables
+        });
+
+        // Store the tokens (persist in DB, file, or environment variables)
+        await storeTokens(accessToken, refreshToken);
+
+        // Respond with success message
+        res.status(200).json({
+            message: 'Tokens renewed successfully',
+            accessToken,
+            refreshToken,
+        });
+    } catch (error) {
+        console.error('Error during token renewal:', error);
+        res.status(500).json({ error: 'Failed to renew tokens' });
+    }
+};
+
