@@ -149,7 +149,7 @@ async function verifyRefreshToken(refreshToken) {
   }
 }
 
-const jwt = require('jsonwebtoken');
+
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // Function to simulate storing tokens, e.g., updating in a database or environment variables
 const storeTokens = async (accessToken, refreshToken) => {
