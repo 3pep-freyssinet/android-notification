@@ -43,13 +43,15 @@ console.log('fcm_tokens_controler');
 //store FCM tokens
 exports.storeFCMToken = async (req, res) => {
 
-// Extract token and user information
-const { fcm_token } = req.body;
+   console.log('fcm tokens : store fcm token');
+	
+   // Extract token and user information
+   const { fcm_token } = req.body;
 
-// Validate input
-if (!fcm_token) {
+   // Validate input
+   if (!fcm_token) {
 	return res.status(400).json({ error: 'FCM token is required' });
-}	
+   }	
 
 const userId = req.user.userId; // Assuming user ID comes from middleware after verifying the JWT
 	
