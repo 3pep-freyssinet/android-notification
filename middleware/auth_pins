@@ -8,6 +8,8 @@ module.exports = (req, res, next) => {
         // Check for the Authorization header
         const authHeader = req.headers.authorization;
 
+        console.log('auth_pins: authHeader : ', authHeader);
+
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             console.log('auth_pins: Missing or invalid Authorization header');
             return res.status(401).json({ error: 'Unauthorized: Missing or invalid token' });
@@ -15,6 +17,8 @@ module.exports = (req, res, next) => {
 
         // Extract the token
         const token = authHeader.split(' ')[1];
+
+        console.log('auth_pins: JWT_SECRET : ', JWT_SECRET);
 
         // Verify the token
         jwt.verify(token, JWT_SECRET, (err, decoded) => {
