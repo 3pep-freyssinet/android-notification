@@ -12,7 +12,7 @@ router.get('/get-pins', authMiddleware, pinsController.getPins);                
 router.get('/get-latest-sha256pin', authMiddleware, pinsController.getLatestSHA256Pin);    // GET /pins/get-latest-sha256pin
 
              
-
+//used in "cron-job"
 router.get('/fetch-certificate', authMiddleware, pinsController.fetchCertificate);                // GET /pins/fetch-certificate
 router.post('/store-certificate', authMiddleware, pinsController.storeCertificate);               // POST /pins/store-certificate
 router.post('/fetch-store-certificate', authMiddleware, pinsController.fetchStoreCertificate);     // POST /pins/fetch-store-certificate
