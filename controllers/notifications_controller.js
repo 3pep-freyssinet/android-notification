@@ -11,6 +11,9 @@ const admin  = require('firebase-admin');
 //const serviceAccount = require('../android-firebase-634a8-firebase-adminsdk-ggw45-6b2ec92cde.json');
 ///const serviceAccount = require('../android-firebase-634a8-firebase-adminsdk-ggw45-2d2529b087.json');
 
+// use this command to convert the Firebase private key file to base64 string. Then copy the output string in environment variable.
+//base64 android-firebase-634a8-firebase-adminsdk-ggw45-1be447f289.json
+
 const serviceAccount = JSON.parse(
     Buffer.from(process.env.FIREBASE_KEY_BASE64, 'base64').toString('utf8')
 );
