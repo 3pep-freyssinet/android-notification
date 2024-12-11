@@ -172,7 +172,7 @@ exports.renewTokens = async (req, res) => {
             return res.status(400).json({ error: 'User ID is missing in the request' });
         }
    
-        // Generate new Access Token
+        // Generate new Access Token = jwt token
         const accessToken = jwt.sign({ userId }, JWT_SECRET, {
             expiresIn: JWT_EXPIRY || '1d', // Use "1d" as default if not in environment variables
         });
@@ -197,3 +197,50 @@ exports.renewTokens = async (req, res) => {
     }
 };
 
+//update jwt environment token
+//const axios = require("axios");
+
+const RENDER_SERVICE_ID = "srv-cseq2m5svqrc73f7ai5g";
+const RENDER_API_KEY    = "rnd_0zPNWnTmGysVCH6oECy29bMhX6iy";
+
+exports.updateJWTEnvironment = async (req, res) => {
+ // Get the userId from the middleware (req.user is populated in auth.js)
+        const userId = req.user.id;
+        if (!userId) {
+            return res.status(400).json({ error: 'User ID is missing in the request' });
+        } 
+	
+ try {
+    // Connect to PostgreSQL
+    //const client = new Client(DATABASE_CONFIG);
+    //await client.connect();
+
+    // Fetch JWT from the database
+    const result     = await pool.query("SELECT jwt_token FROM jwt_tokens WHERE id = $1", [userId]);
+    const jwt_token  = result.rows[0]?.jwt_token;
+
+    if (!jwt) {
+      await client.end();
+      return res.status(404).send({ error: "No JWT token found in the database." });
+    }
+
+    // Update Render environment variable
+    const response = await axios.put(
+      `https://api.render.com/v1/services/${RENDER_SERVICE_ID}/env-vars/JWT_SECRET`,
+      { value: jwt_token },
+      {
+        headers: {
+          Authorization: `Bearer ${RENDER_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    console.log("Render environment variable updated:", response.data);
+    await client.end();
+    res.status(200).send({ message: "JWT token environment updated successfully.", data: response.data });
+  } catch (error) {
+    console.error("Error updating JWT token environment:", error.message);
+    res.status(500).send({ error: error.message });
+  }
+};
