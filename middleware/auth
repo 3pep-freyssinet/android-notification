@@ -5,7 +5,7 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 module.exports = (req, res, next) => {
   //const authHeader = req.headers.authorization;
- const authHeader = "Bearer rnd_0zPNWnTmGysVCH6oECy29bMhX6iy";
+ 
 console.log('auth : authHeader : ', authHeader);
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
