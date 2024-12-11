@@ -40,7 +40,7 @@ console.log('pool = ' + pool);
 
 // Register a new user
 exports.registerUser = async (req, res) => {
-	// Register user endpoint
+    // Register user endpoint
     
     console.log('register\n');
 	
@@ -57,9 +57,9 @@ exports.registerUser = async (req, res) => {
 		console.log('registerUser : existingUser.rows.length  : ', existingUser.rows.length );
         
 		if ((existingUser.rows.length != 0 ) && (existingUser.rows.length > 0)) {
-            console.log('register : the user already exists');
-			return res.status(400).json({ message: 'Username already exists' });
-        }
+                    onsole.log('register : the user already exists');
+		    return res.status(400).json({ message: 'Username already exists' });
+                 }
 
 	/*
 	// Check if device androidId already exists
@@ -78,7 +78,7 @@ exports.registerUser = async (req, res) => {
         result = await pool.query('INSERT INTO users_notification (username, password, android_id, sector, branch)' + 
 		                          ' VALUES ($1, $2, $3, $4, $5) RETURNING id', [username, hashedPassword, androidId, sector, branch]);
 		
-		//console.log('register : result : ',result);
+	//console.log('register : result : ',result);
 		
         // Get the generated id from the result
         const userId = result.rows[0].id;
