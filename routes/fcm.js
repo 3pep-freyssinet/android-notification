@@ -4,7 +4,7 @@ const router  			= express.Router();
 const fcmController	= require('../controllers/fcm_tokens_controller'); // Point to your controller
 const authMiddleware = require('../middleware/auth');
 
-console.log('routes');
+console.log('routes : fcm');
 
 // Define routes
 router.post('/post-all-fcm-tokens', fcmController.postAllFCMTokens);   // POST /fcm/post-all-fcm-tokens
