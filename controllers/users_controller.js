@@ -156,7 +156,7 @@ exports.registerUser = async (req, res) => {
 			await pool.query('INSERT INTO refresh_tokens (user_id, refresh_token, expires_at) VALUES ($1, $2, $3)', [
 				user.id,
 				refreshToken,
-				new Date(Date.now() + REFRESH_EXPIRY) // 30 days in the future
+				new Date(Date.now() + REFRESH_EXPIRY * 24 * 60 * 60 * 1000) // 30 days in the future
 			]);
 		}catch(error){
 		console.error('registered : store refresh token : failure : ' + error);
