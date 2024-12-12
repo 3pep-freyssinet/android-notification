@@ -151,12 +151,17 @@ exports.registerUser = async (req, res) => {
 	async function storeRefreshTokenInDatabase(user, refreshToken) {
 		// Assuming you have a database table for refresh tokens associated with users
 		// Save the refresh token with an expiration time (e.g., 30 days)
-		console.log('storeRefreshTokenInDatabase date : ', new Date(Date.now() + 30 * 24 * 60 * 60 * 1000));
+		
+		/ Parse the number from the 'REFRESH_EXPIRY' string and  Extract the number part
+		const expiryDays = parseInt(REFRESH_EXPIRY.replace('d', ''), 10); // Extract the number part
+		
+		console.log('storeRefreshTokenInDatabase date : ', new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000));
+		
 		try{
 			await pool.query('INSERT INTO refresh_tokens (user_id, refresh_token, expires_at) VALUES ($1, $2, $3)', [
 				user.id,
 				refreshToken,
-				new Date(Date.now() + 30 * 24 * 60 * 60 * 1000) // 30 days in the future
+				new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000) // expiryDays days in the future
 			]);
 		}catch(error){
 		console.error('registered : store refresh token : failure : ' + error);
