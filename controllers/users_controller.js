@@ -152,7 +152,7 @@ exports.registerUser = async (req, res) => {
 		// Assuming you have a database table for refresh tokens associated with users
 		// Save the refresh token with an expiration time (e.g., 30 days)
 		
-		/ Parse the number from the 'REFRESH_EXPIRY' string and  Extract the number part
+		// Parse the number from the 'REFRESH_EXPIRY' string and  Extract the number part
 		const expiryDays = parseInt(REFRESH_EXPIRY.replace('d', ''), 10); // Extract the number part
 		
 		console.log('storeRefreshTokenInDatabase date : ', new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000));
