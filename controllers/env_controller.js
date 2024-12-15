@@ -1,7 +1,6 @@
 //import renderApi from '@api/render-api';
 //const renderApi = require('@api/render-api');
 
-/*
 exports.updateEnv = async (req, res) => {
 
    	console.log('update Env start ');
@@ -24,4 +23,4 @@ exports.updateEnv = async (req, res) => {
 		}
 	);
 }
-*/
+
