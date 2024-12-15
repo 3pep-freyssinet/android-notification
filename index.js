@@ -133,7 +133,8 @@ const env_routes    	        = require('./routes/environ');
 //app.use('/fcm', fcm_routes);
 //app.use('/notifications', notifications_routes);
 //app.use('/pins', pins_routes);
-app.use('/environ', env_routes);
+//app.use('/environ', env_routes);
+app.use('/environ', (req, resp) =>{console.log('environ');});
 
 // Set EJS as the template engine
 app.set('view engine', 'ejs');
