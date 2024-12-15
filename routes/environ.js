@@ -9,7 +9,7 @@ const envController	= require('../controllers/env_controller'); // Point to your
 console.log('routes : environment');
 
 // Define routes
-router.put('/update-env', envController.updateEnv);   // PUT /update_env/update-env
+router.put('/update-env', envController.updateEnv);   // PUT /environ/update-env
 
 // Export the router
 module.exports = router;
