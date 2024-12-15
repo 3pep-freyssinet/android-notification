@@ -1,3 +1,4 @@
+/*
 // routes/environment.js
 const express 			= require('express');
 const router  			= express.Router();
@@ -9,3 +10,4 @@ console.log('routes : environment');
 
 // Define routes
 router.put('/update-env', envController.updateEnv);   // PUT /update_env/update-env
+*/
