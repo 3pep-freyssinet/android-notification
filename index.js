@@ -125,7 +125,7 @@ app.get('/fcm_tokens', async (req, res) => {
 //const fcm_routes    		= require('./routes/fcm');
 //const notifications_routes    	= require('./routes/notifications');
 //const pins_routes    	        = require('./routes/pins');
-const env_routes    	        = require('./routes/environ');
+const enviiiii_routes    	        = require('./routes/environ');
 
 // Use routes
 //app.use('/users', users_routes);
@@ -133,8 +133,8 @@ const env_routes    	        = require('./routes/environ');
 //app.use('/fcm', fcm_routes);
 //app.use('/notifications', notifications_routes);
 //app.use('/pins', pins_routes);
-//app.use('/environ', env_routes);
-app.use('/environ', (req, resp) =>{console.log('environ');});
+app.use('/environ', enviiiii_routes);
+//app.use('/environ', (req, resp) =>{console.log('environ');});
 
 // Set EJS as the template engine
 app.set('view engine', 'ejs');
