@@ -125,6 +125,7 @@ const tokens_routes 		= require('./routes/tokens');
 const fcm_routes    		= require('./routes/fcm');
 const notifications_routes    	= require('./routes/notifications');
 const pins_routes    	        = require('./routes/pins');
+const env_routes    	        = require('./routes/env');
 
 // Use routes
 app.use('/users', users_routes);
