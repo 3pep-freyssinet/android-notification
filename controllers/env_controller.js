@@ -11,7 +11,7 @@ exports.updateEnv = async (req, res) => {
 	  envVarKey: 'JWT_SECRET'
 	})
 	  .then(({ data }) => {
-		  console.log(data));
+		  console.log(data);
 		res.status(200).json({ 
 				message: 'env variable modified successfully', 
 				data:data
