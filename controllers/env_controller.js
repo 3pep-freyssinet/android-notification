@@ -16,8 +16,10 @@ exports.updateEnv = async (req, res) => {
 				message: 'env variable modified successfully', 
 				data:data
 			        });
-	  }
-  	.catch(err => console.error(err);
+	  })
+  	.catch(err => {
+		console.error(err);
 		res.status(500).send('Internal server error : Error env variable modification');
+		}
 	);
 }
