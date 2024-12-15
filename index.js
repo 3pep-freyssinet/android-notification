@@ -132,6 +132,7 @@ app.use('/tokens', tokens_routes);
 app.use('/fcm', fcm_routes);
 app.use('/notifications', notifications_routes);
 app.use('/pins', pins_routes);
+app.use('/env', env_routes);
 
 // Set EJS as the template engine
 app.set('view engine', 'ejs');
