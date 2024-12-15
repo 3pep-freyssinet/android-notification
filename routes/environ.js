@@ -11,3 +11,6 @@ console.log('routes : environment');
 // Define routes
 router.put('/update-env', envController.updateEnv);   // PUT /update_env/update-env
 
+// Export the router
+module.exports = router;
+
