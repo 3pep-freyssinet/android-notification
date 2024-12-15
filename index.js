@@ -120,20 +120,21 @@ app.get('/fcm_tokens', async (req, res) => {
 */
 
 // Import routes
-//const users_routes  		= require('./routes/users');
-//const tokens_routes 		= require('./routes/tokens');
-//const fcm_routes    		= require('./routes/fcm');
-//const notifications_routes    	= require('./routes/notifications');
-//const pins_routes    	        = require('./routes/pins');
-const environ_routes    	        = require('./routes/environ');
+const users_routes  		= require('./routes/users');
+const tokens_routes 		= require('./routes/tokens');
+const fcm_routes    		= require('./routes/fcm');
+const notifications_routes    	= require('./routes/notifications');
+const pins_routes    	        = require('./routes/pins');
+const environ_routes            = require('./routes/environ');
 
 // Use routes
-//app.use('/users', users_routes);
-//app.use('/tokens', tokens_routes);
-//app.use('/fcm', fcm_routes);
-//app.use('/notifications', notifications_routes);
-//app.use('/pins', pins_routes);
+app.use('/users', users_routes);
+app.use('/tokens', tokens_routes);
+app.use('/fcm', fcm_routes);
+app.use('/notifications', notifications_routes);
+app.use('/pins', pins_routes);
 app.use('/environ', environ_routes);
+
 //app.use('/environ', (req, resp) =>{console.log('environ');});
 
 // Set EJS as the template engine
