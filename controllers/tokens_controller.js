@@ -159,7 +159,7 @@ const storeTokens = async (accessToken, refreshToken) => {
     // Add your logic to persist tokens in a database or environment variables
 };
 
-// Exported function to renew tokens
+// Exported function to renew tokens called from cron-job to renew 'jwt' and 'refresh-jwt' tokens and store them in database.
 exports.renewTokens = async (req, res) => {
     try {
         console.log('Token renewal process started...');
@@ -174,12 +174,12 @@ exports.renewTokens = async (req, res) => {
    
         // Generate new Access Token = jwt token
         const accessToken = jwt.sign({ userId }, JWT_SECRET, {
-            expiresIn: JWT_EXPIRY || '1d', // Use "1d" as default if not in environment variables
+            expiresIn: JWT_EXPIRY || '7d', // Use "7d" as default if not in environment variables
         });
 
         // Generate new Refresh Token
         const refreshToken = jwt.sign({ userId }, JWT_REFRESH_SECRET, {
-            expiresIn: REFRESH_EXPIRY || '7d', // Use "7d" as default if not in environment variables
+            expiresIn: REFRESH_EXPIRY || '30d', // Use "30d" as default if not in environment variables
         });
 
         // Store the tokens (persist in DB, file, or environment variables)
