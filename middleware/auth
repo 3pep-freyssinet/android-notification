@@ -9,12 +9,14 @@ module.exports = (req, res, next) => {
 console.log('auth : authHeader : ', authHeader);
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    console.log('auth : test : true ');
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
   const token = authHeader.split(' ')[1];
 
-  console.log('jwt token = ', token);
+  console.log('auth : jwt token = ', token);
+  console.log('auth : JWT_SECRET = ', JWT_SECRET);
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET); // Use your JWT secret
@@ -24,6 +26,7 @@ console.log('auth : authHeader : ', authHeader);
 
     next();
   } catch (err) {
-    res.status(403).json({ error: 'Invalid token' });
+     console.log('auth : Invalid token : ');
+     res.status(403).json({ error: 'Invalid token' });
   }
 };
