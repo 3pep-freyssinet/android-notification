@@ -167,9 +167,12 @@ exports.renewTokens = async (req, res) => {
  	
 	// Get the userId from the middleware (req.user is populated in auth.js)
         const userId = req.user.id;
-
+       console.log('Token renewal : userId ', userId);
+	    
         if (!userId) {
-            return res.status(400).json({ error: 'User ID is missing in the request' });
+           console.log('Token renewal : User ID is missing in the request ');
+	   return res.status(400).json({ error: 'User ID is missing in the request' });
+		 
         }
    
         // Generate new Access Token = jwt token
