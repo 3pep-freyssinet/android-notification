@@ -167,7 +167,8 @@ exports.renewTokens = async (req, res) => {
  	
 	// Get the userId from the middleware (req.user is populated in auth.js)
         const userId = req.user.id;
-       console.log('Token renewal : userId ', userId);
+       //console.log('Token renewal : userId ', userId);
+	console.log('Token renewal : req.user ', req.user);    
 	    
         if (!userId) {
            console.log('Token renewal : User ID is missing in the request ');
