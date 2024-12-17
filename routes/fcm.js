@@ -10,7 +10,7 @@ console.log('routes : fcm');
 router.post('/post-all-fcm-tokens', fcmController.postAllFCMTokens);   // POST /fcm/post-all-fcm-tokens
 router.get('/get-all-fcm-tokens',   fcmController.getAllFCMTokens);    // GET /fcm/get-all-fcm-tokens
 //router.post('/store-fcm-tokens',    fcmController.storeFCMTokens);     // POST /fcm/store-fcm-tokens
-router.post('/store-fcm-token', authMiddleware, fcmController.storeFCMToken);  // POST /fcm/store-fcm-tokens
+//router.post('/store-fcm-token', authMiddleware, fcmController.storeFCMToken);  // POST /fcm/store-fcm-tokens
 
 
 //router.get('/:id', usersController.getUser);                   // GET /users/:id
