@@ -5,9 +5,10 @@ const tokensController	= require('../controllers/tokens_controller'); // Point t
 const authMiddleware    = require('../middleware/auth');
 
 // Define routes
-router.post('/refresh-jwt-token', authMiddleware, tokensController.refreshJWTToken);   // POST /tokens/refresh-jwt-token
-router.post('/renew-tokens', authMiddleware, tokensController.renewTokens);            // POST /tokens/renew-tokens
-router.post('/update-jwt-env', authMiddleware, tokensController.updateJWTEnvironment); // POST /tokens/update-jwt_env
+router.post('/refresh-jwt-token', authMiddleware, tokensController.refreshJWTToken);                 // POST /tokens/refresh-jwt-token
+router.post('/renew-tokens', authMiddleware, tokensController.renewTokens);                          // POST /tokens/renew-tokens
+router.post('/update-jwt-env', authMiddleware, tokensController.updateJWTEnvironment);               // POST /tokens/update-jwt_env
+router.post('/renew-jwt-update-env', authMiddleware, envController.renewTokensUpdateJWTEnvironment);// POST /tokens/renew-jwt-update-env
 
 //router.get('/:id', usersController.getUser);              // GET /users/:id
 //router.put('/:id', usersController.updateUser);           // PUT /users/:id
