@@ -248,3 +248,29 @@ exports.updateJWTEnvironment = async (req, res) => {
     res.status(500).send({ error: error.message });
   }
 };
+
+//merge the renew tokens and update environment variables
+exports.renewTokensUpdateJWTEnvironment = async (req, res) => {
+    try {
+        console.log('Combined Process: Renew Tokens and Update Environment');
+
+        // Step 1: Renew JWT token
+        const newToken = await exports.renewTokens(req, res); // Reuse renewTokens function
+
+        // Step 2: Update JWT in environment variable
+        const updateResult = await exports.updateJWTEnvironment(newToken);
+
+        // Send success response
+        return res.status(200).json({
+            message: 'JWT token renewed and environment variable updated successfully.',
+            newToken: newToken,
+            updateResult: updateResult,
+        });
+    } catch (error) {
+        console.error('Error in renewTokensUpdateJWTEnvironment:', error.message);
+        return res.status(500).json({
+            message: 'Failed to renew token and update environment variable.',
+            error: error.message,
+        });
+    }
+};
