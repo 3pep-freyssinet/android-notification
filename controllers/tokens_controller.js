@@ -182,7 +182,7 @@ exports.renewTokens = async (req, res) => {
         });
 
         // Generate new Refresh Token
-        const refreshToken = jwt.sign({ userId }, JWT_REFRESH_SECRET, {
+        const refreshToken = jwt.sign({ userId }, REFRESH_TOKEN_SECRET, {
             expiresIn: REFRESH_EXPIRY || '30d', // Use "30d" as default if not in environment variables
         });
 
