@@ -268,9 +268,9 @@ exports.renewTokensUpdateJWTEnvironment = async (req, res) => {
         });
     } catch (error) {
         console.error('Error in renewTokensUpdateJWTEnvironment:', error.message);
-        return res.status(500).json({
-            message: 'Failed to renew token and update environment variable.',
-            error: error.message,
-        });
+        //return res.status(500).json({
+        //    message: 'Failed to renew token and update environment variable.',
+        //    error: error.message,
+        //});
     }
 };
