@@ -90,7 +90,12 @@ exports.refreshJWTToken = async (req, res) => {
 
   try {
 		// Execute the query with userId and 'newRefreshToken' as parameters
-		await pool.query(query, [newRefreshToken, REFRESH_EXPIRY, userId]);
+	        // Parse the number from the 'REFRESH_EXPIRY' string and extract the number part
+		const expiryDays  = parseInt(REFRESH_EXPIRY.replace('d', ''), 10); // Extract the number part
+		const expiryDays_ = new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000);
+	  
+		console.log('storeRefreshTokenInDatabase date : ', new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000));
+		await pool.query(query, [newRefreshToken, expiryDays_, userId]);
 		
 		console.log('refresh token updated successfully');
 		
