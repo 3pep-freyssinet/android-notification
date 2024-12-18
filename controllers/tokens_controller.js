@@ -224,9 +224,11 @@ exports.renewTokens = async (req, res) => {
 exports.updateJWTEnvironment = async (req, res) => {
  // Get the userId from the middleware (req.user is populated in auth.js)
         
-	if(true)return;
+	
 	
 	const userId = req.user.userId;
+	if(true)return;
+	
 	console.log('updateJWTEnvironment : userId :', userId);
         if (!userId) {
             return res.status(400).json({ error: 'User ID is missing in the request' });
