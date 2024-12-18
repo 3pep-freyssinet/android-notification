@@ -228,7 +228,7 @@ exports.updateJWTEnvironment = async (req, res) => {
         if (!userId) {
             return res.status(400).json({ error: 'User ID is missing in the request' });
         } 
-	
+	if(true)return;
  try {
     // Connect to PostgreSQL
     //const client = new Client(DATABASE_CONFIG);
@@ -270,14 +270,12 @@ exports.renewTokensUpdateJWTEnvironment = async (req, res) => {
    try {
         
 	   
-        // Step 1: Renew JWT and refresh tokens and save them in database.
+        // Step 1: Renew JWT, refresh tokens and save them in database.
         const newToken = await exports.renewTokens(req, res); // Reuse renewTokens function
-        
-	if(true)return;
 	   
         // Step 2: Update JWT in environment variable
         const updateResult = await exports.updateJWTEnvironment(newToken);
-
+if(true)return;
         // Send success response
         return res.status(200).json({
             message: 'JWT token renewed and environment variable updated successfully.',
