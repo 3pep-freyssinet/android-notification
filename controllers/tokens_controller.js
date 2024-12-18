@@ -224,9 +224,9 @@ exports.renewTokens = async (req, res) => {
 exports.updateJWTEnvironment = async (req, res) => {
  // Get the userId from the middleware (req.user is populated in auth.js)
         
+	//const userId = req.user.userId;
+	console.log('updateJWTEnvironment : req.user :', JSON.stringify(req.user));
 	
-	
-	const userId = req.user.userId;
 	if(true)return;
 	
 	console.log('updateJWTEnvironment : userId :', userId);
