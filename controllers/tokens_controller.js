@@ -221,15 +221,11 @@ exports.renewTokens = async (req, res) => {
 //update jwt environment token
 //const axios = require("axios");
 
-exports.updateJWTEnvironment = async (req, res) => {
+exports.updateJWTEnvironment = async (token, userId = null) => {
  // Get the userId from the middleware (req.user is populated in auth.js)
         
-	//const userId = req.user.userId;
-	console.log('updateJWTEnvironment : req.user :', JSON.stringify(req.user));
-	
-	if(true)return;
-	
 	console.log('updateJWTEnvironment : userId :', userId);
+	
         if (!userId) {
             return res.status(400).json({ error: 'User ID is missing in the request' });
         } 
@@ -277,11 +273,14 @@ exports.renewTokensUpdateJWTEnvironment = async (req, res) => {
 	   
         // Step 1: Renew JWT, refresh tokens and save them in database.
         const newToken = await exports.renewTokens(req, res); // Reuse renewTokens function
-	   
+	const userId = req.user.userId; // Extract userId from the middleware-authenticated request
+        
+	console.log(`Step 1 Completed. UserId: ${userId}, NewToken: ${newToken}`);
+
         // Step 2: Update JWT in environment variable
-        const updateResult = await exports.updateJWTEnvironment(newToken);
-if(true)return;
-        // Send success response
+        const updateResult = await exports.updateJWTEnvironment(newToken, userId);
+        
+	// Send success response
         return res.status(200).json({
             message: 'JWT token renewed and environment variable updated successfully.',
             newToken: newToken,
