@@ -268,8 +268,9 @@ exports.updateJWTEnvironment = async (req, res) => {
 exports.renewTokensUpdateJWTEnvironment = async (req, res) => {
     console.log('Combined Process: Renew Tokens and Update Environment');
    try {
-        
-        // Step 1: Renew JWT token and save tokens in database.
+        if(true)return;
+	   
+        // Step 1: Renew JWT and refresh tokens and save them in database.
         const newToken = await exports.renewTokens(req, res); // Reuse renewTokens function
 
         // Step 2: Update JWT in environment variable
