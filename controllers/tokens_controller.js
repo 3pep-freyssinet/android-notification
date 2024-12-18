@@ -156,11 +156,19 @@ async function verifyRefreshToken(refreshToken) {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////
 // Function to simulate storing tokens, e.g., updating in a database or environment variables
-const storeTokens = async (accessToken, refreshToken) => {
+const storeTokens = async (userId, accessToken, refreshToken) => {
     console.log('Storing Tokens...');
     console.log('Access Token:', accessToken);
     console.log('Refresh Token:', refreshToken);
     // Add your logic to persist tokens in a database or environment variables
+    
+    try {
+	    const storeNewJWTToken        = await updateJWTToken(userId, accessToken);
+	    const storeNewRefreshJWTToken = await updateRefreshToken(userId, newRefreshToken);
+    }catch (error) {
+        console.error('Error during storing jwt or refrech tokens :', error);
+        res.status(500).json({ error: 'Failed to store jwt or refresh tokens' });
+    }
 };
 
 // Exported function to renew tokens called from cron-job to renew 'jwt' and 'refresh-jwt' tokens and store them in database.
@@ -191,7 +199,7 @@ exports.renewTokens = async (req, res) => {
         });
 
         // Store the tokens (persist in DB, file, or environment variables)
-        await storeTokens(accessToken, refreshToken);
+        await storeTokens(userId, accessToken, refreshToken);
 
         // Respond with success message
         res.status(200).json({
@@ -256,7 +264,7 @@ exports.renewTokensUpdateJWTEnvironment = async (req, res) => {
     console.log('Combined Process: Renew Tokens and Update Environment');
    try {
         
-        // Step 1: Renew JWT token
+        // Step 1: Renew JWT token and save tokens in database.
         const newToken = await exports.renewTokens(req, res); // Reuse renewTokens function
 
         // Step 2: Update JWT in environment variable
