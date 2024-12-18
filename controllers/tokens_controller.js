@@ -173,7 +173,7 @@ const storeTokens = async (userId, accessToken, refreshToken) => {
 	    const storeNewRefreshJWTToken = await updateRefreshToken(userId, refreshToken);
     }catch (error) {
         console.error('Error during storing jwt or refrech tokens :', error);
-        res.status(500).json({ error: 'Failed to store jwt or refresh tokens' });
+        //res.status(500).json({ error: 'Failed to store jwt or refresh tokens' });
     }
 };
 
@@ -242,7 +242,9 @@ exports.updateJWTEnvironment = async (token, userId = null) => {
 
     if (!jwt) {
       await client.end();
-      return res.status(404).send({ error: "No JWT token found in the database." });
+       console.error('updateJWTEnvironment : error :', "No JWT token found in the database.");    
+	return;    
+      //return res.status(404).send({ error: "No JWT token found in the database." });
     }
 
     // Update Render environment variable
@@ -259,10 +261,11 @@ exports.updateJWTEnvironment = async (token, userId = null) => {
 
     console.log("Render environment variable updated:", response.data);
     await client.end();
-    res.status(200).send({ message: "JWT token environment updated successfully.", data: response.data });
+	console.log('JWT token environment updated successfully.', response.data); 
+    //res.status(200).send({ message: "JWT token environment updated successfully.", data: response.data });
   } catch (error) {
     console.error("Error updating JWT token environment:", error.message);
-    res.status(500).send({ error: error.message });
+    //res.status(500).send({ error: error.message });
   }
 };
 
