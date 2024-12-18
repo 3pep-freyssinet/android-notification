@@ -164,7 +164,7 @@ const storeTokens = async (userId, accessToken, refreshToken) => {
     
     try {
 	    const storeNewJWTToken        = await updateJWTToken(userId, accessToken);
-	    const storeNewRefreshJWTToken = await updateRefreshToken(userId, newRefreshToken);
+	    const storeNewRefreshJWTToken = await updateRefreshToken(userId, refreshToken);
     }catch (error) {
         console.error('Error during storing jwt or refrech tokens :', error);
         res.status(500).json({ error: 'Failed to store jwt or refresh tokens' });
