@@ -4,6 +4,10 @@ const bcrypt = require('bcryptjs');
 const jwt    = require('jsonwebtoken');
 const crypto = require('crypto');
 
+//used in update environment variables
+const RENDER_SERVICE_ID = "srv-cseq2m5svqrc73f7ai5g"; found here : "https://dashboard.render.com/web/srv-cseq2m5svqrc73f7ai5g"
+const RENDER_API_KEY    = "rnd_0zPNWnTmGysVCH6oECy29bMhX6iy"; //found in settings
+
 const JWT_SECRET 		= process.env.JWT_SECRET;
 const REFRESH_TOKEN_SECRET 	= process.env.REFRESH_TOKEN_SECRET;
 
@@ -204,12 +208,9 @@ exports.renewTokens = async (req, res) => {
 //update jwt environment token
 //const axios = require("axios");
 
-const RENDER_SERVICE_ID = "srv-cseq2m5svqrc73f7ai5g";
-const RENDER_API_KEY    = "rnd_0zPNWnTmGysVCH6oECy29bMhX6iy";
-
 exports.updateJWTEnvironment = async (req, res) => {
  // Get the userId from the middleware (req.user is populated in auth.js)
-        const userId = req.user.id;
+        const userId = req.user.userId;
         if (!userId) {
             return res.status(400).json({ error: 'User ID is missing in the request' });
         } 
