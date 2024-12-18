@@ -5,8 +5,8 @@ const jwt    = require('jsonwebtoken');
 const crypto = require('crypto');
 
 //used in update environment variables
-const RENDER_SERVICE_ID = "srv-cseq2m5svqrc73f7ai5g"; found here : "https://dashboard.render.com/web/srv-cseq2m5svqrc73f7ai5g"
-const RENDER_API_KEY    = "rnd_0zPNWnTmGysVCH6oECy29bMhX6iy"; //found in settings
+const RENDER_SERVICE_ID = "srv-cseq2m5svqrc73f7ai5g"; 		//found here : "https://dashboard.render.com/web/srv-cseq2m5svqrc73f7ai5g"
+const RENDER_API_KEY    = "rnd_0zPNWnTmGysVCH6oECy29bMhX6iy"; 	//found in settings
 
 const JWT_SECRET 		= process.env.JWT_SECRET;
 const REFRESH_TOKEN_SECRET 	= process.env.REFRESH_TOKEN_SECRET;
