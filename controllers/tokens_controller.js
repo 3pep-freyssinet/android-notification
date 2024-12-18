@@ -285,11 +285,12 @@ exports.renewTokensUpdateJWTEnvironment = async (req, res) => {
         const updateResult = await exports.updateJWTEnvironment(newToken, userId);
         
 	// Send success response
-        return res.status(200).json({
-            message: 'JWT token renewed and environment variable updated successfully.',
-            newToken: newToken,
-            updateResult: updateResult,
-        });
+	 console.log('JWT token renewed and environment variable updated successfully');
+        //return res.status(200).json({
+        //    message: 'JWT token renewed and environment variable updated successfully.',
+        //    newToken: newToken,
+        //    updateResult: updateResult,
+        //});
     } catch (error) {
         console.error('Error in renewTokensUpdateJWTEnvironment:', error.message);
         //return res.status(500).json({
