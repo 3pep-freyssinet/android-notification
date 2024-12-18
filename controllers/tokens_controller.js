@@ -3,6 +3,7 @@ const pool   = require('../db'); // Assuming you use a database pool for Postgre
 const bcrypt = require('bcryptjs');
 const jwt    = require('jsonwebtoken');
 const crypto = require('crypto');
+const axios  = require('axios');
 
 //used in update environment variables
 const RENDER_SERVICE_ID = "srv-cseq2m5svqrc73f7ai5g"; 		//found here : "https://dashboard.render.com/web/srv-cseq2m5svqrc73f7ai5g"
