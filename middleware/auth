@@ -8,7 +8,7 @@ module.exports = (req, res, next) => {
  console.log('All Headers:', req.headers); // Debugging statement
  const authHeader = req.headers['authorization'];
 
- console.log('auth : req.headers['authorization'] : ', authHeader);
+ console.log('auth : req.headers["authorization"] : ', authHeader);
 
   const authHeader_ = req.headers.authorization;
  
