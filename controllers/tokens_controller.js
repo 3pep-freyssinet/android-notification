@@ -220,9 +220,8 @@ exports.renewTokens = async (req, res) => {
 };
 
 //update jwt environment token
-exports.updateJWTEnvironment = async (token, userId = null) => {
- // Get the userId from the middleware (req.user is populated in auth.js)
-        
+exports.updateJWTEnvironment = async (jwt_token) => {
+        /*
 	console.log('updateJWTEnvironment : userId :', userId);
 	
         if (!userId) {
@@ -235,18 +234,19 @@ exports.updateJWTEnvironment = async (token, userId = null) => {
     //await client.connect();
 
     // Fetch JWT from the database
-    const result     = await pool.query("SELECT jwt_token FROM jwt_tokens WHERE user_id = $1", [userId]);
-    const jwt_token  = result.rows[0].jwt_token;
+    const result      = await pool.query("SELECT jwt_token FROM jwt_tokens WHERE user_id = $1", [userId]);
+    const jwt_token_  = result.rows[0].jwt_token;
 	 
-    console.log('updateJWTEnvironment : jwt_token :', jwt_token);    
+    console.log('updateJWTEnvironment : jwt_token :', jwt_token_);    
 
-    if (!jwt) {
-      await client.end();
+    if (!jwt_token) {
+      //await client.end();
        console.error('updateJWTEnvironment : error :', "No JWT token found in the database.");    
 	return;    
       //return res.status(404).send({ error: "No JWT token found in the database." });
     }
-
+    */
+	
     // Update Render environment variable
     const response = await axios.put(
       `https://api.render.com/v1/services/${RENDER_SERVICE_ID}/env-vars/JWT_TOKEN`,
@@ -260,7 +260,7 @@ exports.updateJWTEnvironment = async (token, userId = null) => {
     );
 
     console.log("Render environment variable updated:", response.data);
-    await client.end();
+    //await client.end();
 	console.log('JWT token environment updated successfully.', response.data); 
     //res.status(200).send({ message: "JWT token environment updated successfully.", data: response.data });
   } catch (error) {
@@ -268,6 +268,7 @@ exports.updateJWTEnvironment = async (token, userId = null) => {
     //res.status(500).send({ error: error.message });
   }
 };
+
 
 //merge the renew tokens and update environment variables
 exports.renewTokensUpdateJWTEnvironment = async (req, res) => {
@@ -282,7 +283,7 @@ exports.renewTokensUpdateJWTEnvironment = async (req, res) => {
 	console.log(`Step 1 Completed. UserId: ${userId}, NewToken: ${newToken}`);
 
         // Step 2: Update JWT in environment variable
-        const updateResult = await exports.updateJWTEnvironment(newToken, userId);
+        const updateResult = await exports.updateJWTEnvironment(newToken);
         
 	// Send success response
 	 console.log('JWT token renewed and environment variable updated successfully');
