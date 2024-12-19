@@ -300,7 +300,7 @@ exports.renewTokensUpdateJWTEnvironment = async (req, res) => {
         // Step 1: Renew JWT, refresh tokens and save them in database.
         //const newToken = await exports.renewTokens(req, res); // Reuse renewTokens function
 	
-	{ accessToken, refreshToken } = await exports.renewTokens(req, res); // Reuse renewTokens function
+	const { accessToken, refreshToken } = await exports.renewTokens(req, res); // Reuse renewTokens function
 	
 	console.log('Step 1 Completed : accessToken : ', accessToken, ' refreshToken : ', refreshToken);
 	
