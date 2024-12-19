@@ -177,6 +177,21 @@ const storeTokens = async (userId, accessToken, refreshToken) => {
     }
 };
 
+//renew token handler
+exports.renewTokensHandler = async (req, res) => {
+    try {
+        const { accessToken, refreshToken } = await exports.renewTokens(req);
+        res.status(200).json({
+            message: 'Tokens renewed successfully',
+            accessToken,
+            refreshToken,
+        });
+    } catch (error) {
+        console.error('Error in renewTokensHandler:', error);
+        res.status(500).json({ error: error.message });
+    }
+};
+
 // Exported function to renew tokens called from cron-job to renew 'jwt' and 'refresh-jwt' tokens and store them in database.
 exports.renewTokens = async (req, res) => {
     try {
@@ -206,16 +221,21 @@ exports.renewTokens = async (req, res) => {
 
         // Store the tokens (access and refresh) (persist in DB, file, or environment variables)
         await storeTokens(userId, accessToken, refreshToken);
-
-        // Respond with success message
+        
+	return { accessToken, refreshToken };
+        
+	/*
+	// Respond with success message
         res.status(200).json({
             message: 'Tokens renewed successfully',
             accessToken,
             refreshToken,
         });
+	*/
     } catch (error) {
         console.error('Error during token renewal:', error);
-        res.status(500).json({ error: 'Failed to renew tokens' });
+        //res.status(500).json({ error: 'Failed to renew tokens' });
+	throw new Error('Failed to renew tokens');
     }
 };
 
@@ -278,7 +298,12 @@ exports.renewTokensUpdateJWTEnvironment = async (req, res) => {
         
 	   
         // Step 1: Renew JWT, refresh tokens and save them in database.
-        const newToken = await exports.renewTokens(req, res); // Reuse renewTokens function
+        //const newToken = await exports.renewTokens(req, res); // Reuse renewTokens function
+	
+	{ accessToken, refreshToken } = await exports.renewTokens(req, res); // Reuse renewTokens function
+	
+	console.log('Step 1 Completed : accessToken : ', accessToken, ' refreshToken : ', refreshToken);
+	
 	const userId = req.user.userId; // Extract userId from the middleware-authenticated request
         
 	console.log(`Step 1 Completed. UserId: ${userId}, NewToken: ${newToken}`);
