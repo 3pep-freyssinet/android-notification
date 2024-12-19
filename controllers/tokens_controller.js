@@ -246,7 +246,8 @@ exports.updateJWTEnvironment = async (jwt_token) => {
       //return res.status(404).send({ error: "No JWT token found in the database." });
     }
     */
-	
+
+try {
     // Update Render environment variable
     const response = await axios.put(
       `https://api.render.com/v1/services/${RENDER_SERVICE_ID}/env-vars/JWT_TOKEN`,
