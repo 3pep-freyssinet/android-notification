@@ -249,7 +249,7 @@ exports.updateJWTEnvironment = async (token, userId = null) => {
 
     // Update Render environment variable
     const response = await axios.put(
-      `https://api.render.com/v1/services/${RENDER_SERVICE_ID}/env-vars/JWT_SECRET`,
+      `https://api.render.com/v1/services/${RENDER_SERVICE_ID}/env-vars/JWT_TOKEN`,
       { value: jwt_token },
       {
         headers: {
