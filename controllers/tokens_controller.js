@@ -237,10 +237,9 @@ exports.updateJWTEnvironment = async (token, userId = null) => {
     //await client.connect();
 
     // Fetch JWT from the database
-    const result     = await pool.query("SELECT jwt_token FROM jwt_tokens WHERE id = $1", [userId]);
+    const result     = await pool.query("SELECT jwt_token FROM jwt_tokens WHERE user_id = $1", [userId]);
     const jwt_token  = result.rows[0].jwt_token;
-    //console.log('updateJWTEnvironment : result :', JSON.stringify(result));
-    console.log('updateJWTEnvironment : result.length :', result.length; 
+	 
     console.log('updateJWTEnvironment : jwt_token :', jwt_token);    
 
     if (!jwt) {
