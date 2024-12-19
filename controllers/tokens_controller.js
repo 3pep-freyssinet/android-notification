@@ -148,9 +148,9 @@ async function verifyRefreshToken(refreshToken) {
 
   try {
 		// Execute the query with userId and fcmToken as parameters
-		await pool.query(query, [newJWTToken, userId]);
+		const result = await pool.query(query, [newJWTToken, userId]);
 		
-		console.log('JWT token updated successfully');
+		console.log('*************************** JWT token updated successfully : result : ', result);
 		
 		return { success: true };
   } catch (error) {
@@ -204,7 +204,7 @@ exports.renewTokens = async (req, res) => {
             expiresIn: REFRESH_EXPIRY || '30d', // Use "30d" as default if not in environment variables
         });
 
-        // Store the tokens (persist in DB, file, or environment variables)
+        // Store the tokens (access and refresh) (persist in DB, file, or environment variables)
         await storeTokens(userId, accessToken, refreshToken);
 
         // Respond with success message
@@ -220,8 +220,6 @@ exports.renewTokens = async (req, res) => {
 };
 
 //update jwt environment token
-//const axios = require("axios");
-
 exports.updateJWTEnvironment = async (token, userId = null) => {
  // Get the userId from the middleware (req.user is populated in auth.js)
         
