@@ -316,8 +316,6 @@ exports.renewTokensUpdateJWTEnvironment = async (req, res) => {
 	console.log('Step 1 Completed : accessToken : ', accessToken, ' refreshToken : ', refreshToken);
 	
 	const userId = req.user.userId; // Extract userId from the middleware-authenticated request
-        
-	console.log(`Step 1 Completed. UserId: ${userId}, NewToken: ${newToken}`);
 
         // Step 2: Update JWT in environment variable
         const updateResult = await exports.updateJWTEnvironment(accessToken, refreshToken);
