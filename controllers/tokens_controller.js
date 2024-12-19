@@ -240,7 +240,7 @@ exports.renewTokens = async (req, res) => {
 };
 
 //update jwt environment token
-exports.updateJWTEnvironment = async (jwt_token) => {
+exports.updateJWTEnvironment = async (jwt_token, refresh_jwt_token) => {
         /*
 	console.log('updateJWTEnvironment : userId :', userId);
 	
@@ -279,7 +279,18 @@ try {
         },
       }
     );
-
+   
+    const response_ = await axios.put(
+      `https://api.render.com/v1/services/${RENDER_SERVICE_ID}/env-vars/JWT_REFRESH_TOKEN`,
+      { value: refresh_jwt_token },
+      {
+        headers: {
+          Authorization: `Bearer ${RENDER_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+	
     console.log("Render environment variable updated:", response.data);
     //await client.end();
 	console.log('JWT token environment updated successfully.', response.data); 
@@ -309,7 +320,7 @@ exports.renewTokensUpdateJWTEnvironment = async (req, res) => {
 	console.log(`Step 1 Completed. UserId: ${userId}, NewToken: ${newToken}`);
 
         // Step 2: Update JWT in environment variable
-        const updateResult = await exports.updateJWTEnvironment(newToken);
+        const updateResult = await exports.updateJWTEnvironment(accessToken, refreshToken);
         
 	// Send success response
 	 console.log('JWT token renewed and environment variable updated successfully');
