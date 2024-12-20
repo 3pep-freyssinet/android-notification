@@ -343,7 +343,7 @@ exports.fetchJWT = async (req, res) => {
         //const userId = req.query.user_id; // in case of query string like "..?user_id = ..."
 	const { userId} = req.body;
 	
-       console.log('fetchJWT : userId ', userId);
+       console.log('fetchJWT : req.body ', req.body);
 	    
         if (!userId) {
            console.log('fetchJWT : User ID is missing in the request ');
