@@ -9,7 +9,8 @@ router.post('/refresh-jwt-token', authMiddleware, tokensController.refreshJWTTok
 router.post('/renew-tokens', authMiddleware, tokensController.renewTokensHandler);                     // POST /tokens/renew-tokens
 router.post('/update-jwt-env', authMiddleware, tokensController.updateJWTEnvironment);                 // POST /tokens/update-jwt_env
 router.post('/renew-jwt-update-env', authMiddleware, tokensController.renewTokensUpdateJWTEnvironment);// POST /tokens/renew-jwt-update-env
-
+router.get('/fetch-jwt', tokensController.fetchJWT);                                                   // GET /tokens/fetch-jwt
+           
 //router.get('/:id', usersController.getUser);              // GET /users/:id
 //router.put('/:id', usersController.updateUser);           // PUT /users/:id
 
