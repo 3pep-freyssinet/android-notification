@@ -354,7 +354,7 @@ exports.fetchJWT = async (req, res) => {
 		// Execute the query with userId as parameters
 	const result = await pool.query(query, [userId]);
 	//console.log('*************************** fetchJWT : result : ', result);
-	const jwt_token = result.rows[0].jwt_token)
+	const jwt_token = result.rows[0].jwt_token;
 	console.log('fetchJWT : JWT token:',jwt_token);
 	//return jwt_token;
 	return res.status(200).json({ jwt_token: jwt_token });	 
