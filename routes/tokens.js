@@ -4,6 +4,8 @@ const router  			    = express.Router();
 const tokensController	= require('../controllers/tokens_controller'); // Point to your controller
 const authMiddleware    = require('../middleware/auth');
 
+console.log("routes/tokens");
+
 // Define routes
 router.post('/refresh-jwt-token', authMiddleware, tokensController.refreshJWTToken);                   // POST /tokens/refresh-jwt-token
 router.post('/renew-tokens', authMiddleware, tokensController.renewTokensHandler);                     // POST /tokens/renew-tokens
