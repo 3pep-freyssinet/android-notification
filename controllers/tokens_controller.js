@@ -335,3 +335,32 @@ exports.renewTokensUpdateJWTEnvironment = async (req, res) => {
         //});
     }
 };
+
+//get jwt for a given user
+exports.fetchJWT = async (req, res) => {
+    console.log('fetchJWT : start');
+	// Get the userId from the request)
+        const userId = req.userId;
+	
+       console.log('fetchJWT : userId ', userId);
+	    
+        if (!userId) {
+           console.log('fetchJWT : User ID is missing in the request ');
+	   return res.status(400).json({ error: 'User ID is missing in the request' });	 
+        }
+   try{
+	const query = 
+		'SELECT jwt_token FROM jwt_tokens WERE user_id = $1';
+		// Execute the query with userId as parameters
+	const result = await pool.query(query, [userId]);
+	//console.log('*************************** fetchJWT : result : ', result);
+	const jwt_token = result.rows[0].jwt_token)
+	console.log('fetchJWT : JWT token:',jwt_token);
+	//return jwt_token;
+	return res.status(200).json({ jwt_token: jwt_token });	 
+    } catch (error) {
+	console.error('Error getting JWT token:', error);
+	return res.status(400).json({ error: 'Error getting jwt' });	
+    }
+}
+
