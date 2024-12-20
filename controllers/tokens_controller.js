@@ -350,7 +350,7 @@ exports.fetchJWT = async (req, res) => {
         }
    try{
 	const query = 
-		'SELECT jwt_token FROM jwt_tokens WERE user_id = $1';
+		'SELECT jwt_token FROM jwt_tokens WHERE user_id = $1';
 		// Execute the query with userId as parameters
 	const result = await pool.query(query, [userId]);
 	//console.log('*************************** fetchJWT : result : ', result);
