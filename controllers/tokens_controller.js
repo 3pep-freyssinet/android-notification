@@ -340,7 +340,8 @@ exports.renewTokensUpdateJWTEnvironment = async (req, res) => {
 exports.fetchJWT = async (req, res) => {
     console.log('fetchJWT : start');
 	// Get the userId from the request)
-        const userId = req.query.user_id;
+        //const userId = req.query.user_id; // in case of query string like "..?user_id = ..."
+	const { userId} = req.body;
 	
        console.log('fetchJWT : userId ', userId);
 	    
