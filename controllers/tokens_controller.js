@@ -356,11 +356,15 @@ exports.fetchJWT = async (req, res) => {
 	//console.log('*************************** fetchJWT : result : ', result);
 	const jwt_token = result.rows[0].jwt_token;
 	console.log('fetchJWT : JWT token:',jwt_token);
-	//return jwt_token;
-	return res.status(200).json({ jwt_token: jwt_token });	 
+	   
+	if (!jwt_token) {
+            return res.status(404).json({ error: 'JWT not found for the specified user' });
+        }
+
+        res.status(200).json({ jwt_token });	 
     } catch (error) {
 	console.error('Error getting JWT token:', error);
-	return res.status(400).json({ error: 'Error getting jwt' });	
+	res.status(500).json({ error: 'Internal server error' });
     }
 }
 
