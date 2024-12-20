@@ -21,7 +21,7 @@ const REFRESH_EXPIRY 		= process.env.JWT_REFRESH_EXPIRY;
 const ALERT_TIME     = 3 * 24 * 60 * 60 * 1000 //3 days, trigger
 
 //console.log('process.env.DATABASE_URL = ' + process.env.DATABASE_URL);
-console.log('pool = ' + pool);
+console.log('tokens_controller : pool = ' + pool);
 
 // Register a new user
 exports.refreshJWTToken = async (req, res) => {
