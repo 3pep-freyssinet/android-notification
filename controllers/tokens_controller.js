@@ -177,6 +177,66 @@ const storeTokens = async (userId, accessToken, refreshToken) => {
     }
 };
 
+
+//renew all tokens handler
+exports.renewAllTokensHandler = async (req, res) => {
+    try {
+        // Fetch all user IDs from the database
+        const userQuery = 'SELECT id FROM users';
+        const { rows: users } = await pool.query(userQuery);
+
+        if (!users || users.length === 0) {
+            return res.status(404).json({ message: 'No registered users found' });
+        }
+
+        const renewalResults = [];
+
+        for (const user of users) {
+            try {
+                // Use renewTokensHandler directly
+                const tokens = await exports.renewAllTokensHandler(user.id);
+                renewalResults.push({ userId: user.id, success: true, tokens });
+            } catch (error) {
+                console.error(`Error renewing tokens for user ID: ${user.id}`, error);
+                renewalResults.push({ userId: user.id, success: false, error: error.message });
+            }
+        }
+
+        res.status(200).json({
+            message: 'Token renewal process completed',
+            results: renewalResults,
+        });
+    } catch (error) {
+        console.error('Error in batch token renewal:', error);
+        res.status(500).json({ message: 'Failed to renew tokens for all users', error: error.message });
+    }
+};
+
+
+//renew token handler
+// Handler function that renews tokens for a given user ID
+exports.renewAllTokensHandler = async (userId) => {
+    try {
+        // Generate new tokens
+        const accessToken = jwt.sign({ userId }, JWT_SECRET, { expiresIn: JWT_EXPIRY || '7d' });
+        const refreshToken = jwt.sign({ userId }, REFRESH_TOKEN_SECRET, { expiresIn: REFRESH_EXPIRY || '30d' });
+
+        // Update the database with the new tokens
+        await pool.query('UPDATE jwt_tokens SET jwt_token = $1 WHERE user_id = $2', [accessToken, userId]);
+        await pool.query('UPDATE refresh_tokens SET refresh_token = $1 WHERE user_id = $2', [refreshToken, userId]);
+
+        console.log(`Tokens renewed successfully for user ID: ${userId}`);
+
+        // Return the new tokens
+        return { accessToken, refreshToken };
+    } catch (error) {
+        console.error(`Error renewing tokens for user ID: ${userId}`, error);
+        throw error; // Let the caller handle the error
+    }
+};
+}
+
+
 //renew token handler
 exports.renewTokensHandler = async (req, res) => {
     try {
