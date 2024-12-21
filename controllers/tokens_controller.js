@@ -218,6 +218,8 @@ exports.renewAllTokensHandler = async (req, res) => {
 //renew token handler
 // Handler function that renews tokens for a given user ID
 exports.renewAllTokensHandler = async (userId) => {
+	console.log('renewAllTokensHandler : start ');
+	if(true)return;
     try {
         // Generate new tokens
         const accessToken = jwt.sign({ userId }, JWT_SECRET, { expiresIn: JWT_EXPIRY || '7d' });
