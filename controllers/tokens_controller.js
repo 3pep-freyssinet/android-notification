@@ -234,7 +234,6 @@ exports.renewAllTokensHandler = async (userId) => {
         throw error; // Let the caller handle the error
     }
 };
-}
 
 
 //renew token handler
