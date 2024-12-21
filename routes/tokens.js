@@ -9,6 +9,7 @@ console.log("routes/tokens");
 // Define routes
 router.post('/refresh-jwt-token', authMiddleware, tokensController.refreshJWTToken);                   // POST /tokens/refresh-jwt-token
 router.post('/renew-tokens', authMiddleware, tokensController.renewTokensHandler);                     // POST /tokens/renew-tokens
+router.post('/renew-all-tokens', tokensController.renewAllTokensHandler);                              // POST /tokens/renew-all-tokens
 router.post('/update-jwt-env', authMiddleware, tokensController.updateJWTEnvironment);                 // POST /tokens/update-jwt_env
 router.post('/renew-jwt-update-env', authMiddleware, tokensController.renewTokensUpdateJWTEnvironment);// POST /tokens/renew-jwt-update-env
 router.post('/fetch-jwt', tokensController.fetchJWT);                                                  // POST /tokens/fetch-jwt
