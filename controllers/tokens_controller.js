@@ -189,6 +189,8 @@ exports.renewAllTokensHandler = async (req, res) => {
             return res.status(404).json({ message: 'No registered users found' });
         }
 
+	console.error('renewAllTokensHandler : users.length : ', renewAllTokensHandler);
+	    
         const renewalResults = [];
 
         for (const user of users) {
