@@ -104,7 +104,7 @@ exports.registerUser = async (req, res) => {
 		console.log('registered : refresh_token : ' + refresh_token);
                
 	        //save refresh Token in database
-		const save_refresh_token = await saveRefreshToken(user, refresh_token);
+		const save_refresh_token = await storeRefreshTokenInDatabase(user, refresh_token);
 	    
 		// Send back the 'jwt token' and 'refresh' token along with a success message
 		res.status(200).json({ 
@@ -143,6 +143,7 @@ exports.registerUser = async (req, res) => {
 		}
 	}
 
+	/*
        // Save refresh token to database for a user
 	async function saveRefreshToken(user, refresh_token) {
 		// Assuming you have a database table for refresh tokens associated with users
@@ -163,6 +164,7 @@ exports.registerUser = async (req, res) => {
 			console.error('registered : store refresh token : failure : ' + error);
 		}
 	}
+        */
 
 	// Function to generate a random refresh token
 	function generateRefreshToken() {
