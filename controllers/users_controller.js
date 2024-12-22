@@ -130,12 +130,30 @@ exports.registerUser = async (req, res) => {
 		console.log('registered : store jwt token');
 		
 		try{
+			/*
 			const result = await pool.query('INSERT INTO jwt_tokens (user_id, jwt_token, username) VALUES ($1, $2, $3) RETURNING id', [
 				user.id,
 				jwt_token,
 				user.username	
 			]);
+			*/
 			
+			const result = await pool.query(`
+  			INSERT INTO jwt_tokens (user_id, jwt_token, username, last_updated)
+  			VALUES ($1, $2, $3, now())
+ 			 ON CONFLICT (user_id) 
+  			DO UPDATE SET 
+    			jwt_token = EXCLUDED.jwt_token,
+    			username = EXCLUDED.username,
+    			last_updated = now()
+  			RETURNING id
+			`, [
+  				user.id,
+  				jwt_token,
+  				user.username
+			]);
+
+
 			console.log('registered : store jwt token : result.rows.id : ' + result.rows[0].id); //Object.keys(result.rows));
 		
 		}catch(error){
@@ -193,14 +211,7 @@ exports.registerUser = async (req, res) => {
 		console.error('registered : store refresh token : failure : ' + error);
 	}
 }
-
-	// Generate and store refresh token and store it db
-	async function handleRefreshTokenGeneration(user) {
-			const refreshToken = generateRefreshToken();
-			await storeRefreshTokenInDatabase(user, refreshToken);
-			return refreshToken;
-	}
-
+	
 // Get user by ID
 exports.getUser = async (req, res) => {
   const userId = req.params.id;
@@ -290,19 +301,27 @@ exports.loginUser = async (req, res) => {
 		
 		// Generate Refresh token and store it in db
 		const refresh_token = await handleRefreshTokenGeneration(user);
-		console.log('registered : refresh_token : ' + refresh_token);
+		console.log('login : refresh_token : ' + refresh_token);
 
 
         // Optionally store the refresh token in the database or send it to the client
         //await pool.query('INSERT INTO refresh_tokens (user_id, refresh_token) VALUES ($1, $2)', [user.id, refreshToken]);
 
-        // Send jwt token, refresh token and refresh token to the client
+        // Send jwt token and refresh token to the client
         res.status(200).json({ jwt_token:jwt_token, refresh_token:refresh_token, refresh_expiry: REFRESH_EXPIRY});
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
     }
 };
+
+ //called in "login"           
+// Generate and store refresh token and store it db
+async function handleRefreshTokenGeneration(user) {
+	const refreshToken = generateRefreshToken();
+	await storeRefreshTokenInDatabase(user, refreshToken);
+	return refreshToken;
+}
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //verify captcha
  exports.verifyCaptcha = async (req, res) => {
