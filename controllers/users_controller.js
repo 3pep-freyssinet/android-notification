@@ -94,7 +94,7 @@ exports.registerUser = async (req, res) => {
 			{ expiresIn: JWT_EXPIRY } // Token expiry 1 day
 		);
 		
-		//save jwt Token
+		//save jwt Token in database
 		const save_jwt_token = await saveJWTToken(user, jwt_token);
 		
 		console.log('registered : jwt_token : ' + jwt_token);
@@ -102,7 +102,10 @@ exports.registerUser = async (req, res) => {
 		// Generate Refresh token
 		const refresh_token = await handleRefreshTokenGeneration(user);
 		console.log('registered : refresh_token : ' + refresh_token);
-
+               
+	        //save refresh Token in database
+		const save_refresh_token = await saveRefreshToken(user, refresh_token);
+	    
 		// Send back the 'jwt token' and 'refresh' token along with a success message
 		res.status(200).json({ 
 			message: 'User registered successfully', 
@@ -139,7 +142,28 @@ exports.registerUser = async (req, res) => {
 			console.error('registered : store jwt token : failure : ' + error);
 		}
 	}
-	
+
+       // Save refresh token to database for a user
+	async function saveRefreshToken(user, refresh_token) {
+		// Assuming you have a database table for refresh tokens associated with users
+		// Save the refresh token with an expiration time (e.g., 1 day)
+		
+		console.log('registered : saveRefreshToken : store refresh token');
+		
+		try{
+			const result = await pool.query('INSERT INTO refresh_tokens (user_id, refresh_token, username) VALUES ($1, $2, $3) RETURNING id', [
+				user.id,
+				jwt_token,
+				user.username	
+			]);
+			
+			console.log('registered : store refresh token : result.rows.id : ' + result.rows[0].id); //Object.keys(result.rows));
+		
+		}catch(error){
+			console.error('registered : store refresh token : failure : ' + error);
+		}
+	}
+
 	// Function to generate a random refresh token
 	function generateRefreshToken() {
 		// Create a random string of 64 characters
