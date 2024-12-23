@@ -105,7 +105,9 @@ exports.registerUser = async (req, res) => {
 		
         // Simulate a user object after registration
         const user = { id: userId, username: username, sector: sector, branch: branch };
-
+	
+	console.log('register : JWT_EXPIRY : ', JWT_EXPIRY); 
+	    
 	const expiryDays = parseInt(JWT_EXPIRY.replace('d', ''), 1); // Extract the number part, the default is 1 day
 	 console.log('register : expiryDays : ', expiryDays); 
 	    
@@ -152,7 +154,7 @@ exports.registerUser = async (req, res) => {
 };
 
 	// Save jwt token to database for a user
-	async function saveJWTToken(user, jwt_token, expire_at) {
+	async function saveJWTToken(user, jwt_token, expires_at) {
 		// Assuming you have a database table for jwt tokens associated with users
 		
 		console.log('registered : store jwt token');
@@ -174,13 +176,13 @@ exports.registerUser = async (req, res) => {
     			jwt_token    = EXCLUDED.jwt_token,
     			username     = EXCLUDED.username,
     			last_updated = now(),
-       			expire_at    = expire_at
+       			expire_at    = EXCLUDED.expire_at
   			RETURNING id
 			`, [
   				user.id,
   				jwt_token,
   				user.username,
-				expire_at
+				expires_at
 			]);
 
 
