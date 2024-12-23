@@ -80,6 +80,7 @@ exports.refreshJWTToken = async (req, res) => {
 
 		//create a date expiration
 		
+		const expiresat = new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000);
     return {refreshToken, expire_at};
 	}
 	
