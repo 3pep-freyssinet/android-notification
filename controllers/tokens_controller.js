@@ -58,13 +58,13 @@ exports.refreshJWTToken = async (req, res) => {
 	var newRefreshToken;
 	//if(isRefreshTokenExpired){  //the 'refresh-token' is not expired but it remains less than 3 days to dead date.
 		//Generate new 'refresh-token'
-		{newRefreshToken, expires_at} = generateRefreshToken();
-		
+		const { refreshToken: newRefreshToken, expires_at } = generateRefreshToken();
+
 		//update the db
 		await updateRefreshToken(userId, newRefreshToken, expires_at);
 	//}
 	
-	console.log("refresh-jwt-token : newRefreshToken : ",newRefreshToken);
+	console.log("refresh-jwt-token : newRefreshToken : ", newRefreshToken);
 
 	//create a JWT date expiration
 	const expiryDays = parseInt(JWT_EXPIRY.replace('d', ''), 1); // Extract the number part, the default is 1 day
