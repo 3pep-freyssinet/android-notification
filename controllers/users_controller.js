@@ -134,7 +134,9 @@ exports.registerUser = async (req, res) => {
 	    
 	//save refresh Token in database
 	const save_refresh_token = await storeRefreshTokenInDatabase(user, refresh_token, expires_at);
-    
+	    
+       console.log('registered : user : ', user, ' refresh_token : ' + refresh_token, ' expires_at : ', expires_at);
+	    
 	// Send back the 'jwt token' and 'refresh' token along with a success message
 	res.status(200).json({ 
 		message: 'User registered successfully', 
@@ -192,7 +194,6 @@ exports.registerUser = async (req, res) => {
 	}
 
 	/*
- 
        // Save refresh token to database for a user
 	async function saveRefreshToken(user, refresh_token) {
 		// Assuming you have a database table for refresh tokens associated with users
@@ -247,7 +248,9 @@ exports.registerUser = async (req, res) => {
 	// Save refresh token to database for a user
 	async function storeRefreshTokenInDatabase(user, refreshToken, expires_at) {
 		// Assuming you have a database table for refresh tokens associated with users
-
+		
+		console.log('storeRefreshTokenInDatabase : user : ', user, ' refreshToken : ', refreshToken, ' expires_at : ', expires_at);
+		
 		/*
 		// Parse the number from the 'REFRESH_EXPIRY' string and  Extract the number part
 		const expiryDays = parseInt(REFRESH_EXPIRY.replace('d', ''), 10); // Extract the number part
