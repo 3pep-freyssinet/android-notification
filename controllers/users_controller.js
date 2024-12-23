@@ -107,6 +107,8 @@ exports.registerUser = async (req, res) => {
         const user = { id: userId, username: username, sector: sector, branch: branch };
 
 	const expiryDays = parseInt(JWT_EXPIRY.replace('d', ''), 1); // Extract the number part, the default is 1 day
+	 console.log('register : expiryDays : ', expiryDays); 
+	    
 	const expires_at = new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000);
 	console.log('register : expires_at : ', expires_at);
 	    
@@ -150,7 +152,7 @@ exports.registerUser = async (req, res) => {
 };
 
 	// Save jwt token to database for a user
-	async function saveJWTToken(user, jwt_token, expires_at) {
+	async function saveJWTToken(user, jwt_token, expire_at) {
 		// Assuming you have a database table for jwt tokens associated with users
 		
 		console.log('registered : store jwt token');
@@ -165,20 +167,20 @@ exports.registerUser = async (req, res) => {
 			*/
 			
 			const result = await pool.query(`
-  			INSERT INTO jwt_tokens (user_id, jwt_token, username, last_updated, expires_at)
+  			INSERT INTO jwt_tokens (user_id, jwt_token, username, last_updated, expire_at)
   			VALUES ($1, $2, $3, now(), $4)
  			 ON CONFLICT (user_id) 
   			DO UPDATE SET 
-    			jwt_token = EXCLUDED.jwt_token,
-    			username = EXCLUDED.username,
+    			jwt_token    = EXCLUDED.jwt_token,
+    			username     = EXCLUDED.username,
     			last_updated = now(),
-       			expires_at = EXCLUDED.username
+       			expire_at    = expire_at
   			RETURNING id
 			`, [
   				user.id,
   				jwt_token,
   				user.username,
-				expires_at
+				expire_at
 			]);
 
 
