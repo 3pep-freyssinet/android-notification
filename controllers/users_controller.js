@@ -105,15 +105,8 @@ exports.registerUser = async (req, res) => {
 		
         // Simulate a user object after registration
         const user = { id: userId, username: username, sector: sector, branch: branch };
-	
-	console.log('register : JWT_EXPIRY : ', JWT_EXPIRY, ' JWT_EXPIRY.length : ', JWT_EXPIRY.length); 
-	const extract = JWT_EXPIRY.replace('d', '');
-
-        const expiryDays_ = parseInt(extract, 1);
-	      
-	console.log('register : JWT_EXPIRY extract : ', extract, ' expiryDays_ : ', expiryDays_);
 	    
-	const expiryDays = parseInt(JWT_EXPIRY.replace('d', ''), 1); // Extract the number part, the default is 1 day
+	const expiryDays = parseInt(JWT_EXPIRY.replace('d', ''), 10); // The radix '10' specifies the base for parsing.
 	 console.log('register : expiryDays : ', expiryDays); 
 	    
 	const expires_at = new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000);
@@ -135,7 +128,7 @@ exports.registerUser = async (req, res) => {
 	const refresh_token = await handleRefreshTokenGeneration(user);
 	console.log('registered : refresh_token : ' + refresh_token);
 
-	expiryDays = parseInt(REFRESH_EXPIRY.replace('d', ''), 7); // Extract the number part, the default is 7 day
+	expiryDays = parseInt(REFRESH_EXPIRY.replace('d', ''), 10); // '10' is the base parsing
 	expires_at = new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000);
 	
 	    
