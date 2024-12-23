@@ -281,7 +281,7 @@ exports.registerUser = async (req, res) => {
   			RETURNING id
 			`, [
   				user.id,
-  				refresh_token,
+  				refreshToken,
   				user.username,
 				expires_at
 			]);
