@@ -97,23 +97,24 @@ exports.registerUser = async (req, res) => {
         result = await pool.query('INSERT INTO users_notification (username, password, android_id, sector, branch)' + 
 		                          ' VALUES ($1, $2, $3, $4, $5) RETURNING id', [username, hashedPassword, androidId, sector, branch]);
 		
-	//console.log('register : result : ',result);
+	//console.log('register : result : ', result);
 		
         // Get the generated id from the result
         const userId = result.rows[0].id;
-		
+	console.log('register : userId : ', userId);
 		
         // Simulate a user object after registration
         const user = { id: userId, username: username, sector: sector, branch: branch };
 
 	const expiryDays = parseInt(JWT_EXPIRY.replace('d', ''), 1); // Extract the number part, the default is 1 day
 	const expires_at = new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000);
-	
+	console.log('register : expires_at : ', expires_at);
+	    
 	// Generate a JWT for the registered user
 	const jwt_token = jwt.sign(
-		{ userId: user.id, username: user.username }, // Payload
-		JWT_SECRET, // Secret key
-		{ expiresIn: expires_at } // Token expiry
+		{ userId: user.id, username: user.username }, 	// Payload
+		JWT_SECRET, 					// Secret key
+		{ expiresIn: JWT_EXPIRY } 			// Token expiry
 	);
 		
 	//save jwt Token in database
