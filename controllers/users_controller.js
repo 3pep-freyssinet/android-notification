@@ -71,12 +71,12 @@ exports.registerUser = async (req, res) => {
         // Check if user already exists
         const existingUser = await pool.query('SELECT * FROM users_notification WHERE username = $1', [username]);
 		
-		console.log('registerUser : existingUser : ', existingUser);
+		//console.log('registerUser : existingUser : ', existingUser);
 		
 		console.log('registerUser : existingUser.rows.length  : ', existingUser.rows.length );
         
 		if ((existingUser.rows.length != 0 ) && (existingUser.rows.length > 0)) {
-                    onsole.log('register : the user already exists');
+                    console.log('register : the user already exists');
 		    return res.status(400).json({ message: 'Username already exists' });
                  }
 
