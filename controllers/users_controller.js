@@ -126,16 +126,18 @@ exports.registerUser = async (req, res) => {
 	
 	// Generate Refresh token
 	const refresh_token = await handleRefreshTokenGeneration(user);
-	console.log('registered : refresh_token : ' + refresh_token);
+	console.log('registered : refresh_token : ', refresh_token);
 
 	expiryDays = parseInt(REFRESH_EXPIRY.replace('d', ''), 10); // '10' is the base parsing
 	expires_at = new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000);
 	
+	console.log('registered : refresh_expires_at : ', expires_at);
+
 	    
 	//save refresh Token in database
 	const save_refresh_token = await storeRefreshTokenInDatabase(user, refresh_token, expires_at);
 	    
-       console.log('registered : user : ', user, ' refresh_token : ' + refresh_token, ' expires_at : ', expires_at);
+       console.log('registered : user : ', user, ' refresh_token : ', refresh_token, ' expires_at : ', expires_at);
 	    
 	// Send back the 'jwt token' and 'refresh' token along with a success message
 	res.status(200).json({ 
