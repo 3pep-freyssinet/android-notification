@@ -87,34 +87,34 @@ exports.registerUser = async (req, res) => {
         // Simulate a user object after registration
         const user = { id: userId, username: username, sector: sector, branch: branch };
 
-		// Generate a JWT for the registered user
-		const jwt_token = jwt.sign(
-			{ userId: user.id, username: user.username }, // Payload
-			JWT_SECRET, // Secret key
-			{ expiresIn: JWT_EXPIRY } // Token expiry 1 day
-		);
+	// Generate a JWT for the registered user
+	const jwt_token = jwt.sign(
+		{ userId: user.id, username: user.username }, // Payload
+		JWT_SECRET, // Secret key
+		{ expiresIn: JWT_EXPIRY } // Token expiry 1 day
+	);
 		
-		//save jwt Token in database
-		const save_jwt_token = await saveJWTToken(user, jwt_token);
-		
-		console.log('registered : jwt_token : ' + jwt_token);
-		
-		// Generate Refresh token
-		const refresh_token = await handleRefreshTokenGeneration(user);
-		console.log('registered : refresh_token : ' + refresh_token);
-               
-	        //save refresh Token in database
-		const save_refresh_token = await storeRefreshTokenInDatabase(user, refresh_token);
-	    
-		// Send back the 'jwt token' and 'refresh' token along with a success message
-		res.status(200).json({ 
-			message: 'User registered successfully', 
-			jwt_token: jwt_token,
-			refresh_token: refresh_token,
-			refresh_expiry: REFRESH_EXPIRY
-		});
-		
-		console.error('registered successfully');
+	//save jwt Token in database
+	const save_jwt_token = await saveJWTToken(user, jwt_token);
+	
+	console.log('registered : jwt_token : ' + jwt_token);
+	
+	// Generate Refresh token
+	const refresh_token = await handleRefreshTokenGeneration(user);
+	console.log('registered : refresh_token : ' + refresh_token);
+       
+	//save refresh Token in database
+	const save_refresh_token = await storeRefreshTokenInDatabase(user, refresh_token);
+    
+	// Send back the 'jwt token' and 'refresh' token along with a success message
+	res.status(200).json({ 
+		message: 'User registered successfully', 
+		jwt_token: jwt_token,
+		refresh_token: refresh_token,
+		refresh_expiry: REFRESH_EXPIRY
+	});
+	
+	console.error('registered successfully');
 		
     } catch (error) {
         console.error('registered failure : ' + error);
@@ -170,12 +170,34 @@ exports.registerUser = async (req, res) => {
 		console.log('registered : saveRefreshToken : store refresh token');
 		
 		try{
-			const result = await pool.query('INSERT INTO refresh_tokens (user_id, refresh_token, username) VALUES ($1, $2, $3) RETURNING id', [
+			/*
+   			const result = await pool.query('INSERT INTO refresh_tokens (user_id, refresh_token, username, ) VALUES ($1, $2, $3) RETURNING id', [
 				user.id,
 				jwt_token,
 				user.username	
 			]);
-			
+			*/
+
+			// Parse the number from the 'REFRESH_EXPIRY' string and  Extract the number part
+			const expiryDays = parseInt(REFRESH_EXPIRY.replace('d', ''), 10); // Extract the number part
+			const expires_at = new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000);
+
+			const result = await pool.query(`
+  			INSERT INTO refresh_tokens (user_id, refresh_token, username, created_at, expires_at)
+  			VALUES ($1, $2, $3, now(), $4)
+ 			 ON CONFLICT (user_id) 
+  			DO UPDATE SET 
+    			refresh_token = EXCLUDED.jwt_token,
+    			username      = EXCLUDED.username,
+    			last_updated  = now()
+  			RETURNING id
+			`, [
+  				user.id,
+  				refresh_token,
+  				user.username,
+				expires_at
+			]);
+
 			console.log('registered : store refresh token : result.rows.id : ' + result.rows[0].id); //Object.keys(result.rows));
 		
 		}catch(error){
@@ -202,11 +224,35 @@ exports.registerUser = async (req, res) => {
 		console.log('storeRefreshTokenInDatabase date : ', new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000));
 		
 		try{
+			/*
 			await pool.query('INSERT INTO refresh_tokens (user_id, refresh_token, expires_at) VALUES ($1, $2, $3)', [
 				user.id,
 				refreshToken,
 				new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000) // expiryDays days in the future
 			]);
+			*/
+
+			// Parse the number from the 'REFRESH_EXPIRY' string and  Extract the number part
+			const expiryDays = parseInt(REFRESH_EXPIRY.replace('d', ''), 10); // Extract the number part
+			const expires_at = new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000);
+
+			const result = await pool.query(`
+  			INSERT INTO refresh_tokens (user_id, refresh_token, username, created_at, expires_at)
+  			VALUES ($1, $2, $3, now(), $4)
+ 			 ON CONFLICT (user_id) 
+  			DO UPDATE SET 
+    			refresh_token = EXCLUDED.refresh_token,
+    			username      = EXCLUDED.username,
+    			last_updated  = now(),
+       			expires_at    = EXCLUDED.expires_at
+  			RETURNING id
+			`, [
+  				user.id,
+  				refresh_token,
+  				user.username,
+				expires_at
+			]);
+			
 		}catch(error){
 		console.error('registered : store refresh token : failure : ' + error);
 	}
