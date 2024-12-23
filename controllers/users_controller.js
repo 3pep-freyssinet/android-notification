@@ -170,13 +170,13 @@ exports.registerUser = async (req, res) => {
 		console.log('registered : saveRefreshToken : store refresh token');
 		
 		try{
-			/*
+			
    			const result = await pool.query('INSERT INTO refresh_tokens (user_id, refresh_token, username, ) VALUES ($1, $2, $3) RETURNING id', [
 				user.id,
 				jwt_token,
 				user.username	
 			]);
-			*/
+			
 
 			// Parse the number from the 'REFRESH_EXPIRY' string and  Extract the number part
 			const expiryDays = parseInt(REFRESH_EXPIRY.replace('d', ''), 10); // Extract the number part
@@ -210,7 +210,7 @@ exports.registerUser = async (req, res) => {
 	function generateRefreshToken() {
 		// Create a random string of 64 characters
 		const refreshToken = crypto.randomBytes(64).toString('hex');
-    return refreshToken;
+        return refreshToken;
 }
 
 	// Save refresh token to database for a user
