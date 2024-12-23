@@ -192,6 +192,7 @@ exports.registerUser = async (req, res) => {
 	}
 
 	/*
+ 
        // Save refresh token to database for a user
 	async function saveRefreshToken(user, refresh_token) {
 		// Assuming you have a database table for refresh tokens associated with users
@@ -271,17 +272,17 @@ exports.registerUser = async (req, res) => {
 			
 			const result = await pool.query(`
   			INSERT INTO refresh_tokens (user_id, refresh_token, created_at, expires_at)
-  			VALUES ($1, $2, now(), $3)
+  			VALUES ($1, $2, $3, $4)
  			 ON CONFLICT (user_id) 
   			DO UPDATE SET 
     			refresh_token = EXCLUDED.refresh_token,
-    			username      = EXCLUDED.username,
-    			last_updated  = now(),
+       			created_at    = EXCLUDED.created_at
        			expires_at    = EXCLUDED.expires_at
   			RETURNING id
 			`, [
   				user.id,
   				refreshToken,
+				now(),
 				expires_at
 			]);
 			
