@@ -106,9 +106,9 @@ exports.registerUser = async (req, res) => {
         // Simulate a user object after registration
         const user = { id: userId, username: username, sector: sector, branch: branch };
 	
-	console.log('register : JWT_EXPIRY : ', JWT_EXPIRY); 
+	console.log('register : JWT_EXPIRY : ', JWT_EXPIRY, ' JWT_EXPIRY.length : ', JWT_EXPIRY.length); 
 	    
-	const expiryDays = parseInt(JWT_EXPIRY.replace('d', ''), 1); // Extract the number part, the default is 1 day
+	const expiryDays = parseInt(JWT_EXPIRY.replace("d", ""), 1); // Extract the number part, the default is 1 day
 	 console.log('register : expiryDays : ', expiryDays); 
 	    
 	const expires_at = new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000);
