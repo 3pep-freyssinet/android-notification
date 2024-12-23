@@ -107,9 +107,11 @@ exports.registerUser = async (req, res) => {
         const user = { id: userId, username: username, sector: sector, branch: branch };
 	
 	console.log('register : JWT_EXPIRY : ', JWT_EXPIRY, ' JWT_EXPIRY.length : ', JWT_EXPIRY.length); 
-	    const extract = JWT_EXPIRY.replace('d', '');
-	    
-	 console.log('register : JWT_EXPIRY extract : ', extract);
+	const extract = JWT_EXPIRY.replace('d', '');
+
+        const expiryDays_ = parseInt(extract, 1);
+	      
+	console.log('register : JWT_EXPIRY extract : ', extract, ' expiryDays_ : ', expiryDays_);
 	    
 	const expiryDays = parseInt(JWT_EXPIRY.replace('d', ''), 1); // Extract the number part, the default is 1 day
 	 console.log('register : expiryDays : ', expiryDays); 
