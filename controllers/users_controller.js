@@ -276,13 +276,12 @@ exports.registerUser = async (req, res) => {
  			 ON CONFLICT (user_id) 
   			DO UPDATE SET 
     			refresh_token = EXCLUDED.refresh_token,
-       			created_at    = EXCLUDED.created_at
+       			created_at    = now(),
        			expires_at    = EXCLUDED.expires_at
   			RETURNING id
 			`, [
   				user.id,
   				refreshToken,
-				now(),
 				expires_at
 			]);
 			
