@@ -272,7 +272,7 @@ exports.registerUser = async (req, res) => {
 			
 			const result = await pool.query(`
   			INSERT INTO refresh_tokens (user_id, refresh_token, created_at, expires_at)
-  			VALUES ($1, $2, $3, $4)
+  			VALUES ($1, $2, now(), $3)
  			 ON CONFLICT (user_id) 
   			DO UPDATE SET 
     			refresh_token = EXCLUDED.refresh_token,
