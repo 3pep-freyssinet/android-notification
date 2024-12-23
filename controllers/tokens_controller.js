@@ -55,7 +55,6 @@ exports.refreshJWTToken = async (req, res) => {
 	console.log("refresh-jwt-token : is refreshToken expired  : ", isRefreshTokenExpired );
 	*/
 	
-	var newRefreshToken;
 	//if(isRefreshTokenExpired){  //the 'refresh-token' is not expired but it remains less than 3 days to dead date.
 		//Generate new 'refresh-token'
 		const { refreshToken: newRefreshToken, expires_at } = generateRefreshToken();
