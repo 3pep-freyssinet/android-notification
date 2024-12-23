@@ -38,6 +38,25 @@ const CAPTCHA_SITE_KEY = process.env.CAPTCHA_SITE_KEY;
 
 console.log('pool = ' + pool);
 
+/* get expiry date from jwt token ****************
+const jwt = require('jsonwebtoken');
+
+// Example JWT token (replace with the actual token)
+const token = 'your.jwt.token';
+
+// Decode the token without verification
+const decoded = jwt.decode(token);
+
+if (decoded && decoded.exp) {
+  // Convert the expiry time to a human-readable format
+  const expiryDate = new Date(decoded.exp * 1000);
+  console.log('Token expires at:', expiryDate);
+} else {
+  console.log('Could not retrieve expiration date from token');
+}
+
+*/
+
 // Register a new user
 exports.registerUser = async (req, res) => {
     // Register user endpoint
