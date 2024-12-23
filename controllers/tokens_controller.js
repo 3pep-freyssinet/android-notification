@@ -89,8 +89,8 @@ exports.refreshJWTToken = async (req, res) => {
 
 	//create a date expiration
 	const expiryDays = parseInt(REFRESH_EXPIRY.replace('d', ''), 1); // Extract the number part, the default is 1 day
-	const expire_at  = new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000);
-    return {refreshToken, expire_at};
+	const expires_at  = new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000);
+        return {refreshToken:refreshToken, expires_at:expires_at};
 	}
 	
    // Function to update the new refresh token in the database
