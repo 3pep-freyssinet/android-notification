@@ -18,12 +18,13 @@ const REFRESH_TOKEN_SECRET 	= process.env.REFRESH_TOKEN_SECRET;
 const JWT_EXPIRY 		= process.env.JWT_EXPIRY;
 const REFRESH_EXPIRY 		= process.env.JWT_REFRESH_EXPIRY;
 
-const ALERT_TIME     = 3 * 24 * 60 * 60 * 1000 //3 days, trigger
+const numberDay      = 0; // number of day before to trigger a refresh to ken.
+const ALERT_TIME     = numberDay * 24 * 60 * 60 * 1000 //3 days, trigger and refresh the token 3 days before expiration
 
 //console.log('process.env.DATABASE_URL = ' + process.env.DATABASE_URL);
 console.log('tokens_controller : pool = ' + pool);
 
-// Register a new user
+// Refresh the jwt token.
 exports.refreshJWTToken = async (req, res) => {
 	// refresh JWT Token endpoint
     
@@ -33,12 +34,12 @@ exports.refreshJWTToken = async (req, res) => {
 	
 	console.log("refresh-jwt-token : refreshToken : ", refreshToken );
 	
-    // Verify the refresh token
+    // Verify the refresh token if it exists in database
 	const {userId, expires_at} = await verifyRefreshToken(refreshToken);
 	
 	console.log("refresh-jwt-token : refreshToken : userId = ",userId, " expires_at = ", expires_at);
 	
-	// Create a Date object from the string
+	// Create a Date object from the 'expire_at' string
     const date = new Date(expires_at);
 
     // Subtract 3 days (3 days * 24 hours * 60 minutes * 60 seconds * 1000 milliseconds)
@@ -52,12 +53,12 @@ exports.refreshJWTToken = async (req, res) => {
 	console.log("refresh-jwt-token : is refreshToken expired  : ", isRefreshTokenExpired );
 	
 	var newRefreshToken;
-	if(isRefreshTokenExpired){//the 'refresh-token' is not expired but it remains less than 3 days to dead date.
+	if(isRefreshTokenExpired){  //the 'refresh-token' is not expired but it remains less than 3 days to dead date.
 		//Generate new 'refresh-token'
-		newRefreshToken = generateRefreshToken();
+		{newRefreshToken, expire_at} = generateRefreshToken();
 		
 		//update the db
-		await updateRefreshToken(userId, newRefreshToken);
+		await updateRefreshToken(userId, newRefreshToken, expire_at);
 	}
 	
 	console.log("refresh-jwt-token : newRefreshToken : ",newRefreshToken);
@@ -76,7 +77,10 @@ exports.refreshJWTToken = async (req, res) => {
 	function generateRefreshToken() {
 		// Create a random string of 64 characters
 		const refreshToken = crypto.randomBytes(64).toString('hex');
-    return refreshToken;
+
+		//create a date expiration
+		
+    return {refreshToken, expire_at};
 	}
 	
    // Function to update the new refresh token in the database
