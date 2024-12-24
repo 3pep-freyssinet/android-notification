@@ -139,7 +139,7 @@ exports.registerUser = async (req, res) => {
 	console.log('registered : jwt_token : ', jwt_token, ' created_at : ', created_at, ' expires_at : ', jwt_expires_at);
 	
 	// Generate Refresh token
-	const {refresh_token} = await generateRefreshToken();
+	const refresh_token = await generateRefreshToken();
 	console.log('registered : refresh_token : ', refresh_token, ' refresh_created_at : ', created_at, ' refresh_expires_at : ', refresh_expires_at);
 
 	/*
@@ -270,7 +270,7 @@ exports.registerUser = async (req, res) => {
     		}
 		*/
 		
-    	return { refreshToken};
+    	return refreshToken;
 }
 
 	// Save refresh token to database for a user
