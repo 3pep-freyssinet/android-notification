@@ -129,9 +129,11 @@ exports.registerUser = async (req, res) => {
 	console.log('registered : refresh_token : ', refresh_token);
 
 	const refresh_expiryDays = parseInt(REFRESH_EXPIRY.replace('d', ''), 10); // '10' is the base parsing
+	console.log('registered : refresh_expiryDays : ', refresh_expiryDays);
+	
 	const refresh_expires_at = new Date(Date.now() + refresh_expiryDays * 24 * 60 * 60 * 1000);
 	
-	console.log('registered : refresh_expires_at : ', refresh_expires_at);
+	console.log('registered before call : refresh_expires_at : ', refresh_expires_at);
 
 	    
 	//save refresh Token in database
@@ -251,7 +253,7 @@ exports.registerUser = async (req, res) => {
 	async function storeRefreshTokenInDatabase(user, refreshToken, expires_at) {
 		// Assuming you have a database table for refresh tokens associated with users
 		
-		console.log('storeRefreshTokenInDatabase : user : ', user, ' refreshToken : ', refreshToken, ' expires_at : ', expires_at);
+		console.log('storeRefreshTokenInDatabase start : user : ', user, ' refreshToken : ', refreshToken, ' expires_at : ', expires_at);
 		
 		/*
 		// Parse the number from the 'REFRESH_EXPIRY' string and  Extract the number part
