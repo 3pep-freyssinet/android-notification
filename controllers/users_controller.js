@@ -411,7 +411,7 @@ exports.loginUser = async (req, res) => {
 // Generate and store refresh token and store it db
 async function handleRefreshTokenGeneration(user) {
 	const refreshToken = generateRefreshToken();
-	//await storeRefreshTokenInDatabase(user, refreshToken);
+	await storeRefreshTokenInDatabase(user, refreshToken);
 	return refreshToken;
 }
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
