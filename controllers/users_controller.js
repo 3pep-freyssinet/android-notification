@@ -410,6 +410,10 @@ exports.loginUser = async (req, res) => {
 		// If password is correct, reset failed attempts and lockout
 		await pool.query('UPDATE users_notification SET failed_attempts = 0, lockout_until = NULL WHERE username = $1', [username]);
 
+	    //handle the creation and storing the JWT and REFRESH token.
+	const{jwt_token, refresh_token, refresh_expires_at} = await handleTokens(user);
+
+	/*
 	//current date
 	const now = Date.now();
 
@@ -445,7 +449,7 @@ exports.loginUser = async (req, res) => {
 	// Generate Refresh token
 	const refresh_token = await generateRefreshToken();
 	console.log('registered : refresh_token : ', refresh_token, ' refresh_created_at : ', created_at, ' refresh_expires_at : ', refresh_expires_at);
-
+	*/
 	/*
 	const refresh_expiryDays = parseInt(REFRESH_EXPIRY.replace('d', ''), 10); // '10' is the base parsing
 	console.log('registered : refresh_expiryDays : ', refresh_expiryDays);
@@ -456,8 +460,8 @@ exports.loginUser = async (req, res) => {
 	*/
 	    
 	//save refresh Token in database
-	const save_refresh_token = await storeRefreshTokenInDatabase(user, refresh_token, created_at, refresh_expires_at);
-	    
+	//const save_refresh_token = await storeRefreshTokenInDatabase(user, refresh_token, created_at, refresh_expires_at);
+	  /*  
        console.log('registered : user : ', user, ' refresh_token : ', refresh_token, ' expires_at : ', refresh_expires_at);
 	    
 	// Send back the 'jwt token' and 'refresh' token along with a success message
@@ -469,7 +473,7 @@ exports.loginUser = async (req, res) => {
 	});
 	
 	console.error('registered successfully');
-	
+	*/
 	/*
         // Generate JWT tokens and refresh tokens.
         const jwt_token = jwt.sign({ userId: user.id }, JWT_SECRET , { expiresIn: JWT_EXPIRY });
@@ -484,10 +488,10 @@ exports.loginUser = async (req, res) => {
 
         // Optionally store the refresh token in the database or send it to the client
         //await pool.query('INSERT INTO refresh_tokens (user_id, refresh_token) VALUES ($1, $2)', [user.id, refreshToken]);
-
-        // Send jwt token and refresh token to the client
-        res.status(200).json({ jwt_token:jwt_token, refresh_token:refresh_token, refresh_expiry: REFRESH_EXPIRY});
 	*/
+	    
+        // Send jwt token and refresh token to the client
+        res.status(200).json({ jwt_token:jwt_token, refresh_token:refresh_token, refresh_expires_at: refresh_expires_a});
 	    
     } catch (error) {
         console.error(error);
