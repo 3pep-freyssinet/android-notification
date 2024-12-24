@@ -109,7 +109,7 @@ exports.registerUser = async (req, res) => {
 	//handle the creation and storing the JWT and REFRESH token.
 	const{jwt_token, refresh_token, refresh_expires_at} = await handleTokens(user);
 	    
-	console.log('jwt_token : ', jwt_token, ' refresh_token : ', refresh_token, ' refresh_expires_at : ', refresh_expires_at}
+	console.log('jwt_token : ', jwt_token, ' refresh_token : ', refresh_token, ' refresh_expires_at : ', refresh_expires_at)
 	
 	/*
 	//current date
