@@ -136,7 +136,7 @@ exports.registerUser = async (req, res) => {
 	//save jwt Token in database
 	const save_jwt_token = await saveJWTToken(user, jwt_token, created_at, jwt_expires_at);
 	
-	console.log('registered : jwt_token : ', jwt_token, ' created_at : ', created_at, ' expires_at : ', expires_at);
+	console.log('registered : jwt_token : ', jwt_token, ' created_at : ', created_at, ' expires_at : ', jwt_expires_at);
 	
 	// Generate Refresh token
 	const {refresh_token} = await generateRefreshToken();
@@ -154,7 +154,7 @@ exports.registerUser = async (req, res) => {
 	//save refresh Token in database
 	const save_refresh_token = await storeRefreshTokenInDatabase(user, refresh_token, created_at, rerefresh_expires_at);
 	    
-       console.log('registered : user : ', user, ' refresh_token : ', refresh_token, ' expires_at : ', expires_at);
+       console.log('registered : user : ', user, ' refresh_token : ', refresh_token, ' expires_at : ', rerefresh_expires_at);
 	    
 	// Send back the 'jwt token' and 'refresh' token along with a success message
 	res.status(200).json({ 
