@@ -491,7 +491,13 @@ exports.loginUser = async (req, res) => {
 	*/
 	    
         // Send jwt token and refresh token to the client
-        res.status(200).json({ jwt_token:jwt_token, refresh_token:refresh_token, refresh_expires_at: refresh_expires_a});
+        //res.status(200).json({ jwt_token:jwt_token, refresh_token:refresh_token, refresh_expires_at: refresh_expires_a});
+	res.status(200).json({ 
+		message: 'User logged successfully', 
+		jwt_token: jwt_token,
+		refresh_token: refresh_token,
+		refresh_expiry: refresh_expires_at
+	});
 	    
     } catch (error) {
         console.error(error);
