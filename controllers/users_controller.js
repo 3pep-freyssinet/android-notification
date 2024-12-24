@@ -105,11 +105,18 @@ exports.registerUser = async (req, res) => {
 		
         // Simulate a user object after registration
         const user = { id: userId, username: username, sector: sector, branch: branch };
-	    
+
+	//current date
+	const now = Date.now();
+
+	//created at
+	const created_at = new Date(now);
+
+	//expiration date
 	const expiryDays = parseInt(JWT_EXPIRY.replace('d', ''), 10); // The radix '10' specifies the base for parsing.
 	 console.log('register : expiryDays : ', expiryDays); 
 	    
-	const expires_at = new Date(Date.now() + expiryDays * 24 * 60 * 60 * 1000);
+	const expires_at = new Date(now + expiryDays * 24 * 60 * 60 * 1000);
 	console.log('register : expires_at : ', expires_at);
 	    
 	// Generate a JWT for the registered user
@@ -120,9 +127,9 @@ exports.registerUser = async (req, res) => {
 	);
 		
 	//save jwt Token in database
-	const save_jwt_token = await saveJWTToken(user, jwt_token, expires_at);
+	const save_jwt_token = await saveJWTToken(user, jwt_token, created_at, expires_at);
 	
-	console.log('registered : jwt_token : ' + jwt_token);
+	console.log('registered : jwt_token : ', jwt_token, ' created_at : ', created_at, ' expires_at : ', expires_at);
 	
 	// Generate Refresh token
 	const refresh_token = await handleRefreshTokenGeneration(user);
@@ -158,7 +165,7 @@ exports.registerUser = async (req, res) => {
 };
 
 	// Save jwt token to database for a user
-	async function saveJWTToken(user, jwt_token, expires_at) {
+	async function saveJWTToken(user, jwt_token, created_at, expires_at) {
 		// Assuming you have a database table for jwt tokens associated with users
 		
 		console.log('registered : store jwt token');
@@ -174,21 +181,21 @@ exports.registerUser = async (req, res) => {
 			
 			const result = await pool.query(`
   			INSERT INTO jwt_tokens (user_id, jwt_token, username, last_updated, expire_at)
-  			VALUES ($1, $2, $3, now(), $4)
+  			VALUES ($1, $2, $3, $4, $5)
  			 ON CONFLICT (user_id) 
   			DO UPDATE SET 
     			jwt_token    = EXCLUDED.jwt_token,
     			username     = EXCLUDED.username,
-    			last_updated = now(),
+    			last_updated = EXCLUDED.last_updated,
        			expire_at    = EXCLUDED.expire_at
   			RETURNING id
 			`, [
   				user.id,
   				jwt_token,
   				user.username,
+				created_at,
 				expires_at
 			]);
-
 
 			console.log('registered : store jwt token : result.rows.id : ' + result.rows[0].id); //Object.keys(result.rows));
 		
