@@ -137,8 +137,6 @@ exports.registerUser = async (req, res) => {
 	const save_jwt_token = await saveJWTToken(user, jwt_token, created_at, jwt_expires_at);
 	
 	console.log('registered : jwt_token : ', jwt_token, ' created_at : ', created_at, ' expires_at : ', jwt_expires_at);
-	
-	return;
 	    
 	// Generate Refresh token
 	const refresh_token = await generateRefreshToken();
@@ -163,7 +161,7 @@ exports.registerUser = async (req, res) => {
 		message: 'User registered successfully', 
 		jwt_token: jwt_token,
 		refresh_token: refresh_token,
-		refresh_expiry: expires_at
+		refresh_expiry: refresh_expires_at
 	});
 	
 	console.error('registered successfully');
