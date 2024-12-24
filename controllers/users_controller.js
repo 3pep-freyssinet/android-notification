@@ -137,7 +137,7 @@ exports.registerUser = async (req, res) => {
 
 	    
 	//save refresh Token in database
-	const save_refresh_token = await storeRefreshTokenInDatabase(user, refresh_token, refresh_expires_at);
+	//const save_refresh_token = await storeRefreshTokenInDatabase(user, refresh_token, refresh_expires_at);
 	    
        console.log('registered : user : ', user, ' refresh_token : ', refresh_token, ' expires_at : ', expires_at);
 	    
