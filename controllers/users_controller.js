@@ -96,7 +96,7 @@ exports.registerUser = async (req, res) => {
         // Store user in database
         result = await pool.query('INSERT INTO users_notification (username, password, android_id, sector, branch)' + 
 		                          ' VALUES ($1, $2, $3, $4, $5) RETURNING id', [username, hashedPassword, androidId, sector, branch]);
-		
+	  
 	//console.log('register : result : ', result);
 		
         // Get the generated id from the result
@@ -106,6 +106,12 @@ exports.registerUser = async (req, res) => {
         // Simulate a user object after registration
         const user = { id: userId, username: username, sector: sector, branch: branch };
 
+	//handle the creation and storing the JWT and REFRESH token.
+	{jwt_token, refresh_token, refresh_expires_at} = await handleTokens(user);
+	    
+	console.log('jwt_token : ', jwt_token, ' refresh_token : ', refresh_token, ' refresh_expires_at : ', refresh_expires_at}
+	
+	/*
 	//current date
 	const now = Date.now();
 
@@ -155,6 +161,7 @@ exports.registerUser = async (req, res) => {
 	const save_refresh_token = await storeRefreshTokenInDatabase(user, refresh_token, created_at, refresh_expires_at);
 	    
        console.log('registered : user : ', user, ' refresh_token : ', refresh_token, ' expires_at : ', refresh_expires_at);
+	*/
 	    
 	// Send back the 'jwt token' and 'refresh' token along with a success message
 	res.status(200).json({ 
@@ -487,6 +494,60 @@ exports.loginUser = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
     }
 };
+
+async function handleTokens (user){
+	//current date
+	const now = Date.now();
+
+	//created at
+	const created_at = new Date(now);
+
+	//JWT expiration date
+	const expiryDays = parseInt(JWT_EXPIRY.replace('d', ''), 10); // The radix '10' specifies the base for parsing.
+	console.log('register : JWT expiryDays : ', expiryDays); 
+	    
+	const jwt_expires_at = new Date(now + expiryDays * 24 * 60 * 60 * 1000);
+	console.log('register : jwt_expires_at : ', jwt_expires_at);
+
+	//REFRESH expiration date
+	const expiryDays_ = parseInt(REFRESH_EXPIRY.replace('d', ''), 10); // The radix '10' specifies the base for parsing.
+	console.log('register : REFRESH expiryDays : ', expiryDays_); 
+	    
+	const refresh_expires_at = new Date(now + expiryDays_ * 24 * 60 * 60 * 1000);
+	console.log('register : refresh_expires_at : ', refresh_expires_at);
+	    
+	// Generate a JWT for the registered user
+	const jwt_token = jwt.sign(
+		{ userId: user.id, username: user.username }, 	// Payload
+		JWT_SECRET, 					// Secret key
+		{ expiresIn: JWT_EXPIRY } 			// Token expiry
+	);
+		
+	//save jwt Token in database
+	const save_jwt_token = await saveJWTToken(user, jwt_token, created_at, jwt_expires_at);
+	
+	console.log('registered : jwt_token : ', jwt_token, ' created_at : ', created_at, ' expires_at : ', jwt_expires_at);
+	    
+	// Generate Refresh token
+	const refresh_token = await generateRefreshToken();
+	console.log('registered : refresh_token : ', refresh_token, ' refresh_created_at : ', created_at, ' refresh_expires_at : ', refresh_expires_at);
+
+	/*
+	const refresh_expiryDays = parseInt(REFRESH_EXPIRY.replace('d', ''), 10); // '10' is the base parsing
+	console.log('registered : refresh_expiryDays : ', refresh_expiryDays);
+	
+	const refresh_expires_at = new Date(Date.now() + refresh_expiryDays * 24 * 60 * 60 * 1000);
+	
+	console.log('registered before call : refresh_expires_at : ', refresh_expires_at);
+	*/
+	    
+	//save refresh Token in database
+	const save_refresh_token = await storeRefreshTokenInDatabase(user, refresh_token, created_at, refresh_expires_at);
+	    
+       console.log('registered : user : ', user, ' refresh_token : ', refresh_token, ' expires_at : ', refresh_expires_at);
+
+	return {jwt_token, refresh_token, refresh_expires_at};	    
+}
 
  //called in "login"           
 // Generate and store refresh token and store it db
