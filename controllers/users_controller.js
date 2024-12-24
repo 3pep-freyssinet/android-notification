@@ -362,47 +362,108 @@ exports.loginUser = async (req, res) => {
         // Check if the user exists
         const userResult = await pool.query('SELECT * FROM users_notification WHERE username = $1', [username]);
 
-		console.log('(userResult.rows.length === 0) : ', (userResult.rows.length === 0));
+	console.log('(userResult.rows.length === 0) : ', (userResult.rows.length === 0));
 
         if (userResult.rows.length === 0) {
             return res.status(400).json({ message: 'Invalid username or password' });
         }
 
         const user = userResult.rows[0];
-
+	console.log('(login : user : ', user);
+		    
         // Compare the password with the hashed password stored in the database
         const passwordMatch = await bcrypt.compare(password, user.password);
 		
-		console.log('passwordMatch : ', passwordMatch);
+	console.log('passwordMatch : ', passwordMatch);
 		
-		if (!passwordMatch) {
-			// Increase failed attempts count
-			let failedAttempts = user.failed_attempts + 1;
-
-			if (failedAttempts >= MAX_ATTEMPTS) {
-				console.log('!passwordMatch : failedAttempts : ', failedAttempts, ' MAX_ATTEMPTS : ', MAX_ATTEMPTS);
-				const lockoutUntil = new Date(Date.now() + LOCKOUT_DURATION);
-				await pool.query('UPDATE users_notification SET failed_attempts = $1, lockout_until = $2 WHERE username = $3', [failedAttempts, lockoutUntil, username]);
-				//return { error: "Account locked due to too many failed attempts. Try again in 1 hour." };
-				return res.status(400).json({ error: "Account locked due to too many failed attempts. Try again in 1 hour." });
-			} else {
-				console.log('!passwordMatch : failedAttempts : ', failedAttempts, ' MAX_ATTEMPTS : ', MAX_ATTEMPTS);
-				await pool.query('UPDATE users_notification SET failed_attempts = $1 WHERE username = $2', [failedAttempts, username]);
-				//return { error: `Invalid credentials. You have ${MAX_ATTEMPTS - failedAttempts} attempts remaining.` };
-				return res.status(400).json({ error: `Invalid credentials. You have ${MAX_ATTEMPTS - failedAttempts} attempts remaining.` });
+	if (!passwordMatch) {
+		// Increase failed attempts count
+		let failedAttempts = user.failed_attempts + 1;
+	
+		if (failedAttempts >= MAX_ATTEMPTS) {
+			console.log('!passwordMatch : failedAttempts : ', failedAttempts, ' MAX_ATTEMPTS : ', MAX_ATTEMPTS);
+			const lockoutUntil = new Date(Date.now() + LOCKOUT_DURATION);
+			await pool.query('UPDATE users_notification SET failed_attempts = $1, lockout_until = $2 WHERE username = $3', [failedAttempts, lockoutUntil, username]);
+			//return { error: "Account locked due to too many failed attempts. Try again in 1 hour." };
+			return res.status(400).json({ error: "Account locked due to too many failed attempts. Try again in 1 hour." });
+		} else {
+			console.log('!passwordMatch : failedAttempts : ', failedAttempts, ' MAX_ATTEMPTS : ', MAX_ATTEMPTS);
+			await pool.query('UPDATE users_notification SET failed_attempts = $1 WHERE username = $2', [failedAttempts, username]);
+			//return { error: `Invalid credentials. You have ${MAX_ATTEMPTS - failedAttempts} attempts remaining.` };
+			return res.status(400).json({ error: `Invalid credentials. You have ${MAX_ATTEMPTS - failedAttempts} attempts remaining.` });
 			}
 		}
 		
 		console.log('passwordMatch');
         
 		//if (!passwordMatch) {
-        //    return res.status(400).json({ message: 'Invalid username or password' });
-        //}
+        	//    return res.status(400).json({ message: 'Invalid username or password' });
+        	//}
 
 		// If password is correct, reset failed attempts and lockout
 		await pool.query('UPDATE users_notification SET failed_attempts = 0, lockout_until = NULL WHERE username = $1', [username]);
 
+	//current date
+	const now = Date.now();
 
+	//created at
+	const created_at = new Date(now);
+
+	//JWT expiration date
+	const expiryDays = parseInt(JWT_EXPIRY.replace('d', ''), 10); // The radix '10' specifies the base for parsing.
+	console.log('register : JWT expiryDays : ', expiryDays); 
+	    
+	const jwt_expires_at = new Date(now + expiryDays * 24 * 60 * 60 * 1000);
+	console.log('register : jwt_expires_at : ', jwt_expires_at);
+
+	//REFRESH expiration date
+	const expiryDays_ = parseInt(REFRESH_EXPIRY.replace('d', ''), 10); // The radix '10' specifies the base for parsing.
+	console.log('register : REFRESH expiryDays : ', expiryDays_); 
+	    
+	const refresh_expires_at = new Date(now + expiryDays_ * 24 * 60 * 60 * 1000);
+	console.log('register : refresh_expires_at : ', refresh_expires_at);
+	    
+	// Generate a JWT for the registered user
+	const jwt_token = jwt.sign(
+		{ userId: user.id, username: user.username }, 	// Payload
+		JWT_SECRET, 					// Secret key
+		{ expiresIn: JWT_EXPIRY } 			// Token expiry
+	);
+		
+	//save jwt Token in database
+	const save_jwt_token = await saveJWTToken(user, jwt_token, created_at, jwt_expires_at);
+	
+	console.log('registered : jwt_token : ', jwt_token, ' created_at : ', created_at, ' expires_at : ', jwt_expires_at);
+	    
+	// Generate Refresh token
+	const refresh_token = await generateRefreshToken();
+	console.log('registered : refresh_token : ', refresh_token, ' refresh_created_at : ', created_at, ' refresh_expires_at : ', refresh_expires_at);
+
+	/*
+	const refresh_expiryDays = parseInt(REFRESH_EXPIRY.replace('d', ''), 10); // '10' is the base parsing
+	console.log('registered : refresh_expiryDays : ', refresh_expiryDays);
+	
+	const refresh_expires_at = new Date(Date.now() + refresh_expiryDays * 24 * 60 * 60 * 1000);
+	
+	console.log('registered before call : refresh_expires_at : ', refresh_expires_at);
+	*/
+	    
+	//save refresh Token in database
+	const save_refresh_token = await storeRefreshTokenInDatabase(user, refresh_token, created_at, refresh_expires_at);
+	    
+       console.log('registered : user : ', user, ' refresh_token : ', refresh_token, ' expires_at : ', refresh_expires_at);
+	    
+	// Send back the 'jwt token' and 'refresh' token along with a success message
+	res.status(200).json({ 
+		message: 'User registered successfully', 
+		jwt_token: jwt_token,
+		refresh_token: refresh_token,
+		refresh_expiry: refresh_expires_at
+	});
+	
+	console.error('registered successfully');
+	
+	/*
         // Generate JWT tokens and refresh tokens.
         const jwt_token = jwt.sign({ userId: user.id }, JWT_SECRET , { expiresIn: JWT_EXPIRY });
         
@@ -419,6 +480,8 @@ exports.loginUser = async (req, res) => {
 
         // Send jwt token and refresh token to the client
         res.status(200).json({ jwt_token:jwt_token, refresh_token:refresh_token, refresh_expiry: REFRESH_EXPIRY});
+	*/
+	    
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Server error' });
