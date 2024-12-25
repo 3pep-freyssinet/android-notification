@@ -12,7 +12,7 @@ module.exports = (req, res, next) => {
 
   try {
     const payload = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET); // Verify refresh token
-    console.log("auth_refresh : payload : ', JSON.stringify(payload));
+    console.log('auth_refresh : payload : ', JSON.stringify(payload));
     req.user = { id: payload.id, username: payload.username }; // Attach user info from the payload
     req.refreshToken = refreshToken;
     
