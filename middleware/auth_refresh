@@ -1,5 +1,8 @@
-const jwt = require('jsonwebtoken');
-const { REFRESH_TOKEN_SECRET } = process.env;
+require('dotenv').config();
+const jwt    = require('jsonwebtoken');
+
+const JWT_SECRET 		        = process.env.JWT_SECRET;
+const REFRESH_TOKEN_SECRET 	= process.env.REFRESH_TOKEN_SECRET;
 
 module.exports = (req, res, next) => {
   const refreshToken = req.headers['authorization']?.split(' ')[1]; // Assuming Bearer token format
