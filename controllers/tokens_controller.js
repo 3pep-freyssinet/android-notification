@@ -35,9 +35,9 @@ exports.refreshJWTToken = async (req, res) => {
 	console.log("refresh-jwt-token : refreshToken : ", refreshToken );
 	
     // Verify the refresh token if it exists in database
-	const {userId, expires_at: expires_at_} = await verifyRefreshToken(refreshToken);
+	const {userId, expires_at} = await verifyRefreshToken(refreshToken);
 	
-	console.log("refresh-jwt-token : refreshToken : userId = ",userId, " expires_at = ", expires_at_);
+	console.log("refresh-jwt-token : refreshToken : userId = ",userId, " expires_at = ", expires_at);
 
 	/*
 	// Create a Date object from the 'expire_at' string
