@@ -9,11 +9,12 @@ module.exports = (req, res, next) => {
   //console.log("auth_refresh : req.headers : ", req.headers);
   //console.log("auth_refresh : req.headers['authorization'] : ", req.headers['authorization']);
   
-  console.log("auth_refresh : req.body.refreshToken : ", req.body.refreshToken);
+  //console.log("auth_refresh : req.body.refreshToken : ", req.body.refreshToken);
 
   const refreshToken = req.body.refreshToken;
-
+  console.log("auth_refresh : req.body.refreshToken : ", refreshToken);
     if (!refreshToken) {
+        console.log("auth_refresh : Refresh token is required ");
         return res.status(400).json({ error: 'Refresh token is required' });
     }
   
