@@ -6,15 +6,25 @@ const REFRESH_TOKEN_SECRET 	= process.env.REFRESH_TOKEN_SECRET;
 
 module.exports = (req, res, next) => {
   console.log('auth_refresh, start ...');
-  console.log("auth_refresh : req.headers : ", req.headers);
-  console.log("auth_refresh : req.headers['authorization'] : ", req.headers['authorization']);
+  //console.log("auth_refresh : req.headers : ", req.headers);
+  //console.log("auth_refresh : req.headers['authorization'] : ", req.headers['authorization']);
+  
   console.log("auth_refresh : req.body.refreshToken : ", req.body.refreshToken);
+
+  const refreshToken = req.body.refreshToken;
+
+    if (!refreshToken) {
+        return res.status(400).json({ error: 'Refresh token is required' });
+    }
+  
+  /*
   const refreshToken = req.headers['Authorization']?.split(' ')[1]; // Assuming Bearer token format
   console.log('auth_refresh,refreshToken : ', refreshToken);
   if (!refreshToken) {
     console.log('auth_refresh : Refresh token is missing');
     return res.status(401).json({ error: 'Refresh token is missing' });
   }
+  */
 
   try {
     const payload = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET); // Verify refresh token
