@@ -52,24 +52,38 @@ exports.refreshJWTToken = async (req, res) => {
 
         // Generate a new access token
 	const created_at = Date.now();
-        const newAccessToken = generateAccessToken({ userId: user_id, created_at }); // Function to generate access token
+        //const newAccessToken = generateAccessToken({ userId: user_id, created_at}); // Function to generate access token
 
+	// Generate a new jwt token (JWT)
+        const newAccessToken = jwt.sign({ userId: userId }, JWT_SECRET, { expiresIn: JWT_EXPIRY });
+	console.log('refreshJWTToken : newAccessToken : ', newAccessToken);
+	    
         // Optionally: Generate a new refresh token if you're doing token rotation
         //const newRefreshToken = crypto.randomBytes(64).toString('hex');
 
+	const expiryDays = parseInt(JWT_EXPIRY.replace('d', ''), 10); // Extract the number part
+	const expire_at  = new Date(created_at + expiryDays * 24 * 60 * 60 * 1000);   
+        console.log('refreshJWTToken : jwt expire_at : ', expire_at);
 	    
-        const newExpiresAt    = new Date(created_at + 7 * 24 * 60 * 60 * 1000); // 7 days
-
+	// Update the database with the new jwt token
+        await pool.query(
+            'UPDATE jwt_tokens SET jwt_token = $1, last_updated = $2, expire_at = $3 WHERE user_id = $4',
+            [newAccessToken, created_at, expire_at, user_id]
+        );
+	    
+	/*
         // Update the database with the new refresh token
         await pool.query(
             'UPDATE refresh_tokens SET refresh_token = $1, created_at = $2, expires_at = $3 WHERE user_id = $4',
-            [newRefreshToken, created_at, newExpiresAt, user_id]
+            [newRefreshToken, created_at, expires_at, user_id]
         );
-
+	*/
+		
         // Send the new tokens back to the client
         res.json({
             accessToken: newAccessToken,
-            refreshToken: newRefreshToken,
+            created_at: created_at,
+	    expire_at: expire_at,
         });
     } catch (error) {
         console.error('Error refreshing token:', error);
