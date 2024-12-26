@@ -83,9 +83,7 @@ exports.refreshJWTToken = async (req, res) => {
 		
         // Send the new tokens back to the client
         res.status(200).json({
-            accessToken: newAccessToken,
-            created_at: created_at,
-	    expire_at: expire_at,
+            accessToken: newAccessToken
         });
     } catch (error) {
         console.error('Error refreshing token:', error);
