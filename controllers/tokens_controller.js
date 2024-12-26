@@ -82,7 +82,7 @@ exports.refreshJWTToken = async (req, res) => {
 	*/
 		
         // Send the new tokens back to the client
-        res.json({
+        res.status(200).json({
             accessToken: newAccessToken,
             created_at: created_at,
 	    expire_at: expire_at,
