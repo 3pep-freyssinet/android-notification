@@ -3,7 +3,7 @@ const express 	           = require('express');
 const router  		= express.Router();
 const tokensController	= require('../controllers/tokens_controller'); // Point to your controller
 const authMiddleware             = require('../middleware/auth');
-const auth_refresh_middleware    = require('../middleware/auth_refresh');
+//const auth_refresh_middleware    = require('../middleware/auth_refresh');
 
 console.log("routes/tokens");
 
