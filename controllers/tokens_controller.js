@@ -26,6 +26,59 @@ console.log('tokens_controller : pool = ' + pool);
 
 // Refresh the jwt token.
 exports.refreshJWTToken = async (req, res) => {
+    try {
+        const refreshToken = req.body.refreshToken;
+        if (!refreshToken) {
+            return res.status(400).json({ message: 'Refresh token is required' });
+        }
+
+        // Check the refresh token in the database
+        const result = await pool.query(
+            'SELECT user_id, expires_at FROM refresh_tokens WHERE refresh_token = $1',
+            [refreshToken]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(401).json({ message: 'Invalid refresh token' });
+        }
+
+        const { user_id, expires_at } = result.rows[0];
+
+        // Check if the refresh token is expired
+        const currentTime = new Date();
+        if (new Date(expires_at) < currentTime) {
+            return res.status(401).json({ message: 'Refresh token has expired' });
+        }
+
+        // Generate a new access token
+	const created_at = Date.now();
+        const newAccessToken = generateAccessToken({ userId: user_id, created_at }); // Function to generate access token
+
+        // Optionally: Generate a new refresh token if you're doing token rotation
+        //const newRefreshToken = crypto.randomBytes(64).toString('hex');
+
+	    
+        const newExpiresAt    = new Date(created_at + 7 * 24 * 60 * 60 * 1000); // 7 days
+
+        // Update the database with the new refresh token
+        await pool.query(
+            'UPDATE refresh_tokens SET refresh_token = $1, created_at = $2, expires_at = $3 WHERE user_id = $4',
+            [newRefreshToken, created_at, newExpiresAt, user_id]
+        );
+
+        // Send the new tokens back to the client
+        res.json({
+            accessToken: newAccessToken,
+            refreshToken: newRefreshToken,
+        });
+    } catch (error) {
+        console.error('Error refreshing token:', error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+};
+
+//not used
+exports.refreshJWTToken_ = async (req, res) => {
 	// refresh JWT Token endpoint
     
     console.log('refresh JWT Token\n');
