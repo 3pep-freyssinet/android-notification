@@ -6,8 +6,11 @@ const REFRESH_TOKEN_SECRET 	= process.env.REFRESH_TOKEN_SECRET;
 
 module.exports = (req, res, next) => {
   console.log('auth_refresh, start ...');
+  console.log("auth_refresh : req.headers['authorization'] : ", req.headers['authorization']);
   const refreshToken = req.headers['authorization']?.split(' ')[1]; // Assuming Bearer token format
+  console.log('auth_refresh,refreshToken : ', refreshToken);
   if (!refreshToken) {
+    console.log('auth_refresh : Refresh token is missing');
     return res.status(401).json({ error: 'Refresh token is missing' });
   }
 
