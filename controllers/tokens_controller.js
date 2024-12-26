@@ -55,7 +55,7 @@ exports.refreshJWTToken = async (req, res) => {
         //const newAccessToken = generateAccessToken({ userId: user_id, created_at}); // Function to generate access token
 
 	// Generate a new jwt token (JWT)
-        const newAccessToken = jwt.sign({ userId: userId }, JWT_SECRET, { expiresIn: JWT_EXPIRY });
+        const newAccessToken = jwt.sign({ userId: user_id }, JWT_SECRET, { expiresIn: JWT_EXPIRY });
 	console.log('refreshJWTToken : newAccessToken : ', newAccessToken);
 	    
         // Optionally: Generate a new refresh token if you're doing token rotation
