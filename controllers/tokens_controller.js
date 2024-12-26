@@ -65,7 +65,7 @@ exports.refreshJWTToken = async (req, res) => {
 	const expire_at  = new Date(created_at + expiryDays * 24 * 60 * 60 * 1000);   
         console.log('refreshJWTToken : jwt expire_at : ', expire_at);
 
-	const last_updated = new Date(created_at));
+	const last_updated = new Date(created_at);
 	    
 	// Update the database with the new jwt token
         await pool.query(
