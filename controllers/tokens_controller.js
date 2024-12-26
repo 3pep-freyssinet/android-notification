@@ -64,11 +64,13 @@ exports.refreshJWTToken = async (req, res) => {
 	const expiryDays = parseInt(JWT_EXPIRY.replace('d', ''), 10); // Extract the number part
 	const expire_at  = new Date(created_at + expiryDays * 24 * 60 * 60 * 1000);   
         console.log('refreshJWTToken : jwt expire_at : ', expire_at);
+
+	const last_updated = new Date(created_at));
 	    
 	// Update the database with the new jwt token
         await pool.query(
             'UPDATE jwt_tokens SET jwt_token = $1, last_updated = $2, expire_at = $3 WHERE user_id = $4',
-            [newAccessToken, created_at, expire_at, user_id]
+            [newAccessToken, last_updated, expire_at, user_id]
         );
 	    
 	/*
