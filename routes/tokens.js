@@ -8,7 +8,7 @@ const auth_refresh_middleware    = require('../middleware/auth_refresh');
 console.log("routes/tokens");
 
 // Define routes
-router.post('/refresh-jwt-token', auth_refresh_middleware, tokensController.refreshJWTToken);          // POST /tokens/refresh-jwt-token
+router.post('/refresh-jwt-token', tokensController.refreshJWTToken);                                   // POST /tokens/refresh-jwt-token
 router.post('/renew-tokens', authMiddleware, tokensController.renewTokensHandler);                     // POST /tokens/renew-tokens
 router.post('/renew-all-tokens', tokensController.renewAllTokensHandler);                              // POST /tokens/renew-all-tokens
 router.post('/update-jwt-env', authMiddleware, tokensController.updateJWTEnvironment);                 // POST /tokens/update-jwt_env
