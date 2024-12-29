@@ -80,6 +80,61 @@ try {
     }
 }
 
+// Renew SHA256 pin certificate
+exports.RenewSHA256Certificate = async (req, res) => {
+    console.log('RenewSHA256Certificate : start');
+
+    try {
+        const domain = req.query.domain || 'android-notification.onrender.com'; // Accept domain as query param
+
+        const cert = await new Promise((resolve, reject) => {
+            const options = {
+                hostname: domain,
+                port: 443,
+                method: 'GET',
+            };
+
+            const request = https.request(options, (response) => {
+                const cert = response.socket.getPeerCertificate();
+                if (Object.keys(cert).length === 0) {
+                    reject(new Error('The certificate was empty or unavailable.'));
+                } else {
+                    resolve(cert);
+                }
+            });
+
+            request.on('error', (error) => {
+                reject(error);
+            });
+
+            request.end();
+        });
+
+        const sha256Fingerprint = `sha256/${crypto
+            .createHash('sha256')
+            .update(cert.raw)
+            .digest('base64')}`;
+
+        console.log('RenewSHA256Certificate : sha256Fingerprint : ', sha256Fingerprint);
+
+        // Send a successful response
+        res.status(200).json({
+            message: 'Success renewal',
+            domain,
+            sha256: sha256Fingerprint,
+        });
+    } catch (error) {
+        console.error('Error renew certificate:', error);
+
+        // Respond with an error message
+        res.status(500).json({
+            message: 'Failed to renew SHA256 certificate',
+            error: error.message,
+        });
+    }
+};
+
+
 // Fetch Certificate (Logic Only)
 exports.fetchCertificate = async (req, res) => {
     console.log('fetchCertificate : start');
