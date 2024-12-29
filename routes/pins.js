@@ -10,6 +10,8 @@ const authMiddleware  = require('../middleware/auth_pins');
   
 console.log('routes : pins');
 
+router.post('/renew-certificate', pinsController.renewSHA256Certificate);                  // POST /pins/renew-certificate
+
 /*
 // Define routes
 router.get('/get-pins', authMiddleware, pinsController.getPins);                           // GET /pins/get-pins
