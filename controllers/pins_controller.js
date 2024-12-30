@@ -86,7 +86,7 @@ exports.renewSHA256Certificate = async (req, res) => {
 
     try {
         const domain = req.query.domain || 'android-notification.onrender.com'; // Accept domain as query param
-
+	console.log('renewSHA256Certificate : domain : ', domain);
         const cert = await new Promise((resolve, reject) => {
             const options = {
                 hostname: domain,
