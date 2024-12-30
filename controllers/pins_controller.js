@@ -92,8 +92,8 @@ exports.renewSHA256Certificate = async (req, res) => {
                 hostname: domain,
                 port: 443,
                 method: 'GET',
-		secureProtocol: 'TLSv1_2_method',
-    		ciphers: 'ALL'
+		//secureProtocol: 'TLSv1_2_method',
+    		//ciphers: 'ALL'
             };
 
             const request = https.request(options, (response) => {
