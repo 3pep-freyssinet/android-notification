@@ -93,12 +93,14 @@ exports.renewSHA256Certificate = async (req, res) => {
                 hostname: domain,
                 port: 443,
                 method: 'GET',
+		agent: false,
 		//secureProtocol: 'TLSv1_2_method',
     		//ciphers: 'ALL'
             };
 
             const request = https.request(options, (response) => {
                 const cert = response.socket.getPeerCertificate();
+		console.log('renewSHA256Certificate : cert : ', cert);
                 if (Object.keys(cert).length === 0) {
                     reject(new Error('The certificate was empty or unavailable.'));
                 } else {
