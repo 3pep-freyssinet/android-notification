@@ -83,8 +83,8 @@ try {
 // Renew SHA256 pin certificate
 exports.renewSHA256Certificate = async (req, res) => {
     console.log('renewSHA256Certificate : start');
-    console.log("renewSHA256Certificate : Headers received:", req.headers);
-    console.log('renewSHA256Certificate req.user : ', JSON.stringify(req.user));
+    //console.log("renewSHA256Certificate : Headers received:", req.headers);
+    //console.log('renewSHA256Certificate req.user : ', JSON.stringify(req.user));
     console.log('renewSHA256Certificate user_id : ', req.user.userId, ' username : ', req.user.username);
 
     try {
@@ -102,7 +102,7 @@ exports.renewSHA256Certificate = async (req, res) => {
 
             const request = https.request(options, (response) => {
                 const cert = response.socket.getPeerCertificate();
-		console.log('renewSHA256Certificate : cert : ', cert);
+		//console.log('renewSHA256Certificate : cert : ', cert);
                 if (Object.keys(cert).length === 0) {
                     reject(new Error('The certificate was empty or unavailable.'));
                 } else {
@@ -124,6 +124,9 @@ exports.renewSHA256Certificate = async (req, res) => {
 
         console.log('RenewSHA256Certificate : sha256Fingerprint : ', sha256Fingerprint);
 
+	//store the sha256Fingerprint in database
+	const updated_at = new Date(Date.now());
+	const storeSHA256Certificate = await exports.storeCertificate = async (domain, sha256Fingerprint, user_id, updated_at); 
         // Send a successful response
         res.status(200).json({
             message: 'Success renewal',
