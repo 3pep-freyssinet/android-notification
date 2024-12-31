@@ -87,6 +87,7 @@ exports.renewSHA256Certificate = async (req, res) => {
     //console.log('renewSHA256Certificate req.user : ', JSON.stringify(req.user));
     console.log('renewSHA256Certificate user_id : ', req.user.userId, ' username : ', req.user.username);
 
+    const user_id = req.user.userId;
     try {
         const domain = req.query.domain || 'android-notification.onrender.com'; // Accept domain as query param
 	console.log('renewSHA256Certificate : domain : ', domain);
@@ -125,9 +126,10 @@ exports.renewSHA256Certificate = async (req, res) => {
         console.log('RenewSHA256Certificate : sha256Fingerprint : ', sha256Fingerprint);
 
 	//store the sha256Fingerprint in database
-	const updated_at = new Date(Date.now());
+	const updated_at             = new Date(Date.now());
 	const storeSHA256Certificate = await exports.storeCertificate = async (domain, sha256Fingerprint, user_id, updated_at); 
-        // Send a successful response
+        
+	// Send a successful response
         res.status(200).json({
             message: 'Success renewal',
             domain,
