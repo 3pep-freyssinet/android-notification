@@ -214,16 +214,16 @@ exports.storeCertificate = async (domain, sha256Fingerprint, user_id, updated_at
     try {
         const query = `
             INSERT INTO pins (sha256_pin, user_id, updated_at)
-            VALUES ($1, $2, $3, $4)
-            ON CONFLICT (user_id) DO UPDATE
-            SET 
-	    sha256_pin = $2, 
-	    updated_at = NOW();
+            VALUES ($1, $2, $3)
+            ON CONFLICT (user_id) 
+	    DO UPDATE SET 
+	    sha256_pin = $1, 
+	    updated_at = $3;
         `;
 
-	console.log('storeCertificate : sha256Fingerprint : ', sha256Fingerprint, ' domain : ', domain);
+	console.log('storeCertificate : sha256Fingerprint : ', sha256Fingerprint, ' user_id : ', user_id, ' updated_at : ', updated_at);
         
-	    await pool.query(query, [domain, sha256Fingerprint]);
+	    await pool.query(query, [sha256Fingerprint, user_id, updated_at]);
 
         console.log('Certificate stored successfully:', { domain, sha256Fingerprint });
         return { success: true };
