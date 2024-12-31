@@ -129,14 +129,17 @@ exports.renewSHA256Certificate = async (req, res) => {
 	//store the sha256Fingerprint in database
 	const updated_at             = new Date(Date.now());
 	const storeSHA256Certificate = await exports.storeCertificate(domain, sha256Fingerprint, user_id, updated_at); 
-        console.error('RenewSHA256Certificate :storeSHA256Certificate : ', storeSHA256Certificate);
-	
-	// Send a successful response
-        res.status(200).json({
-            message: 'Success renewal',
-            domain,
-            sha256: sha256Fingerprint,
-        });
+        console.log('RenewSHA256Certificate :storeSHA256Certificate : ', storeSHA256Certificate);
+
+	if(storeSHA256Certificate.success){
+		// Send a successful response
+		 console.log('RenewSHA256Certificate :storeSHA256Certificate.success : ', storeSHA256Certificate.success);
+        	res.status(200).json({
+            		message: 'Success renewal',
+            		domain,
+            		sha256: sha256Fingerprint,
+        	});
+	}
     } catch (error) {
         console.error('Error renew certificate:', error);
 
