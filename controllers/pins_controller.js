@@ -210,13 +210,15 @@ exports.fetchCertificate = async (req, res) => {
 
 
 // Store Certificate (Logic Only). If it is running separately, provide : domain, sha256Fingerprint.
-exports.storeCertificate = async (domain, sha256Fingerprint) => {
+exports.storeCertificate = async (domain, sha256Fingerprint, user_id, updated_at) => {
     try {
         const query = `
-            INSERT INTO pins (domain, sha256_pin, updated_at)
-            VALUES ($1, $2, NOW())
-            ON CONFLICT (domain) DO UPDATE
-            SET sha256_pin = $2, updated_at = NOW();
+            INSERT INTO pins (sha256_pin, user_id, updated_at)
+            VALUES ($1, $2, $3, $4)
+            ON CONFLICT (user_id) DO UPDATE
+            SET 
+	    sha256_pin = $2, 
+	    updated_at = NOW();
         `;
 
 	console.log('storeCertificate : sha256Fingerprint : ', sha256Fingerprint, ' domain : ', domain);
