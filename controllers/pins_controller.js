@@ -83,7 +83,8 @@ try {
 // Renew SHA256 pin certificate
 exports.renewSHA256Certificate = async (req, res) => {
     console.log('renewSHA256Certificate : start');
-    console.log("Headers received:", req.headers);
+    console.log("renewSHA256Certificate : Headers received:", req.headers);
+    console.log('renewSHA256Certificate user_id : ', req.user.user_id, ' username : ', req.user.username);
 
     try {
         const domain = req.query.domain || 'android-notification.onrender.com'; // Accept domain as query param
