@@ -179,11 +179,11 @@ exports.registerUser = async (req, res) => {
     }
 };
 
-	// Save jwt token to database for a user
-	async function saveJWTToken(user, jwt_token, created_at, expire_at) {
-		// Assuming you have a database table for jwt tokens associated with users
-		
-		console.log('registered : store jwt token');
+// Save jwt token to database for a user
+async function saveJWTToken(user, jwt_token, created_at, expire_at) {
+	// Assuming you have a database table for jwt tokens associated with users
+	
+	console.log('registered : store jwt token');
 		
 		try{
 			/*
@@ -343,6 +343,35 @@ exports.getUser = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error retrieving user' });
+  }
+};
+
+// Get device ID or android Id
+exports.getAndroidId = async (req, res) => {
+  const androidId = req.params.androidId;
+  try {
+    const result = await pool.query('SELECT * FROM users WHERE android_id = $1', [androidId]);
+
+    if (result.rowCount === 0) {
+      return res.status(404).json({ message: 'android id not found' });
+    }
+
+    //get the user id
+    const user_id = result.rows[0].id;
+    
+    //2nd step, get stored jwt for this user
+    const jwt_token = await pool.query('SELECT jwt_token FROM jwt_tokens WHERE user_id = $1', [user_id]); 
+
+    //3rd step, get refresh token
+    const {refresh_token, refresh_expiry} = await pool.query('SELECT refresh_token, expires_at FROM refresh_tokens WHERE user_id = $1', [user_id]); 
+	  
+    //4th step, get sha256 pin
+    const sha256_pin = await pool.query('SELECT sha256_pin FROM pins WHERE user_id = $1', [user_id]); 
+	  
+    res.status(200).json({jwt_token, refresh_token, refresh_expiry, sha256_pin});
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Error retrieving android id' });
   }
 };
 
