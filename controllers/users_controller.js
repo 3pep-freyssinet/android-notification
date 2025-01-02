@@ -349,6 +349,8 @@ exports.getUser = async (req, res) => {
 // Get device ID or android Id
 exports.getAndroidId = async (req, res) => {
   const androidId = req.params.androidId;
+  console.log('getAndroidId : req : ', req);	
+  console.log('getAndroidId : req.params : ', req.params);	
   console.log('getAndroidId : androidId : ', androidId);
   const username = 'Name147';
   try {
