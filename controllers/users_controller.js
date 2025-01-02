@@ -349,8 +349,9 @@ exports.getUser = async (req, res) => {
 // Get device ID or android Id
 exports.getAndroidId = async (req, res) => {
   const androidId = req.params.androidId;
+  const username = 'Name147';
   try {
-    const result = await pool.query('SELECT * FROM users WHERE android_id = $1', [androidId]);
+    const result = await pool.query('SELECT * FROM users WHERE username = $1 && android_id = $2', [username, androidId]);
 
     if (result.rowCount === 0) {
       return res.status(404).json({ message: 'android id not found' });
@@ -358,15 +359,19 @@ exports.getAndroidId = async (req, res) => {
 
     //get the user id
     const user_id = result.rows[0].id;
-    
+    console.log('getAndroidId : user_id : ', user_id);
+	  
     //2nd step, get stored jwt for this user
     const jwt_token = await pool.query('SELECT jwt_token FROM jwt_tokens WHERE user_id = $1', [user_id]); 
-
+    console.log('getAndroidId : jwt_token : ', jwt_token);
+	  
     //3rd step, get refresh token
     const {refresh_token, refresh_expiry} = await pool.query('SELECT refresh_token, expires_at FROM refresh_tokens WHERE user_id = $1', [user_id]); 
+    console.log('getAndroidId : refresh_token : ', refresh_token, ' refresh_expiry : ', refresh_expiry);
 	  
     //4th step, get sha256 pin
     const sha256_pin = await pool.query('SELECT sha256_pin FROM pins WHERE user_id = $1', [user_id]); 
+    console.log('getAndroidId : sha256_pin : ', sha256_pin);
 	  
     res.status(200).json({jwt_token, refresh_token, refresh_expiry, sha256_pin});
   } catch (error) {
