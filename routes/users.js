@@ -4,14 +4,14 @@ const router          = express.Router();
 const usersController = require('../controllers/users_controller'); // Point to your controller
 
 console.log(' routes users ');
-console.log(' routes users : usersController : ', usersController);
 
 // Define routes
 router.post('/register', usersController.registerUser);             // POST /users/register
 router.post('/login',    usersController.loginUser);                // POST /users/login
 
 router.get('/androiId',  usersController.getAndroiId);                // GET /users/androidId?androidId=
-router.get('/:id', 		   usersController.getUser);                    // GET /users/:id
+
+//router.get('/:id', 		   usersController.getUser);                    // GET /users/:id
 //router.put('/:id', 		 usersController.updateUser);                 // PUT /users/:id
 
 router.post('/verify-captcha', usersController.verifyCaptcha);      // POST /users/verify-captcha
