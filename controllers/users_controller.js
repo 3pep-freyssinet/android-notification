@@ -351,7 +351,7 @@ exports.getAndroidId = async (req, res) => {
   const androidId = req.params.androidId;
   const username = 'Name147';
   try {
-    const result = await pool.query('SELECT * FROM users WHERE username = $1 && android_id = $2', [username, androidId]);
+    const result = await pool.query('SELECT * FROM users WHERE username = $1 AND android_id = $2', [username, androidId]);
 
     if (result.rowCount === 0) {
       return res.status(404).json({ message: 'android id not found' });
