@@ -9,7 +9,8 @@ console.log(' routes users ');
 router.post('/register', usersController.registerUser);             // POST /users/register
 router.post('/login',    usersController.loginUser);                // POST /users/login
 
-router.get('/:id', 		 usersController.getUser);                    // GET /users/:id
+router.get('/:androiId', usersController.getAndroiId);                // GET /users/androidId?androidId=
+router.get('/:id', 		   usersController.getUser);                    // GET /users/:id
 //router.put('/:id', 		 usersController.updateUser);                 // PUT /users/:id
 
 router.post('/verify-captcha', usersController.verifyCaptcha);      // POST /users/verify-captcha
