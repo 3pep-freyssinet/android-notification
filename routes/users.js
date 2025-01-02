@@ -4,6 +4,7 @@ const router          = express.Router();
 const usersController = require('../controllers/users_controller'); // Point to your controller
 
 console.log(' routes users ');
+console.log(' routes users : usersController : ', usersController);
 
 // Define routes
 router.post('/register', usersController.registerUser);             // POST /users/register
