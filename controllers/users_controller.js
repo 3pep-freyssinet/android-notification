@@ -359,7 +359,7 @@ exports.getAndroidId = async (req, res) => {
 
     if (result.rowCount === 0) {
       //return res.status(404).json({ message: 'android id not found' });
-      return res.status(200).json({ isRegistered: false });
+      return res.status(200).json({message:'the user is not registered', isRegistered: false });
     }
 
     //get the user id
