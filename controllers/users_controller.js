@@ -383,7 +383,8 @@ exports.getAndroidId = async (req, res) => {
     console.log('getAndroidId : sha256_pin : ', sha256_pin.rows[0].sha256_pin);
     
     res.status(200).json({
-  	jwtToken: jwt_token, 
+  	isRegistered:true,
+	jwtToken: jwt_token, 
   	refreshToken: refresh_token, 
   	refreshExpiry: refresh_expiry, 
 	sha256_pin:  sha256_pin   
