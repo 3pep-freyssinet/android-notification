@@ -358,7 +358,8 @@ exports.getAndroidId = async (req, res) => {
     const result = await pool.query('SELECT * FROM users_notification WHERE username = $1 AND android_id = $2', [username, androidId]);
 
     if (result.rowCount === 0) {
-      return res.status(404).json({ message: 'android id not found' });
+      //return res.status(404).json({ message: 'android id not found' });
+      return res.status(200).json({ isRegistered: false });
     }
 
     //get the user id
