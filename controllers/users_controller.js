@@ -370,13 +370,13 @@ exports.getAndroidId = async (req, res) => {
     console.log('getAndroidId : jwt_token : ', jwt_token.rows[0].jwt_token);
 	  
     //3rd step, get refresh token
-    const {refresh_token:refresh_token, expires_at: refresh_expiry} = await pool.query('SELECT refresh_token, expires_at FROM refresh_tokens WHERE user_id = $1', [user_id]); 
-    
-    console.log('getAndroidId : refresh_token : ',  refresh_token);
-    console.log('getAndroidId : refresh_expiry : ', expires_at);   
-    console.log('getAndroidId : refresh_expiry : ', refresh_expiry); 
+    const refresh_token_ = await pool.query('SELECT refresh_token, expires_at FROM refresh_tokens WHERE user_id = $1', [user_id]); 
+    const refresh_token  = refresh_token_.rows[0].refresh_token;
+    const refresh_expiry  = refresh_token_.rows[0].expires_at;  
 	  
-    console.log('getAndroidId : refresh_token : ', refresh_token.rows[0].refresh_token, ' refresh_expiry : ', refresh_token.rows[0].expires_at);
+    console.log('getAndroidId : refresh_token : ',  refresh_token);
+     
+    console.log('getAndroidId : refresh_expiry : ', refresh_expiry); 
 	  
     //4th step, get sha256 pin
     const sha256_pin = await pool.query('SELECT sha256_pin FROM pins WHERE user_id = $1', [user_id]); 
