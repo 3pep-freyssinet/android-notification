@@ -353,6 +353,9 @@ exports.getAndroidId = async (req, res) => {
   //console.log('getAndroidId : req : ', req);	
   //console.log('getAndroidId : req.params : ', req.params);	
   console.log('getAndroidId : androidId : ', androidId);
+
+ if(true)throw error;
+	
   const username = 'Name147';
   try {
     const result = await pool.query('SELECT * FROM users_notification WHERE username = $1 AND android_id = $2', [username, androidId]);
