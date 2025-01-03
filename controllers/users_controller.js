@@ -382,7 +382,12 @@ exports.getAndroidId = async (req, res) => {
     const sha256_pin = await pool.query('SELECT sha256_pin FROM pins WHERE user_id = $1', [user_id]); 
     console.log('getAndroidId : sha256_pin : ', sha256_pin.rows[0].sha256_pin);
     
-    res.status(200).json({jwt_token, refresh_token, refresh_expiry, sha256_pin});
+    res.status(200).json({
+  	jwtToken: jwt_token, 
+  	refreshToken: refresh_token, 
+  	refreshExpiry: refresh_expiry, 
+	sha256_pin:  sha256_pin   
+});  
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error retrieving android id' });
