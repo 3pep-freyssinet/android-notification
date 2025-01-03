@@ -387,7 +387,7 @@ exports.getAndroidId = async (req, res) => {
 	jwtToken: jwt_token, 
   	refreshToken: refresh_token, 
   	refreshExpiry: refresh_expiry, 
-	sha256_pin:  sha256_pin   
+	sha256Pin:  sha256_pin   
 });  
   } catch (error) {
     console.error(error);
