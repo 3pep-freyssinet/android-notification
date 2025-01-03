@@ -372,7 +372,7 @@ exports.getAndroidId = async (req, res) => {
     //3rd step, get refresh token
     const refresh_token_ = await pool.query('SELECT refresh_token, expires_at FROM refresh_tokens WHERE user_id = $1', [user_id]); 
     const refresh_token  = refresh_token_.rows[0].refresh_token;
-    const refresh_expiry  = refresh_token_.rows[0].expires_at;  
+    const refresh_expiry = refresh_token_.rows[0].expires_at;  
 	  
     console.log('getAndroidId : refresh_token : ',  refresh_token);
      
@@ -384,10 +384,10 @@ exports.getAndroidId = async (req, res) => {
     
     res.status(200).json({
   	isRegistered:true,
-	jwtToken: jwt_token, 
-  	refreshToken: refresh_token, 
-  	refreshExpiry: refresh_expiry, 
-	sha256Pin:  sha256_pin   
+	jwtToken: jwt_token.rows[0].jwt_token, 
+  	refreshToken: refresh_token_.rows[0].refresh_token, 
+  	refreshExpiry: refresh_token_.rows[0].expires_at, 
+	sha256Pin:  sha256_pin.rows[0].sha256_pin   
 });  
   } catch (error) {
     console.error(error);
