@@ -367,16 +367,16 @@ exports.getAndroidId = async (req, res) => {
 	  
     //2nd step, get stored jwt for this user
     const jwt_token = await pool.query('SELECT jwt_token FROM jwt_tokens WHERE user_id = $1', [user_id]); 
-    console.log('getAndroidId : jwt_token : ', jwt_token);
+    console.log('getAndroidId : jwt_token : ', jwt_token.rows[0].jwt_token);
 	  
     //3rd step, get refresh token
-    const {refresh_token, refresh_expiry} = await pool.query('SELECT refresh_token, expires_at FROM refresh_tokens WHERE user_id = $1', [user_id]); 
-    console.log('getAndroidId : refresh_token : ', refresh_token, ' refresh_expiry : ', refresh_expiry);
+    const refresh_token = await pool.query('SELECT refresh_token, expires_at FROM refresh_tokens WHERE user_id = $1', [user_id]); 
+    console.log('getAndroidId : refresh_token : ', refresh_token.rows[0].refresh_token, ' refresh_expiry : ', refresh_token.rows[0].refresh_expiry);
 	  
     //4th step, get sha256 pin
     const sha256_pin = await pool.query('SELECT sha256_pin FROM pins WHERE user_id = $1', [user_id]); 
-    console.log('getAndroidId : sha256_pin : ', sha256_pin);
-	  
+    console.log('getAndroidId : sha256_pin : ', sha256_pin.rows[0].sha256_pin);
+    
     res.status(200).json({jwt_token, refresh_token, refresh_expiry, sha256_pin});
   } catch (error) {
     console.error(error);
