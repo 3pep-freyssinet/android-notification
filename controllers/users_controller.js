@@ -385,13 +385,18 @@ exports.getAndroidId = async (req, res) => {
     //4th step, get sha256 pin
     const sha256_pin = await pool.query('SELECT sha256_pin FROM pins WHERE user_id = $1', [user_id]); 
     console.log('getAndroidId : sha256_pin : ', sha256_pin.rows[0].sha256_pin);
-    
+
+    //5th steo, get fcm token
+    const fcm_token = await pool.query('SELECT fcm_token FROM fcm_tokens WHERE user_id = $1', [user_id]); 
+    console.log('getAndroidId : fcm_token : ', fcm_token.rows[0].fcm_token);
+	  
     res.status(200).json({
   	isRegistered:true,
 	jwtToken: jwt_token.rows[0].jwt_token, 
   	refreshToken: refresh_token_.rows[0].refresh_token, 
   	refreshExpiry: refresh_token_.rows[0].expires_at, 
-	sha256Pin:  sha256_pin.rows[0].sha256_pin   
+	sha256Pin:  sha256_pin.rows[0].sha256_pin,
+	fcmToken:  fcm_token.rows[0].fcm_token
 });  
   } catch (error) {
     console.error(error);
