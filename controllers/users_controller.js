@@ -354,7 +354,7 @@ exports.getAndroidId = async (req, res) => {
   //console.log('getAndroidId : req.params : ', req.params);	
   console.log('getAndroidId : androidId : ', androidId);
 
- if(true)throw new Error('unexpected issue');
+ //if(true)throw new Error('unexpected issue');
 	
   const username = 'Name147';
   try {
