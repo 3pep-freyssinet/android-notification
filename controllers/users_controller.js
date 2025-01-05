@@ -350,23 +350,28 @@ exports.getUser = async (req, res) => {
 	
 // Get user ID knowing his device Id or android Id
 exports.getUserId = async (req, res) => {
+try{
   //const androidId = req.params.androidId;
   const androidId = req.query.androidId	
   //console.log('getAndroidId : req : ', req);	
   //console.log('getAndroidId : req.params : ', req.params);	
   console.log('getUserId : androidId : ', androidId);
 
- //if(true)throw new Error('unexpected issue');
- const user_id = await getUserId_(androidId)
-if(user_id == null){
-	console.error('getUserId : error : user id not found');
-	res.status(500).json({ message: 'Error retrieving user id' });
-}
-console.log('getUserId : user_id : ', user_id);
-res.status(200).json({
+  //if(true)throw new Error('unexpected issue');
+  const user_id = await getUserId_(androidId)
+  if(user_id == null){
+	console.warn('User not found for androidId:', androidId);
+        return res.status(404).json({ message: 'User not found' });
+  }
+  console.log('getUserId : user_id : ', user_id);
+  res.status(200).json({
   	message: 'user id found',
 	userId: user_id
-});  	
+  });  
+}catch (error) {
+    console.error('Error retrieving user ID:', error.message);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
 }
 
 async function getUserId_(androidId){
@@ -376,21 +381,22 @@ async function getUserId_(androidId){
 	
 	    if (result.rowCount === 0) {
 	      //return res.status(404).json({ message: 'android id not found' });
-	      return null;
+	      return null;  // Explicitly indicate no result
 	    }
-	    const user_id = result.rows[0].id;
-	    console.log('getUserId : user_id : ', user_id);
-	    return user_id;
+	    console.log('getUserId : user_id : ', result.rows[0].id);
+	    return result.rows[0].id;
+	    
 	} catch (error) {
-	    console.error(error);
-	    return null;
+	    console.error('Error querying user ID:', error.message, { androidId, username });
+    	    throw new Error('Database query failed'); // Throw an error for unexpected issues
+  
   	}	  	  
 }
 
 //get stored shared prefrences of a device Id
 exports.getStoredSharedPreferences = async (req, res) => {
-  //const androidId = req.params.androidId;
-  const androidId = req.query.androidId	
+  //const androidId = req.params.android_id;
+  const androidId = req.query.android_id	
   //console.log('getAndroidId : req : ', req);	
   //console.log('getAndroidId : req.params : ', req.params);	
   console.log('getUserId : androidId : ', androidId);
