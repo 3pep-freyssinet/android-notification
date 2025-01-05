@@ -395,49 +395,50 @@ async function getUserId_(androidId){
 
 //get stored shared prefrences of a device Id
 exports.getStoredSharedPreferences = async (req, res) => {
-  //const androidId = req.params.android_id;
-  const androidId = req.query.android_id	
-  //console.log('getAndroidId : req : ', req);	
-  //console.log('getAndroidId : req.params : ', req.params);	
-  console.log('getUserId : androidId : ', androidId);
-
-  //1st step, get the user Id
-   const user_id = await getUserId_(androidId);
-   if(user_id == null){
-	console.error('getUserId : error : user id not found');
-	res.status(500).json({ message: 'Error retrieving user id' });
-  }
-  console.log('getUserId : user_id : ', user_id);
+  try{
+	  //const androidId = req.params.android_id;
+	  const androidId = req.query.android_id	
+	  //console.log('getAndroidId : req : ', req);	
+	  //console.log('getAndroidId : req.params : ', req.params);	
+	  console.log('getUserId : androidId : ', androidId);
+	
+	  //1st step, get the user Id
+	   const user_id = await getUserId_(androidId);
+	   if(user_id == null){
+		console.error('getUserId : error : user id not found');
+		res.status(500).json({ message: 'Error retrieving user id' });
+	  }
+	  console.log('getUserId : user_id : ', user_id);
    
-  //2nd step, get stored jwt for this user
-    const jwt_token = await pool.query('SELECT jwt_token FROM jwt_tokens WHERE user_id = $1', [user_id]); 
-    console.log('getAndroidId : jwt_token : ', jwt_token.rows[0].jwt_token);
+	  //2nd step, get stored jwt for this user
+	    const jwt_token = await pool.query('SELECT jwt_token FROM jwt_tokens WHERE user_id = $1', [user_id]); 
+	    console.log('getAndroidId : jwt_token : ', jwt_token.rows[0].jwt_token);
+		  
+	    //3rd step, get refresh token
+	    const refresh_token_ = await pool.query('SELECT refresh_token, expires_at FROM refresh_tokens WHERE user_id = $1', [user_id]); 
+	    const refresh_token  = refresh_token_.rows[0].refresh_token;
+	    const refresh_expiry = refresh_token_.rows[0].expires_at;  
+		  
+	    console.log('getAndroidId : refresh_token : ',  refresh_token);
+	     
+	    console.log('getAndroidId : refresh_expiry : ', refresh_expiry); 
 	  
-    //3rd step, get refresh token
-    const refresh_token_ = await pool.query('SELECT refresh_token, expires_at FROM refresh_tokens WHERE user_id = $1', [user_id]); 
-    const refresh_token  = refresh_token_.rows[0].refresh_token;
-    const refresh_expiry = refresh_token_.rows[0].expires_at;  
-	  
-    console.log('getAndroidId : refresh_token : ',  refresh_token);
-     
-    console.log('getAndroidId : refresh_expiry : ', refresh_expiry); 
-	  
-    //4th step, get sha256 pin
-    const sha256_pin = await pool.query('SELECT sha256_pin FROM pins WHERE user_id = $1', [user_id]); 
-    console.log('getAndroidId : sha256_pin : ', sha256_pin.rows[0].sha256_pin);
-
-    //5th steo, get fcm token
-    const fcm_token = await pool.query('SELECT fcm_token FROM fcm_tokens WHERE user_id = $1', [user_id]); 
-    console.log('getAndroidId : fcm_token : ', fcm_token.rows[0].fcm_token);
-	  
-    res.status(200).json({
-  	isRegistered:true,
-	jwtToken: jwt_token.rows[0].jwt_token, 
-  	refreshToken: refresh_token_.rows[0].refresh_token, 
-  	refreshExpiry: refresh_token_.rows[0].expires_at, 
-	sha256Pin:  sha256_pin.rows[0].sha256_pin,
-	fcmToken:  fcm_token.rows[0].fcm_token
-});  
+	    //4th step, get sha256 pin
+	    const sha256_pin = await pool.query('SELECT sha256_pin FROM pins WHERE user_id = $1', [user_id]); 
+	    console.log('getAndroidId : sha256_pin : ', sha256_pin.rows[0].sha256_pin);
+	
+	    //5th steo, get fcm token
+	    const fcm_token = await pool.query('SELECT fcm_token FROM fcm_tokens WHERE user_id = $1', [user_id]); 
+	    console.log('getAndroidId : fcm_token : ', fcm_token.rows[0].fcm_token);
+		  
+	    res.status(200).json({
+	  	isRegistered:true,
+		jwtToken: jwt_token.rows[0].jwt_token, 
+	  	refreshToken: refresh_token_.rows[0].refresh_token, 
+	  	refreshExpiry: refresh_token_.rows[0].expires_at, 
+		sha256Pin:  sha256_pin.rows[0].sha256_pin,
+		fcmToken:  fcm_token.rows[0].fcm_token
+	});  
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Error retrieving android id' });
