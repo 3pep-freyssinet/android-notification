@@ -328,7 +328,8 @@ async function saveJWTToken(user, jwt_token, created_at, expire_at) {
 		console.error('registered : store refresh token : failure : ' + error);
 	}
 }
-	
+
+/*
 // Get user by ID
 exports.getUser = async (req, res) => {
   const userId = req.params.id;
@@ -345,31 +346,64 @@ exports.getUser = async (req, res) => {
     res.status(500).json({ message: 'Error retrieving user' });
   }
 };
-
-// Get device ID or android Id
-exports.getAndroidId = async (req, res) => {
+*/
+	
+// Get user ID knowing his device Id or android Id
+exports.getUserId = async (req, res) => {
   //const androidId = req.params.androidId;
   const androidId = req.query.androidId	
   //console.log('getAndroidId : req : ', req);	
   //console.log('getAndroidId : req.params : ', req.params);	
-  console.log('getAndroidId : androidId : ', androidId);
+  console.log('getUserId : androidId : ', androidId);
 
  //if(true)throw new Error('unexpected issue');
+ const user_id = await getUserId_(androidId)
+if(user_id == null){
+	console.error('getUserId : error : user id not found');
+	res.status(500).json({ message: 'Error retrieving user id' });
+}
+console.log('getUserId : user_id : ', user_id);
+res.status(200).json({
+  	message: 'user id found',
+	userId: user_id
+});  	
+}
+
+async function getUserId_(androidId){
+	const username = 'Name147';
+	 try {
+	    const result = await pool.query('SELECT * FROM users_notification WHERE username = $1 AND android_id = $2', [username, androidId]);
 	
-  const username = 'Name147';
-  try {
-    const result = await pool.query('SELECT * FROM users_notification WHERE username = $1 AND android_id = $2', [username, androidId]);
+	    if (result.rowCount === 0) {
+	      //return res.status(404).json({ message: 'android id not found' });
+	      return null;
+	    }
+	    const user_id = result.rows[0].id;
+	    console.log('getUserId : user_id : ', user_id);
+	    return user_id;
+	} catch (error) {
+	    console.error(error);
+	    return null;
+  	}	  	  
+}
 
-    if (result.rowCount === 0) {
-      //return res.status(404).json({ message: 'android id not found' });
-      return res.status(200).json({message:'the user is not registered', isRegistered: false });
-    }
+//get stored shared prefrences of a device Id
+exports.getStoredSharedPreferences = async (req, res) => {
+  //const androidId = req.params.androidId;
+  const androidId = req.query.androidId	
+  //console.log('getAndroidId : req : ', req);	
+  //console.log('getAndroidId : req.params : ', req.params);	
+  console.log('getUserId : androidId : ', androidId);
 
-    //get the user id
-    const user_id = result.rows[0].id;
-    console.log('getAndroidId : user_id : ', user_id);
-	  
-    //2nd step, get stored jwt for this user
+  //1st step, get the user Id
+   const user_id = await getUserId_(androidId);
+   if(user_id == null){
+	console.error('getUserId : error : user id not found');
+	res.status(500).json({ message: 'Error retrieving user id' });
+  }
+  console.log('getUserId : user_id : ', user_id);
+   
+  //2nd step, get stored jwt for this user
     const jwt_token = await pool.query('SELECT jwt_token FROM jwt_tokens WHERE user_id = $1', [user_id]); 
     console.log('getAndroidId : jwt_token : ', jwt_token.rows[0].jwt_token);
 	  
