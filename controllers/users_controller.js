@@ -406,7 +406,7 @@ exports.getStoredSharedPreferences = async (req, res) => {
 	   const user_id = await getUserId_(androidId);
 	   if(user_id == null){
 		console.error('getUserId : error : user id not found');
-		res.status(500).json({ message: 'Error retrieving user id' });
+		res.status(400).json({ message: 'Error retrieving user id' });
 	  }
 	  console.log('getUserId : user_id : ', user_id);
    
