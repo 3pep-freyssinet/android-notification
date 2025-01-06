@@ -68,7 +68,7 @@ console.log('storeFCMTokens : user_id = ', userId, ' fcm_token = ', fcm_token, '
 		INSERT INTO fcm_tokens (user_id, fcm_token, last_updated)
 		VALUES ($1, $2, CURRENT_TIMESTAMP) 
 		ON CONFLICT (user_id)
-		DO UPDATE SET device_token = EXCLUDED.device_token, last_updated = CURRENT_TIMESTAMP
+		DO UPDATE SET fcm_token = EXCLUDED.fcm_token, last_updated = CURRENT_TIMESTAMP
                 RETURNING id;
 	  `;
 	
