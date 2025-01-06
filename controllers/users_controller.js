@@ -427,7 +427,7 @@ exports.getStoredSharedPreferences = async (req, res) => {
 	    const sha256_pin = await pool.query('SELECT sha256_pin FROM pins WHERE user_id = $1', [user_id]); 
 	    console.log('getStoredSharedPreferences : sha256_pin : ', sha256_pin.rows[0].sha256_pin);
 	
-	    //5th steo, get fcm token
+	    //5th step, get fcm token
 	    const fcm_token = await pool.query('SELECT fcm_token FROM fcm_tokens WHERE user_id = $1', [user_id]); 
 	    console.log('getStoredSharedPreferences : fcm_token : ', fcm_token.rows[0].fcm_token);
 		  
