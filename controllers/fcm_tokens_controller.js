@@ -71,10 +71,14 @@ console.log('storeFCMTokens : user_id = ', userId, ' fcm_token = ', fcm_token, '
 		DO UPDATE SET device_token = EXCLUDED.device_token, last_updated = CURRENT_TIMESTAMP;
 	  `;
 	
-	  const result = await pool.query('INSERT into fcm_tokens (user_id, fcm_token) VALUES ($1, $2) RETURNING id', [
-				userId,
-				fcm_token	
-			]);  
+	  
+		// Execute the query with userId and fcmToken as parameters
+		const result = await pool.query(query, [userId, fcm_token]);
+		
+		console.log('FCM token stored successfully');
+		
+		//return { success: true };
+  
 	  
     //console.log('storeFCMTokens / : result : ', JSON.stringify(result));
 
@@ -86,7 +90,7 @@ console.log('storeFCMTokens : user_id = ', userId, ' fcm_token = ', fcm_token, '
 		        });
     }else{
 	console.log('storeFCMTokens failed');
-    	res.status(500).send('Internal server error : Error storing FCM tokens');
+    	res.status(400).send('Internal server error : Error storing FCM tokens');
     }
   } catch (err) {
       console.error('Error storing FCM tokens :', err);
