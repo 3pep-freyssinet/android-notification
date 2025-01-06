@@ -665,6 +665,44 @@ async function handleRefreshTokenGeneration(user) {
 	await storeRefreshTokenInDatabase(user, refreshToken);
 	return refreshToken;
 }
+
+//check lockout status
+exports.checkLockoutStatus = async (req, res) => {
+    const { androidId } = req.query;
+
+    try {
+        const result = await pool.query(
+            `SELECT failed_attempts, lockout_until 
+             FROM users_notification 
+             WHERE android_id = $1`, 
+            [androidId]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const { failed_attempts, lockout_until } = result.rows[0];
+        const now = new Date();
+
+        if (lockout_until && new Date(lockout_until) > now) {
+            return res.status(403).json({
+                message: 'User is locked out',
+                lockoutUntil: lockout_until,
+            });
+        }
+
+        return res.status(200).json({ 
+            message: 'User can attempt login', 
+            failedAttempts: failed_attempts 
+        });
+    } catch (error) {
+        console.error('Error checking lockout status:', error);
+        return res.status(500).json({ message: 'Server error' });
+    }
+};
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //verify captcha
  exports.verifyCaptcha = async (req, res) => {
