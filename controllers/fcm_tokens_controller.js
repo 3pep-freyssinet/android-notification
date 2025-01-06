@@ -58,11 +58,24 @@ const userId = req.user.userId; // Assuming user ID comes from middleware after 
 console.log('storeFCMTokens : user_id = ', userId, ' fcm_token = ', fcm_token, '\n');
 	
   try {
+    /*
     const result = await pool.query('INSERT into fcm_tokens (user_id, fcm_token) VALUES ($1, $2) RETURNING id', [
 				userId,
 				fcm_token	
 			]);
+    */
+	const query = `
+		INSERT INTO fcm_tokens (user_id, device_token, last_updated)
+		VALUES ($1, $2, CURRENT_TIMESTAMP) RETURNING id
+		ON CONFLICT (user_id)
+		DO UPDATE SET device_token = EXCLUDED.device_token, last_updated = CURRENT_TIMESTAMP;
+	  `;
 	
+	  const result = await pool.query('INSERT into fcm_tokens (user_id, fcm_token) VALUES ($1, $2) RETURNING id', [
+				userId,
+				fcm_token	
+			]);  
+	  
     //console.log('storeFCMTokens / : result : ', JSON.stringify(result));
 
     if(result.rowCount == 1){
