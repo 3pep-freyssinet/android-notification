@@ -455,6 +455,9 @@ exports.getStoredSharedPreferences = async (req, res) => {
 
 exports.setLockoutStatus = async (req, res) => {
     const username = 'Name147';
+    console.log('Headers:', req.headers); // Inspect headers
+    console.log('Body:', req.body);       // Inspect body
+	
     const {androidId, failedAttempts, lockoutUntil } = req.body;
 
     try {
