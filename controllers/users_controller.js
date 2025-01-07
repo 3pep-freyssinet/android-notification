@@ -398,13 +398,14 @@ exports.getStoredSharedPreferences = async (req, res) => {
   try{
 	  //const androidId = req.params.android_id;
 	  const androidId = req.query.android_id	
-	  console.log('getAndroidId : req : ', req);
-	  console.log('getAndroidId : req.query : ', req.query);
-	  //console.log('getAndroidId : req.params : ', req.params);	
+	  //console.log('getStoredSharedPreferences : req : ', req);
+	  console.log('getStoredSharedPreferences : req.query : ', req.query);
+	  //console.log('getStoredSharedPreferences : req.params : ', req.params);	
 	  console.log('getStoredSharedPreferences : androidId : ', androidId);
 	
 	  //1st step, get the user Id
 	   const user            = await getUserId_(androidId);
+	  console.log('getStoredSharedPreferences : user : ', user);
 	   const user_id         = user.user_id;
 	   const failed_attempts = user.failed_attempts;
            const lockout_until   = user.lockout_until;
