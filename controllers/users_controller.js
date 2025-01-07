@@ -478,14 +478,15 @@ exports.setLockoutStatus = async (req, res) => {
 
 
 exports.resetLockoutStatus = async (req, res) => {
-    const { androidId } = req.query;
+     const username = 'Name147';
+     const { androidId } = req.query;
 
     try {
         const result = await pool.query(
             `UPDATE users_notification 
              SET failed_attempts = 0, lockout_until = NULL 
-             WHERE android_id = $1`, 
-            [androidId]
+             WHERE android_id = $1 AND username = $2`, 
+            [androidId, username]
         );
 
         if (result.rowCount === 0) {
