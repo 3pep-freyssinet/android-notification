@@ -397,7 +397,7 @@ async function getUserId_(androidId){
 exports.getStoredSharedPreferences = async (req, res) => {
   try{
 	  //const androidId = req.params.android_id;
-	  const androidId = req.query.android-id	
+	  const androidId = req.query.android_id	
 	  //console.log('getStoredSharedPreferences : req : ', req);
 	  console.log('getStoredSharedPreferences : req.query : ', req.query);
 	  //console.log('getStoredSharedPreferences : req.params : ', req.params);	
