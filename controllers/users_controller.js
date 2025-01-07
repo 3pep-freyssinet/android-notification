@@ -453,6 +453,52 @@ exports.getStoredSharedPreferences = async (req, res) => {
   }
 };
 
+exports.setLockoutStatus = async (req, res) => {
+    const { androidId } = req.query;
+
+    try {
+        const result = await pool.query(
+            `UPDATE users_notification 
+             SET failed_attempts = $1, lockout_until = $2 
+             WHERE android_id = $3`, 
+            [failedAttempts, lockoutUntil, androidId]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'Lockout set successfully' });
+    } catch (error) {
+        console.error('Error setting lockout:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+
+exports.resetLockoutStatus = async (req, res) => {
+    const { androidId } = req.query;
+
+    try {
+        const result = await pool.query(
+            `UPDATE users_notification 
+             SET failed_attempts = 0, lockout_until = NULL 
+             WHERE android_id = $1`, 
+            [androidId]
+        );
+
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({ message: 'Lockout reset successfully' });
+    } catch (error) {
+        console.error('Error resetting lockout:', error);
+        res.status(500).json({ message: 'Server error' });
+    }
+};
+
+
 // Update user by ID
 exports.updateUser = async (req, res) => {
   const userId = req.params.id;
