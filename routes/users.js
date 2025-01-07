@@ -10,8 +10,7 @@ router.post('/register', usersController.registerUser);             // POST /use
 router.post('/login',    usersController.loginUser);                // POST /users/login
 
 router.get('/user_id',  usersController.getUserId);                // GET /users/user_id?user_id=
-router.get('/get_stored_shared_preferences',  usersController.getStoredSharedPreferences);    // GET /users/get_stored_shared_preferences?android_id=
-router.get('/get-check-lockout-status', usersController.checkLockoutStatus);         // GET /users/get-check-lockout-status?android-id=
+router.get('/get-stored-shared-preferences',  usersController.getStoredSharedPreferences);    // GET /users/get-stored-shared-preferences?android-id=
 
 //router.get('/:id', 		   usersController.getUser);                    // GET /users/:id
 //router.put('/:id', 		 usersController.updateUser);                 // PUT /users/:id
