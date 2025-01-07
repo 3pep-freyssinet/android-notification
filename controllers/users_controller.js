@@ -454,14 +454,15 @@ exports.getStoredSharedPreferences = async (req, res) => {
 };
 
 exports.setLockoutStatus = async (req, res) => {
-    const { androidId } = req.query;
+    const username = 'Name147';
+    const {androidId, failedAttempts, lockoutUntil } = req.body;
 
     try {
         const result = await pool.query(
             `UPDATE users_notification 
              SET failed_attempts = $1, lockout_until = $2 
-             WHERE android_id = $3`, 
-            [failedAttempts, lockoutUntil, androidId]
+             WHERE android_id = $3 AND username = $4`, 
+            [failedAttempts, lockoutUntil, androidId, username]
         );
 
         if (result.rowCount === 0) {
