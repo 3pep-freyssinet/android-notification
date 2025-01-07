@@ -406,7 +406,7 @@ exports.getStoredSharedPreferences = async (req, res) => {
 	  //1st step, get the user Id
 	   const user            = await getUserId_(androidId);
 	  console.log('getStoredSharedPreferences : user : ', user);
-	   const user_id         = user.user_id;
+	   const user_id         = user.id;
 	   const failed_attempts = user.failed_attempts;
            const lockout_until   = user.lockout_until;
 	  
