@@ -384,7 +384,7 @@ async function getUserId_(androidId){
 	      return null;  // Explicitly indicate no result
 	    }
 	    console.log('getUserId : user_id : ', result.rows[0].id);
-	    return result.rows[0].id;
+	    return result.rows[0];
 	    
 	} catch (error) {
 	    console.error('Error querying user ID:', error.message, { androidId, username });
@@ -403,12 +403,16 @@ exports.getStoredSharedPreferences = async (req, res) => {
 	  console.log('getStoredSharedPreferences : androidId : ', androidId);
 	
 	  //1st step, get the user Id
-	   const user_id = await getUserId_(androidId);
+	   const user            = await getUserId_(androidId);
+	   const user_id         = user.user_id;
+	   const failed_attempts = user.failed_attempts;
+           const lockout_until   = user.lockout_until;
+	  
 	   if(user_id == null){
 		console.error('getStoredSharedPreferences : error : user id not found');
 		res.status(200).json({ message: 'user id not found',  isRegistered:false,});
 	  }
-	  console.log('getStoredSharedPreferences : user_id : ', user_id);
+	  console.log('getStoredSharedPreferences : user_id : ', user_id, ' failed_attempts : ', failed_attempts, ' lockout_until : ', lockout_until);
    
 	  //2nd step, get stored jwt for this user
 	    const jwt_token = await pool.query('SELECT jwt_token FROM jwt_tokens WHERE user_id = $1', [user_id]); 
@@ -437,7 +441,9 @@ exports.getStoredSharedPreferences = async (req, res) => {
 	  	refreshToken: refresh_token_.rows[0].refresh_token, 
 	  	refreshExpiry: refresh_token_.rows[0].expires_at, 
 		sha256Pin:  sha256_pin.rows[0].sha256_pin,
-		fcmToken:  fcm_token.rows[0].fcm_token
+		fcmToken:  fcm_token.rows[0].fcm_token,
+	        failed_attempts: failed_attempts,
+                lockout_until: lockout_until
 	});  
   } catch (error) {
     console.error('getStoredSharedPreferences : error : ', error);
@@ -666,41 +672,6 @@ async function handleRefreshTokenGeneration(user) {
 	return refreshToken;
 }
 
-//check lockout status
-exports.checkLockoutStatus = async (req, res) => {
-    const { androidId } = req.query;
-
-    try {
-        const result = await pool.query(
-            `SELECT failed_attempts, lockout_until 
-             FROM users_notification 
-             WHERE android_id = $1`, 
-            [androidId]
-        );
-
-        if (result.rowCount === 0) {
-            return res.status(404).json({ message: 'User not found' });
-        }
-
-        const { failed_attempts, lockout_until } = result.rows[0];
-        const now = new Date();
-
-        if (lockout_until && new Date(lockout_until) > now) {
-            return res.status(403).json({
-                message: 'User is locked out',
-                lockoutUntil: lockout_until,
-            });
-        }
-
-        return res.status(200).json({ 
-            message: 'User can attempt login', 
-            failedAttempts: failed_attempts 
-        });
-    } catch (error) {
-        console.error('Error checking lockout status:', error);
-        return res.status(500).json({ message: 'Server error' });
-    }
-};
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
