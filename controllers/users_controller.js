@@ -460,6 +460,8 @@ exports.setLockoutStatus = async (req, res) => {
 	
     const {androidId, failedAttempts, lockoutUntil } = req.body;
     const lockoutUntilStamp = new Date(lockoutUntil);
+    
+    console.log('setLockoutStatus : lockoutUntilStamp:', lockoutUntilStamp);
 	
     new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
     try {
