@@ -462,7 +462,7 @@ exports.setLockoutStatus = async (req, res) => {
 	
     const lockoutUntilLong = parseInt(lockoutUntil, 10);
      
-    const lockoutUntilStamp = new Date(lockoutUntilLong));
+    const lockoutUntilStamp = new Date(lockoutUntilLong);
     
     console.log('setLockoutStatus : lockoutUntilStamp :', lockoutUntilStamp);
 	
