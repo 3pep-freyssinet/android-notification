@@ -484,8 +484,8 @@ exports.resetLockoutStatus = async (req, res) => {
      const username = 'Name147';
     //console.log('Headers:', req.headers);                    // Inspect headers
     console.log('resetLockoutStatus : Body:', req.body);       // Inspect body
-     const { androidId } = req.query;
-
+     const { androidId } = req.body;
+    console.log('resetLockoutStatus : androidId:', androidId)
     try {
         const result = await pool.query(
             `UPDATE users_notification 
@@ -493,7 +493,8 @@ exports.resetLockoutStatus = async (req, res) => {
              WHERE android_id = $1 AND username = $2`, 
             [androidId, username]
         );
-
+        //console.log('resetLockoutStatus : result:', JSON.stringify(result));
+	    
         if (result.rowCount === 0) {
             return res.status(404).json({ message: 'User not found' });
         }
