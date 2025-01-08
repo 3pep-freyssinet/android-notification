@@ -459,11 +459,13 @@ exports.setLockoutStatus = async (req, res) => {
     console.log('setLockoutStatus : Body:', req.body);       // Inspect body
 	
     const {androidId, failedAttempts, lockoutUntil } = req.body;
-    const lockoutUntilStamp = new Date(lockoutUntil);
-    
-    console.log('setLockoutStatus : lockoutUntilStamp:', lockoutUntilStamp);
 	
-    new Date(Date.now() + 7 * 24 * 60 * 60 * 1000)
+    const lockoutUntilLong = parseInt(lockoutUntil, 10);
+     
+    const lockoutUntilStamp = new Date(lockoutUntilLong));
+    
+    console.log('setLockoutStatus : lockoutUntilStamp :', lockoutUntilStamp);
+	
     try {
         const result = await pool.query(
             `UPDATE users_notification 
