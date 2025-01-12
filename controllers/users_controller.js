@@ -444,8 +444,8 @@ exports.getStoredSharedPreferences = async (req, res) => {
 	  	refreshExpiry: refresh_token_.rows[0].expires_at, 
 		sha256Pin:  sha256_pin.rows[0].sha256_pin,
 		fcmToken:  fcm_token.rows[0].fcm_token,
-	        failed_attempts: failed_attempts,
-                lockout_until: lockout_until
+	        failedAttempts: failed_attempts,
+                lockoutUntil: lockout_until
 	});  
   } catch (error) {
     console.error('getStoredSharedPreferences : error : ', error);
