@@ -29,13 +29,13 @@ console.log('auth : req.body : ', req.body);
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET); // Use your JWT secret
-    req.user = decoded; // Add user info to request object    
+    req.user      = decoded; // Add user info to request object    
     
     console.log('auth : decoded : ', decoded, ' id = ', req.user.userId);
 
     next();
   } catch (err) {
-     console.log('auth : Invalid token : ');
+     console.log('auth : err : Invalid token : ', err);
      res.status(403).json({ error: 'Invalid token' });
   }
 };
