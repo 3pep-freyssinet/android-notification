@@ -489,7 +489,7 @@ exports.setLockoutStatus = async (req, res) => {
 exports.resetLockoutStatus = async (req, res) => {
     const username = 'Name147';
     //console.log('resetLockoutStatus : req:', req); 
-    console.log('resetLockoutStatus : Headers:', req.headers); // Inspect headers
+    //console.log('resetLockoutStatus : Headers:', req.headers); // Inspect headers
     console.log('resetLockoutStatus : Body:', req.body);       // Inspect body
      const { androidId } = req.body;
     console.log('resetLockoutStatus : androidId:', androidId)
