@@ -375,9 +375,9 @@ try{
 }
 
 async function getUserId_(androidId){
-	const username = 'Name147';
+	//const username = 'Name147';
 	 try {
-	    const result = await pool.query('SELECT * FROM users_notification WHERE android_id = $1 AND username = $2', [androidId, username]);
+	    const result = await pool.query('SELECT * FROM users_notification WHERE android_id = $1', [androidId]);
 	
 	    if (result.rowCount === 0) {
 	      //return res.status(404).json({ message: 'android id not found' });
@@ -404,7 +404,7 @@ exports.getStoredSharedPreferences = async (req, res) => {
 	  console.log('getStoredSharedPreferences : androidId : ', androidId);
 	
 	  //1st step, get the user Id
-	   const user            = await getUserId_(androidId);
+	   const user = await getUserId_(androidId);
 	  if(user == null){
 		console.error('getStoredSharedPreferences : error : user id not found');
 		return res.status(200).json({ message: 'user id not found',  isRegistered:false,});
@@ -457,7 +457,7 @@ exports.getStoredSharedPreferences = async (req, res) => {
 };
 
 exports.setLockoutStatus = async (req, res) => {
-    const username = 'Name147';
+    //const username = 'Name147';
     //console.log('Headers:', req.headers);                  // Inspect headers
     console.log('setLockoutStatus : Body:', req.body);       // Inspect body
 	
@@ -473,8 +473,8 @@ exports.setLockoutStatus = async (req, res) => {
         const result = await pool.query(
             `UPDATE users_notification 
              SET failed_attempts = $1, lockout_until = $2 
-             WHERE android_id = $3 AND username = $4`, 
-            [failedAttempts, lockoutUntilStamp, androidId, username]
+             WHERE android_id = $3`, 
+            [failedAttempts, lockoutUntilStamp, androidId]
         );
 
         if (result.rowCount === 0) {
@@ -490,7 +490,7 @@ exports.setLockoutStatus = async (req, res) => {
 
 
 exports.resetLockoutStatus = async (req, res) => {
-    const username = 'Name147';
+    //const username = 'Name147';
     //console.log('resetLockoutStatus : req:', req); 
     //console.log('resetLockoutStatus : Headers:', req.headers); // Inspect headers
     console.log('resetLockoutStatus : Body:', req.body);       // Inspect body
@@ -500,8 +500,8 @@ exports.resetLockoutStatus = async (req, res) => {
         const result = await pool.query(
             `UPDATE users_notification 
              SET failed_attempts = 0, lockout_until = NULL 
-             WHERE android_id = $1 AND username = $2`, 
-            [androidId, username]
+             WHERE android_id = $1`, 
+            [androidId]
         );
         //console.log('resetLockoutStatus : result:', JSON.stringify(result));
 	    
