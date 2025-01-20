@@ -23,13 +23,25 @@ console.log('auth : req.body : ', req.body);
   }
 
   const token = authHeader.split(' ')[1];
-
+  if (!token) {
+        return res.status(401).json({ error: 'Token is required' });
+  }
+  //there is a token
   console.log('auth : jwt token = ', token);
   console.log('auth : JWT_SECRET = ', JWT_SECRET);
 
   try {
     const decoded = jwt.verify(token, JWT_SECRET); // Use your JWT secret
-    req.user      = decoded; // Add user info to request object    
+    // Check if the token is in the revoked_tokens table
+        const query = 'SELECT * FROM revoked_tokens WHERE token = $1';
+        const result = await pool.query(query, [token]);
+
+        if (result.rows.length > 0) {
+            // Token is revoked
+            return res.status(401).json({ error: 'Token has been revoked' });
+        }
+    //the token is valid
+    req.user = decoded; // Add user info to request object    
     
     console.log('auth : decoded : ', decoded, ' id = ', req.user.userId);
 
