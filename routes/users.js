@@ -14,6 +14,7 @@ router.get('/user_id',                                usersController.getUserId)
 router.get('/get-stored-shared-preferences',          usersController.getStoredSharedPreferences);    // GET /users/get-stored-shared-preferences?android-id=
 router.post('/set-lockout-status', authMiddleware,    usersController.setLockoutStatus);              // POST /users/set-lockout-status
 router.post('/reset-lockout-status',  authMiddleware, usersController.resetLockoutStatus);            // POST /users/reset-lockout-status
+router.post('/set-session-status',  authMiddleware,   usersController.setSessionStatus);              // POST /users/set-session-status
 
 //router.get('/:id', 		   usersController.getUser);                 // GET /users/:id
 //router.put('/:id', 		   usersController.updateUser);              // PUT /users/:id
