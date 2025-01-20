@@ -523,14 +523,18 @@ exports.setSessionStatus = async (req, res) => {
     //console.log('resetLockoutStatus : req:', req); 
     //console.log('resetLockoutStatus : Headers:', req.headers); // Inspect headers
     console.log('setSessionStatus : Body:', req.body);       // Inspect body
-     const { androidId, sessionStatus } = req.body;
-    console.log('setSessionStatus : androidId:', androidId, ' sessionStatus : ', sessionStatus)
+    const { androidId, sessionStatus } = req.body;
+    //'sessionStatus' in the body is a string. Convert it to boolean
+    const boolString = "false"; 
+    const sessionStatusBoolean = (sessionStatus === "true"); 
+
+    console.log('setSessionStatus : androidId:', androidId, ' sessionStatus : ', sessionStatusBoolean)
     try {
         const result = await pool.query(
             `UPDATE users_notification 
              SET is_session_closed = $1 
              WHERE android_id = $2`, 
-            [sessionStatus, androidId]
+            [sessionStatusBoolean, androidId]
         );
         //console.log('setSessionStatus : result:', JSON.stringify(result));
 	    
