@@ -403,8 +403,8 @@ exports.getStoredSharedPreferences = async (req, res) => {
 	  //console.log('getStoredSharedPreferences : req.params : ', req.params);	
 	  console.log('getStoredSharedPreferences : androidId : ', androidId);
 	
-	  //1st step, get the user Id
-	   const user = await getUserId_(androidId);
+	  //1st step, get the user Id and 'is_session_closed'
+	   const user = await getUserId_(androidId); //user ---> result.rows[0]
 	  if(user == null){
 		console.error('getStoredSharedPreferences : error : user id not found');
 		return res.status(200).json({ message: 'user id not found',  isRegistered:false,});
@@ -412,12 +412,12 @@ exports.getStoredSharedPreferences = async (req, res) => {
 	  
 	  console.log('getStoredSharedPreferences : user : ', user);
 	   
-	  const user_id         = user.id;
-	   const failed_attempts = user.failed_attempts;
-           const lockout_until   = user.lockout_until;
-	  
+	  const user_id           = user.id;
+	  const failed_attempts   = user.failed_attempts;
+          const lockout_until     = user.lockout_until;
+	  const is_session_closed = user.is_session_closed; 
 	   
-	  console.log('getStoredSharedPreferences : user_id : ', user_id, ' failed_attempts : ', failed_attempts, ' lockout_until : ', lockout_until);
+	  console.log('getStoredSharedPreferences : user_id : ', user_id, ' failed_attempts : ', failed_attempts, ' lockout_until : ', lockout_until, ' is_session_closed : ', is_session_closed);
    
 	  //2nd step, get stored jwt for this user
 	    const jwt_token = await pool.query('SELECT jwt_token FROM jwt_tokens WHERE user_id = $1', [user_id]); 
@@ -448,7 +448,8 @@ exports.getStoredSharedPreferences = async (req, res) => {
 		sha256Pin:  sha256_pin.rows[0].sha256_pin,
 		fcmToken:  fcm_token.rows[0].fcm_token,
 	        failedAttempts: failed_attempts,
-                lockoutUntil: lockout_until
+                lockoutUntil: lockout_until,
+		isSessionClosed: is_session_closed
 	});  
   } catch (error) {
     console.error('getStoredSharedPreferences : error : ', error);
@@ -516,6 +517,33 @@ exports.resetLockoutStatus = async (req, res) => {
     }
 };
 
+//set session status
+exports.setSessionStatus = async (req, res) => {
+    //const username = 'Name147';
+    //console.log('resetLockoutStatus : req:', req); 
+    //console.log('resetLockoutStatus : Headers:', req.headers); // Inspect headers
+    console.log('setSessionStatus : Body:', req.body);       // Inspect body
+     const { androidId, sessionStatus } = req.body;
+    console.log('setSessionStatus : androidId:', androidId, ' sessionStatus : ', sessionStatus)
+    try {
+        const result = await pool.query(
+            `UPDATE users_notification 
+             SET is_session_closed = $1 
+             WHERE android_id = $2`, 
+            [sessionStatus, androidId]
+        );
+        //console.log('setSessionStatus : result:', JSON.stringify(result));
+	    
+        if (result.rowCount === 0) {
+            return res.status(404).json({ message: 'setSessionStatus : User not updated' });
+        }
+
+        res.status(200).json({ message: 'setSessionStatus updated successfully' });
+    } catch (error) {
+        console.error('Error setSessionStatus :', error);
+        res.status(500).json({ message: 'setSessionStatus : Server error' });
+    }
+};
 
 // Update user by ID
 exports.updateUser = async (req, res) => {
