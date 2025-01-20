@@ -30,7 +30,7 @@ module.exports = async(req, res, next) => {
             const query = 'SELECT * FROM revoked_tokens WHERE token = $1';
             const result = await pool.query(query, [token]);
 
-            if (result.rows.length > 0) {
+            if (result.rows.length > 0) {  
                 // Token is revoked
                 return res.status(401).json({ error: 'Token has been revoked' });
             }
