@@ -24,6 +24,30 @@ const ALERT_TIME     = numberDay * 24 * 60 * 60 * 1000 //3 days, trigger and ref
 //console.log('process.env.DATABASE_URL = ' + process.env.DATABASE_URL);
 console.log('tokens_controller : pool = ' + pool);
 
+//revoke jwt token
+exports.revokeJWT = async (req, res) => {
+const token = req.body.token;
+console.log('revokeJWT : jwt token = ' + token);
+    if (!token) {
+	console.log('revokeJWT : jwt token Token is required ');   
+        return res.status(400).json({ error: 'Token is required' });
+    }
+
+    try {
+        // Decode token to validate it
+        const decoded = jwt.verify(token, SECRET_KEY);
+
+        // Save the token into the revoked_tokens table
+        const query = 'INSERT INTO revoked_tokens (token, revoked_at) VALUES ($1, NOW())';
+        await pool.query(query, [token]);
+        console.log('revokeJWT : Token revoked successfully '); 
+        return res.status(200).json({ message: 'Token revoked successfully' });
+    } catch (err) {
+        console.error('Error revoking token:', err.message);
+        return res.status(400).json({ error: 'Invalid token or already revoked' });
+    }
+}
+
 // Refresh the jwt token.
 exports.refreshJWTToken = async (req, res) => {
     try {
