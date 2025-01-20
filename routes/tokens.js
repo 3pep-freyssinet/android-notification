@@ -14,6 +14,7 @@ router.post('/renew-all-tokens', tokensController.renewAllTokensHandler);       
 router.post('/update-jwt-env', authMiddleware, tokensController.updateJWTEnvironment);                 // POST /tokens/update-jwt_env
 router.post('/renew-jwt-update-env', authMiddleware, tokensController.renewTokensUpdateJWTEnvironment);// POST /tokens/renew-jwt-update-env
 router.post('/fetch-jwt', tokensController.fetchJWT);                                                  // POST /tokens/fetch-jwt
+router.post('/revoke-jwt', tokensController.revokeJWT);                                                // POST /tokens/revoke-jwt
            
 //router.get('/:id', usersController.getUser);              // GET /users/:id
 //router.put('/:id', usersController.updateUser);           // PUT /users/:id
