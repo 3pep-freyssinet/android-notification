@@ -51,7 +51,3 @@ console.log('auth : req.body : ', req.body);
      res.status(403).json({ error: 'Invalid token' });
   }
 };
-
-async function authenticateToken(req, res, next) {
-
-}
