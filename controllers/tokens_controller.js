@@ -35,7 +35,7 @@ console.log('revokeJWT : jwt token = ' + token);
 
     try {
         // Decode token to validate it
-        const decoded = jwt.verify(token, SECRET_KEY);
+        const decoded = jwt.verify(token, JWT_SECRET);
 
         // Save the token into the revoked_tokens table
         const query = 'INSERT INTO revoked_tokens (token, revoked_at) VALUES ($1, NOW())';
