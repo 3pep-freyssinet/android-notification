@@ -38,7 +38,7 @@ console.log('revokeJWT : jwt token = ' + token);
         const decoded = jwt.verify(token, JWT_SECRET);
 
         // Save the token into the revoked_tokens table
-        const query = 'INSERT INTO revoked_tokens (token, revoked_at) VALUES ($1, NOW())';
+        const query = 'INSERT INTO revoked_tokens (token, revoked_at) VALUES ($1, NOW()) ON CONFLICT (token) DO NOTHING';
         await pool.query(query, [token]);
         console.log('revokeJWT : Token revoked successfully '); 
         return res.status(200).json({ message: 'Token revoked successfully' });
