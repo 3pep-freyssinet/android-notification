@@ -522,11 +522,11 @@ exports.setSessionStatus = async (req, res) => {
     //const username = 'Name147';
     //console.log('resetLockoutStatus : req:', req); 
     //console.log('resetLockoutStatus : Headers:', req.headers); // Inspect headers
-    console.log('setSessionStatus : Body:', req.body);       // Inspect body
+    console.log('setSessionStatus : Body:', req.body);           
     const {sessionStatus, androidId } = req.body;
     
     //'sessionStatus' in the body is a string. Convert it to boolean
-    const boolString = "false"; 
+    //const boolString = "false"; 
     const sessionStatusBoolean = (sessionStatus === "true"); 
 
     console.log('setSessionStatus : androidId:', androidId, ' sessionStatus : ', sessionStatusBoolean)
@@ -540,13 +540,15 @@ exports.setSessionStatus = async (req, res) => {
         //console.log('setSessionStatus : result:', JSON.stringify(result));
 	    
         if (result.rowCount === 0) {
-            return res.status(404).json({ message: 'setSessionStatus : User not updated' });
+	    console.log('setSessionStatus : session Status of User not updated');
+            return res.status(404).json({ message: 'setSessionStatus : Session Status of User not updated' });
         }
-
+        console.log('setSessionStatus :  SessionStatus updated successfully');
         res.status(200).json({ message: 'setSessionStatus updated successfully' });
     } catch (error) {
         console.error('Error setSessionStatus :', error);
-        res.status(500).json({ message: 'setSessionStatus : Server error' });
+	console.log('setSessionStatus :  SessionStatus server error : ', error );
+        res.status(500).json({ message: 'setSessionStatus : Server error'});
     }
 };
 
