@@ -524,10 +524,12 @@ exports.setSessionStatus = async (req, res) => {
     //console.log('resetLockoutStatus : Headers:', req.headers); // Inspect headers
     console.log('setSessionStatus : Body:', req.body);           
     const {sessionStatus, androidId } = req.body;
-    
+
+    console.log('setSessionStatus : sessionStatus:', sessionStatus);  
+	
     //'sessionStatus' in the body is a string. Convert it to boolean
     //const boolString = "false"; 
-    const sessionStatusBoolean = (sessionStatus === "true"); 
+    const sessionStatusBoolean = (sessionStatus === 'true'); 
 
     console.log('setSessionStatus : androidId:', androidId, ' sessionStatus : ', sessionStatusBoolean)
     try {
