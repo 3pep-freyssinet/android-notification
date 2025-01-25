@@ -186,6 +186,8 @@ exports.changePassword = async (req, res) => {
 	
     const {username, currentPassword, newPassword } = req.body;
 
+	   if(true)return;
+
     //Get the id knowing the 'username'
     const userId = await getUserId__(username);
     if(userId == null){
