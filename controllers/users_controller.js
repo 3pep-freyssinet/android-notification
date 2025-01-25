@@ -225,7 +225,7 @@ exports.changePassword = async (req, res) => {
         console.log('changePassword : before crypt : ', currentPassword, ' currentPassword hashed : ', hashedCurrentPassword);
 	console.log('changePassword : storedPassword : ', storedPassword); 
 	
-	   const isPasswordValid = await bcrypt.compare(hashedCurrentPassword, storedPassword);
+	const isPasswordValid = await bcrypt.compare(currentPassword, storedPassword);
          
 	console.log('changePassword : isPasswordValid : ', isPasswordValid);
 		
