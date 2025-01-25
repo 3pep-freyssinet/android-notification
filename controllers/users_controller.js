@@ -484,7 +484,7 @@ async function getUserId__(username){
 	      return null; 
 	    }
 	    console.log('getUserId__ : user id : ', result.rows[0].id);
-	    return result.rows[0];
+	    return result.rows[0].id;
 	    
 	} catch (error) {
 	    console.error('getUserId__ : Error querying user ID:', error.message, { username });
