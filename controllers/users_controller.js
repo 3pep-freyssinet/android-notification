@@ -185,9 +185,8 @@ exports.changePassword = async (req, res) => {
     console.log('changePassword\n');
 	
     const {username, currentPassword, newPassword } = req.body;
-
-	   if(true)return;
-
+    console.log('changePassword : username : ', username, ' currentPassword : ', currentPassword, ' newPassword : ', newPassword);
+	 
     //Get the id knowing the 'username'
     const userId = await getUserId__(username);
     if(userId == null){
@@ -195,7 +194,9 @@ exports.changePassword = async (req, res) => {
            return res.status(404).json({ message: 'User not found' });
     }
     console.log('changePassword : userId : ', userId);
-	
+   
+    if(true)return;
+	   
     // Fetch stored password hash and last changed date
     const userQuery = `
         SELECT password, last_password_changed 
