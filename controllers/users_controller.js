@@ -195,7 +195,7 @@ exports.changePassword = async (req, res) => {
     }
     console.log('changePassword : userId : ', userId);
    
-    if(true)return;
+    //if(true)return;
 	   
     // Fetch stored password hash and last changed date
     const userQuery = `
