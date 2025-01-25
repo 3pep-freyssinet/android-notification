@@ -267,7 +267,8 @@ exports.changePassword = async (req, res) => {
 	   
     console.log('changePassword : Password changed successfully.');
 	   
-    return { success: true, message: 'Password changed successfully.' };
+    //return { success: true, message: 'Password changed successfully.' };
+    return res.status(200).json({ success: true, message: 'Password changed successfully.' });  
   }catch(error){
 	console.error('changePassword : ' + error);
         res.status(500).json({ message: 'Server error' });
