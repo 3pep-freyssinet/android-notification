@@ -210,11 +210,13 @@ exports.changePassword = async (req, res) => {
     // Compare the provided current password with the hashed password stored in the database.
 	console.log('test password NAme147@ : ', currentPassword == 'NAme147@');
 	// Hash the current password
-	const password = await bcrypt.hash('NAme147@', 10);
-        console.log('encypted password NAme147@ : ', password);
+	const hashedPassword = await bcrypt.hash('NAme147@', 10);
+        console.log('encypted password NAme147@ : ', hashedPassword);
 
         const saltRounds     = 10;
         const hashedCurrentPassword = await bcrypt.hash(currentPassword, saltRounds);   
+        
+	console.log('test hashed password NAme147@ : ', hashedPassword == hashedCurrentPassword);
 	   
         console.log('changePassword : before crypt : ', currentPassword, ' currentPassword hashed : ', hashedCurrentPassword);
 	console.log('changePassword : storedPassword : ', storedPassword); 
