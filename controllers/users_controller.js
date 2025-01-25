@@ -181,16 +181,17 @@ exports.registerUser = async (req, res) => {
 
 //change pwd
 exports.changePassword = async (req, res) => {
-    
+   try{ 
     console.log('changePassword\n');
 	
     const {username, currentPassword, newPassword } = req.body;
-	
+
+    //Get the id knowing the 'username'
     const userId = await getUserId__(username);
     if(userId == null){
 	   console.warn('User not found for username:', username);
-    return res.status(404).json({ message: 'User not found' });
-
+           return res.status(404).json({ message: 'User not found' });
+    }
     console.log('changePassword : userId : ', userId);
 	
     // Fetch stored password hash and last changed date
@@ -202,10 +203,18 @@ exports.changePassword = async (req, res) => {
     const userResult     = await pool.query(userQuery, [userId]);
     const storedPassword = userResult.rows[0]?.password;
 
-    //check the validity of the provided password 'current password' against the stored password 'stored password'.
-    //todo
-	    
-    // Get all password stored in 'password_history'. Check if the new password matches the current or previous passwords
+    //check the validity of the provided current password 'current password' against the stored password 'stored password'.
+    // Compare the provided current password with the hashed password stored in the database
+        const isPasswordValid = await bcrypt.compare(currentPassword, storedPassword);
+
+		console.log('changePassword : isPasswordValid : ', isPasswordValid);
+		
+        if (!isPasswordValid) {
+            return res.status(400).json({ message: 'Invalid username or password' });
+        }
+
+    //Here the provided current password is valid. Check if the new password matches the current or previous passwords
+    // Get all password stored in 'password_history'. 
     const historyQuery = `
         SELECT password 
         FROM password_history 
@@ -235,8 +244,14 @@ exports.changePassword = async (req, res) => {
         VALUES ($1, $2)
     `;
     await pool.query(insertHistoryQuery, [userId, currentPassword]);
-
+	   
+    console.log('changePassword : Password changed successfully.');
+	   
     return { success: true, message: 'Password changed successfully.' };
+  }catch(error){
+	console.error('changePassword : ' + error);
+        res.status(500).json({ message: 'Server error' });
+  }
 }
 
 // Save jwt token to database for a user
