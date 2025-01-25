@@ -179,6 +179,63 @@ exports.registerUser = async (req, res) => {
     }
 };
 
+//change pwd
+exports.changePassword = async (req, res) => {
+    
+    console.log('changePassword\n');
+	
+    const {androidId, newPassword } = req.body;
+	
+    const userId = await getUserId_(androidId)
+    if(userId == null){
+	   console.warn('User not found for androidId:', androidId);
+    return res.status(404).json({ message: 'User not found' });
+
+    console.log('getUserId : user_id : ', user_id);
+	
+    // Fetch current password hash and last changed date
+    const userQuery = `
+        SELECT password, last_password_changed 
+        FROM users_notification 
+        WHERE id = $1
+    `;
+    const userResult      = await pool.query(userQuery, [userId]);
+    const currentPassword = userResult.rows[0]?.password;
+
+    // Check if the new password matches the current or previous passwords
+    const historyQuery = `
+        SELECT password 
+        FROM password_history 
+        WHERE user_id = $1
+    `;
+    const historyResult    = await pool.query(historyQuery, [userId]);
+    const previousPassword = historyResult.rows.map(row => row.password);
+
+    for (const hash of [currentPassword, ...previousPassword]) {
+        if (await bcrypt.compare(newPassword, hash)) {
+            throw new Error('New password cannot be the same as the current or previous passwords.');
+        }
+    }
+
+    // Update password and record history
+    const newHash = await bcrypt.hash(newPassword, 10);
+    const updateQuery = `
+        UPDATE users_notification 
+        SET password = $1, last_password_changed = NOW() 
+        WHERE id = $2
+    `;
+    await pool.query(updateQuery, [newHash, userId]);
+
+    // Insert old password into history
+    const insertHistoryQuery = `
+        INSERT INTO password_history (user_id, password) 
+        VALUES ($1, $2)
+    `;
+    await pool.query(insertHistoryQuery, [userId, currentPassword]);
+
+    return { success: true, message: 'Password changed successfully.' };
+}
+
 // Save jwt token to database for a user
 async function saveJWTToken(user, jwt_token, created_at, expire_at) {
 	// Assuming you have a database table for jwt tokens associated with users
