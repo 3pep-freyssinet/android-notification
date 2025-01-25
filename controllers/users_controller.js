@@ -244,6 +244,7 @@ exports.changePassword = async (req, res) => {
     const previousPassword = historyResult.rows.map(row => row.password);
 
     for (const hash of [currentPassword, ...previousPassword]) {
+	console.log('changePassword : loop : hash : ', hash); 
         if (await bcrypt.compare(newPassword, hash)) {
             throw new Error('New password cannot be the same as the current or previous passwords.');
         }
@@ -263,7 +264,7 @@ exports.changePassword = async (req, res) => {
         INSERT INTO password_history (user_id, password) 
         VALUES ($1, $2)
     `;
-    await pool.query(insertHistoryQuery, [userId, currentPassword]);
+    await pool.query(insertHistoryQuery, [userId, storedPassword]);
 	   
     console.log('changePassword : Password changed successfully.');
 	   
