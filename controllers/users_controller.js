@@ -243,7 +243,7 @@ exports.changePassword = async (req, res) => {
     const historyResult    = await pool.query(historyQuery, [userId]);
     const previousPassword = historyResult.rows.map(row => row.password);
 
-    for (const hash of [currentPassword, ...previousPassword]) {
+    for (const hash of [storedPassword, ...previousPassword]) {
 	console.log('changePassword : loop : hash : ', hash); 
         if (await bcrypt.compare(newPassword, hash)) {
             throw new Error('New password cannot be the same as the current or previous passwords.');
