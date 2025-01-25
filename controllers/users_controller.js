@@ -207,10 +207,13 @@ exports.changePassword = async (req, res) => {
     const storedPassword = userResult.rows[0]?.password;
 
     //check the validity of the provided current password 'current password' against the stored password 'stored password'.
-    // Compare the provided current password with the hashed password stored in the database
-        const isPasswordValid = await bcrypt.compare(currentPassword, storedPassword);
-
-		console.log('changePassword : isPasswordValid : ', isPasswordValid);
+    // Compare the provided current password with the hashed password stored in the database.
+        console.log('changePassword : currentPassword : ', currentPassword);
+	console.log('changePassword : storedPassword : ', storedPassword); 
+	
+	   const isPasswordValid = await bcrypt.compare(currentPassword, storedPassword);
+         
+	console.log('changePassword : isPasswordValid : ', isPasswordValid);
 		
         if (!isPasswordValid) {
             return res.status(400).json({ message: 'Invalid username or password' });
