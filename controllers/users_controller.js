@@ -217,9 +217,10 @@ exports.changePassword = async (req, res) => {
         const saltRounds     = 10;
         const hashedCurrentPassword = await bcrypt.hash(currentPassword, saltRounds);   
         
-	const isMatch = await bcrypt.compare(hashedCurrentPassword, hashedPassword);
+	const isMatch1 = await bcrypt.compare('NAme147@', hashedPassword);
+	const isMatch2 = await bcrypt.compare(currentPassword, hashedCurrentPassword); 
 	
-	console.log('test hashed password : ', isMatch);
+	console.log('test isMatch1 : ', isMatch1, ' isMatch2 : ', isMatch2);
 	console.log('************************************************');
         console.log('changePassword : before crypt : ', currentPassword, ' currentPassword hashed : ', hashedCurrentPassword);
 	console.log('changePassword : storedPassword : ', storedPassword); 
