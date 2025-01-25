@@ -480,7 +480,7 @@ async function getUserId__(username){
 	
 	    if (result.rowCount === 0) {
 	      //return res.status(404).json({ message: 'user id not found' });
-	      console.log('getUserId__ : user id : user id not found', res);    
+	      console.log('getUserId__ : user id : user id not found');    
 	      return null; 
 	    }
 	    console.log('getUserId__ : user id : ', result.rows[0].id);
