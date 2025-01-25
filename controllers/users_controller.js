@@ -184,25 +184,28 @@ exports.changePassword = async (req, res) => {
     
     console.log('changePassword\n');
 	
-    const {androidId, newPassword } = req.body;
+    const {username, currentPassword, newPassword } = req.body;
 	
-    const userId = await getUserId_(androidId)
+    const userId = await getUserId__(username);
     if(userId == null){
-	   console.warn('User not found for androidId:', androidId);
+	   console.warn('User not found for username:', username);
     return res.status(404).json({ message: 'User not found' });
 
-    console.log('getUserId : user_id : ', user_id);
+    console.log('changePassword : userId : ', userId);
 	
-    // Fetch current password hash and last changed date
+    // Fetch stored password hash and last changed date
     const userQuery = `
         SELECT password, last_password_changed 
         FROM users_notification 
         WHERE id = $1
     `;
-    const userResult      = await pool.query(userQuery, [userId]);
-    const currentPassword = userResult.rows[0]?.password;
+    const userResult     = await pool.query(userQuery, [userId]);
+    const storedPassword = userResult.rows[0]?.password;
 
-    // Check if the new password matches the current or previous passwords
+    //check the validity of the provided password 'current password' against the stored password 'stored password'.
+    //todo
+	    
+    // Get all password stored in 'password_history'. Check if the new password matches the current or previous passwords
     const historyQuery = `
         SELECT password 
         FROM password_history 
@@ -431,6 +434,7 @@ try{
   }
 }
 
+//get id knowing androidId
 async function getUserId_(androidId){
 	//const username = 'Name147';
 	 try {
@@ -450,6 +454,28 @@ async function getUserId_(androidId){
   	}	  	  
 }
 
+//get id knowing username
+async function getUserId__(username){
+	//const username = 'Name147';
+	 try {
+	    const result = await pool.query('SELECT id FROM users_notification WHERE username = $1', [username]);
+	
+	    if (result.rowCount === 0) {
+	      //return res.status(404).json({ message: 'user id not found' });
+	      console.log('getUserId__ : user id : user id not found', res);    
+	      return null; 
+	    }
+	    console.log('getUserId__ : user id : ', result.rows[0].id);
+	    return result.rows[0];
+	    
+	} catch (error) {
+	    console.error('getUserId__ : Error querying user ID:', error.message, { username });
+    	    throw new Error('Database query failed'); // Throw an error for unexpected issues
+  
+  	}	  	  
+}
+
+	
 //get stored shared prefrences of a device Id
 exports.getStoredSharedPreferences = async (req, res) => {
   try{
