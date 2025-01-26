@@ -179,6 +179,49 @@ exports.registerUser = async (req, res) => {
     }
 };
 
+//check credentials
+exports.checkCredentials = async (req, res) => {
+   try{ 
+    console.log('checkCredentials\n');
+	
+    const {username, password } = req.body;
+    console.log('checkCredentials : username : ', username, ' password : ', password);
+	 
+    //Get the id knowing the 'username'
+    const userId = await getUserId__(username);
+    if(userId == null){
+	   console.warn('User not found for username:', username);
+           return res.status(404).json({ message: 'User not found' });
+    }
+    console.log('checkCredentials : userId : ', userId);
+    
+    // Fetch stored password hash and last changed date
+    const userQuery = `
+        SELECT password, last_password_changed 
+        FROM users_notification 
+        WHERE id = $1
+    `;
+    const userResult     = await pool.query(userQuery, [userId]);
+    const storedPassword = userResult.rows[0]?.password;
+	   
+    //check the validity of the provided current password 'current password' against the stored password 'stored password'.
+    // Compare the provided clear current password with the hashed password stored in the database.
+
+	const isPasswordValid = await bcrypt.compare(password, storedPassword);
+         
+	console.log('checkCredentials : isPasswordValid : ', isPasswordValid);
+		
+        if (!isPasswordValid) {
+            return res.status(400).json({ message: 'Invalid username or password' });
+        }
+	  console.log('checkCredentials : Password is valid.');
+	 return res.status(200).json({ success: true, message: 'Password is valid.' });  
+  }catch(error){
+	console.error('checkCredentials : ' + error);
+        res.status(500).json({ message: 'Server error' });
+  }   
+}
+
 //change pwd
 exports.changePassword = async (req, res) => {
    try{ 
