@@ -207,23 +207,23 @@ exports.changePassword = async (req, res) => {
     const storedPassword = userResult.rows[0]?.password;
 
     //check the validity of the provided current password 'current password' against the stored password 'stored password'.
-    // Compare the provided current password with the hashed password stored in the database.
-        console.log('************************************************');
-	console.log('test password : ', currentPassword == 'NAme147@');
+    // Compare the provided clear current password with the hashed password stored in the database.
+        //console.log('************************************************');
+	//console.log('test password : ', currentPassword == 'NAme147@');
 	// Hash the current password
-	const hashedPassword = await bcrypt.hash('NAme147@', 10);
-        console.log('encypted password  : ', hashedPassword);
+	//const hashedPassword = await bcrypt.hash('NAme147@', 10);
+        //console.log('encypted password  : ', hashedPassword);
 
         const saltRounds     = 10;
         const hashedCurrentPassword = await bcrypt.hash(currentPassword, saltRounds);   
         
-	const isMatch1 = await bcrypt.compare('NAme147@', hashedPassword);
+	//const isMatch1 = await bcrypt.compare('NAme147@', hashedPassword);
 	const isMatch2 = await bcrypt.compare(currentPassword, hashedCurrentPassword); 
 	
-	console.log('test isMatch1 : ', isMatch1, ' isMatch2 : ', isMatch2);
-	console.log('************************************************');
-        console.log('changePassword : before crypt : ', currentPassword, ' currentPassword hashed : ', hashedCurrentPassword);
-	console.log('changePassword : storedPassword : ', storedPassword); 
+	//console.log('test isMatch1 : ', isMatch1, ' isMatch2 : ', isMatch2);
+	//console.log('************************************************');
+        //console.log('changePassword : before crypt : ', currentPassword, ' currentPassword hashed : ', hashedCurrentPassword);
+	//console.log('changePassword : storedPassword : ', storedPassword); 
 	
 	const isPasswordValid = await bcrypt.compare(currentPassword, storedPassword);
          
@@ -246,7 +246,8 @@ exports.changePassword = async (req, res) => {
     for (const hash of [storedPassword, ...previousPassword]) {
 	console.log('changePassword : loop : hash : ', hash); 
         if (await bcrypt.compare(newPassword, hash)) {
-            throw new Error('New password cannot be the same as the current or previous passwords.');
+            //throw new Error('New password cannot be the same as the current or previous passwords.');
+	    return res.status(401).json({ message: ''New password cannot be the same as the current or previous passwords.' });
         }
     }
 
