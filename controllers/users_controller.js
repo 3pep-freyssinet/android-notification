@@ -179,7 +179,7 @@ exports.registerUser = async (req, res) => {
     }
 };
 
-//check credentials
+//check credentials (username, password)
 exports.checkCredentials = async (req, res) => {
    try{ 
     console.log('checkCredentials\n');
