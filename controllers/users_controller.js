@@ -229,14 +229,21 @@ exports.matchPassword = async (req, res) => {
 	
     const {password } = req.body;
     console.log('matchPassword : password : ', password);
-	 
+
+    /*
     //Get the id knowing the 'username'
     const userId = await getUserId__(username);
     if(userId == null){
 	   console.warn('User not found for username:', username);
            return res.status(404).json({ message: 'User not found' });
     }
-    console.log('checkCredentials : userId : ', userId);
+    */
+    console.log('matchPassword : req.user : ', req.user);
+	   
+    //get the id from the req
+    const userId = req.user.user_id;
+	
+    console.log('matchPassword : userId : ', userId);
     
     // Fetch stored password hash and last changed date
     const userQuery = `
@@ -252,15 +259,34 @@ exports.matchPassword = async (req, res) => {
 
 	const isPasswordValid = await bcrypt.compare(password, storedPassword);
          
-	console.log('checkCredentials : isPasswordValid : ', isPasswordValid);
+	console.log('matchPassword : isPasswordValid : ', isPasswordValid);
 		
         if (!isPasswordValid) {
             return res.status(400).json({ message: 'Invalid username or password' });
         }
-	  console.log('checkCredentials : Password is valid.');
-	 return res.status(200).json({ success: true, message: 'Password is valid.' });  
-  }catch(error){
-	console.error('checkCredentials : ' + error);
+	   
+	//Here the provided current password is valid. Check if the new password matches the current or previous passwords
+    // Get all password stored in 'password_history'. 
+    const historyQuery = `
+        SELECT password 
+        FROM password_history 
+        WHERE user_id = $1
+    `;
+    const historyResult    = await pool.query(historyQuery, [userId]);
+    const previousPassword = historyResult.rows.map(row => row.password);
+
+    for (const hash of [storedPassword, ...previousPassword]) {
+	console.log('matchPassword : loop : hash : ', hash); 
+        if (await bcrypt.compare(newPassword, hash)) {
+            //throw new Error('New password cannot be the same as the current or previous passwords.');
+	    return res.status(401).json({ message: 'New password cannot be the same as the current or previous passwords.' });
+        }
+    }
+     console.log('matchPassword : Password is valid.');
+     return res.status(200).json({ success: true, message: 'Password is valid.' });  
+  
+   }catch(error){
+	console.error('matchPassword : ' + error);
         res.status(500).json({ message: 'Server error' });
   }   
 }
