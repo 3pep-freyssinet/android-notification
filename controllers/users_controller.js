@@ -222,7 +222,45 @@ exports.checkCredentials = async (req, res) => {
   }   
 }
 
-//match password
+//update password. change password. replace the current password by the supplied new password.
+exports.updatePassword = async (req, res) => {
+   try{ 
+    console.log('updatePassword\n');
+	
+    const {password } = req.body;
+    console.log('updatePassword : password : ', password);
+    
+    /*
+    //hash the password
+    const passwordHash = await bcrypt.hash(password, 10);
+	   
+    
+    //Get the id knowing the 'username'
+    const userId = await getUserId__(username);
+    if(userId == null){
+	   console.warn('User not found for username:', username);
+           return res.status(404).json({ message: 'User not found' });
+    }
+   
+    console.log('matchPassword : req.user : ', req.user);
+    */
+	   
+    //get the id from the req
+    const userId = req.user.userId;
+	
+    console.log('updatePassword : userId : ', userId);
+    
+
+     console.log('matchPassword : Password is valid.');
+     return res.status(200).json({ success: true, message: 'Password is valid.' });  
+  
+   }catch(error){
+	console.error('matchPassword : ' + error);
+        res.status(500).json({ message: 'Server error' });
+  }   
+}
+
+//match password. if the provided password match the previous password
 exports.matchPassword = async (req, res) => {
    try{ 
     console.log('matchPassword\n');
