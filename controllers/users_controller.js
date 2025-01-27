@@ -230,6 +230,9 @@ exports.matchPassword = async (req, res) => {
     const {password } = req.body;
     console.log('matchPassword : password : ', password);
 
+    //hash the password
+    const passwordHash = await bcrypt.hash(password, 10);
+	   
     /*
     //Get the id knowing the 'username'
     const userId = await getUserId__(username);
@@ -237,7 +240,7 @@ exports.matchPassword = async (req, res) => {
 	   console.warn('User not found for username:', username);
            return res.status(404).json({ message: 'User not found' });
     }
-    */
+   
     console.log('matchPassword : req.user : ', req.user);
 	   
     //get the id from the req
@@ -264,8 +267,8 @@ exports.matchPassword = async (req, res) => {
         if (!isPasswordValid) {
             return res.status(400).json({ message: 'Invalid username or password' });
         }
+	*/
 	   
-	//Here the provided current password is valid. Check if the new password matches the current or previous passwords
     // Get all password stored in 'password_history'. 
     const historyQuery = `
         SELECT password 
@@ -275,7 +278,7 @@ exports.matchPassword = async (req, res) => {
     const historyResult    = await pool.query(historyQuery, [userId]);
     const previousPassword = historyResult.rows.map(row => row.password);
 
-    for (const hash of [storedPassword, ...previousPassword]) {
+    for (const hash of [passwordHash, ...previousPassword]) {
 	console.log('matchPassword : loop : hash : ', hash); 
         if (await bcrypt.compare(password, hash)) {
             //throw new Error('New password cannot be the same as the current or previous passwords.');
