@@ -229,33 +229,44 @@ exports.updatePassword = async (req, res) => {
 	
     const {password } = req.body;
     console.log('updatePassword : password : ', password);
-    
-    /*
-    //hash the password
-    const passwordHash = await bcrypt.hash(password, 10);
-	   
-    
-    //Get the id knowing the 'username'
-    const userId = await getUserId__(username);
-    if(userId == null){
-	   console.warn('User not found for username:', username);
-           return res.status(404).json({ message: 'User not found' });
-    }
-   
-    console.log('matchPassword : req.user : ', req.user);
-    */
-	   
+       
     //get the id from the req
     const userId = req.user.userId;
 	
     console.log('updatePassword : userId : ', userId);
-    
 
-     console.log('matchPassword : Password is valid.');
-     return res.status(200).json({ success: true, message: 'Password is valid.' });  
+    // Fetch stored password hash and last changed date
+    const userQuery = `
+        SELECT password, last_password_changed 
+        FROM users_notification 
+        WHERE id = $1
+    `;
+    const userResult     = await pool.query(userQuery, [userId]);
+    const storedPassword = userResult.rows[0]?.password;
+    
+    // Update password and record history
+    const newHash = await bcrypt.hash(password, 10);
+    const updateQuery = `
+        UPDATE users_notification 
+        SET password = $1, last_password_changed = NOW() 
+        WHERE id = $2
+    `;
+    await pool.query(updateQuery, [newHash, userId]);
+
+    // Insert old password into history
+    const insertHistoryQuery = `
+        INSERT INTO password_history (user_id, password) 
+        VALUES ($1, $2)
+    `;
+    await pool.query(insertHistoryQuery, [userId, storedPassword]);
+	   
+    console.log('updatePassword : Password changed successfully.');
+	   
+    //return { success: true, message: 'Password changed successfully.' };
+    return res.status(200).json({ success: true, message: 'Password changed successfully.' });  
   
    }catch(error){
-	console.error('matchPassword : ' + error);
+	console.error('updatePassword : ' + error);
         res.status(500).json({ message: 'Server error' });
   }   
 }
