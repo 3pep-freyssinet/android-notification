@@ -242,12 +242,14 @@ exports.matchPassword = async (req, res) => {
     }
    
     console.log('matchPassword : req.user : ', req.user);
+    */
 	   
     //get the id from the req
     const userId = req.user.userId;
 	
     console.log('matchPassword : userId : ', userId);
     
+    /*
     // Fetch stored password hash and last changed date
     const userQuery = `
         SELECT password, last_password_changed 
