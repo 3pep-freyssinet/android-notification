@@ -281,12 +281,11 @@ exports.matchPassword = async (req, res) => {
     const historyResult    = await pool.query(historyQuery, [userId]);
     const previousPassword = historyResult.rows.map(row => row.password);
 
-    for (const hash in previousPassword) {
-	console.log('matchPassword : loop : hash : ', hash); 
-        if (await bcrypt.compare(password, hash)) {
-            //throw new Error('New password cannot be the same as the current or previous passwords.');
-	    return res.status(401).json({ message: 'New password cannot be the same as the current or previous passwords.' });
-        }
+    for (const hash of previousPassword) { // Use 'for...of' to iterate over values
+    	console.log('matchPassword : loop : hash : ', hash); 
+    	if (await bcrypt.compare(password, hash)) {
+        	return res.status(401).json({ message: 'New password cannot be the same as the current or previous passwords.' });
+    	}
     }
      console.log('matchPassword : Password is valid.');
      return res.status(200).json({ success: true, message: 'Password is valid.' });  
