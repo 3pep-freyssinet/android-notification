@@ -250,7 +250,6 @@ exports.matchPassword = async (req, res) => {
 	
     console.log('matchPassword : userId : ', userId);
     
-    /*
     // Fetch stored password hash and last changed date
     const userQuery = `
         SELECT password, last_password_changed 
@@ -259,7 +258,8 @@ exports.matchPassword = async (req, res) => {
     `;
     const userResult     = await pool.query(userQuery, [userId]);
     const storedPassword = userResult.rows[0]?.password;
-	   
+
+    /*
     //check the validity of the provided current password 'current password' against the stored password 'stored password'.
     // Compare the provided clear current password with the hashed password stored in the database.
 
@@ -281,11 +281,12 @@ exports.matchPassword = async (req, res) => {
     const historyResult    = await pool.query(historyQuery, [userId]);
     const previousPassword = historyResult.rows.map(row => row.password);
 
-    for (const hash of previousPassword) { // Use 'for...of' to iterate over values
-    	console.log('matchPassword : loop : hash : ', hash); 
-    	if (await bcrypt.compare(password, hash)) {
-        	return res.status(401).json({ message: 'New password cannot be the same as the current or previous passwords.' });
-    	}
+    for (const hash of [storedPassword, ...previousPassword]) {
+	console.log('changePassword : loop : hash : ', hash); 
+        if (await bcrypt.compare(newPassword, hash)) {
+            //throw new Error('New password cannot be the same as the current or previous passwords.');
+	    return res.status(401).json({ message: 'New password cannot be the same as the current or previous passwords.' });
+        }
     }
      console.log('matchPassword : Password is valid.');
      return res.status(200).json({ success: true, message: 'Password is valid.' });  
