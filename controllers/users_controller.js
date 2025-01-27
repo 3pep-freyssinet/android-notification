@@ -281,7 +281,7 @@ exports.matchPassword = async (req, res) => {
     const historyResult    = await pool.query(historyQuery, [userId]);
     const previousPassword = historyResult.rows.map(row => row.password);
 
-    for (const hash of [previousPassword]) {
+    for (const hash in previousPassword) {
 	console.log('matchPassword : loop : hash : ', hash); 
         if (await bcrypt.compare(password, hash)) {
             //throw new Error('New password cannot be the same as the current or previous passwords.');
