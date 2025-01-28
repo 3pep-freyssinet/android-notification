@@ -237,9 +237,27 @@ exports.updatePassword = async (req, res) => {
    try{ 
     console.log('updatePassword\n');
 	
-    const {password } = req.body;
-    console.log('updatePassword : password : ', password);
-       
+    const { sessionId } = req.body;
+    console.log('updatePassword : sessionId:', sessionId);
+
+    // Retrieve the session from the database
+    const sessionQuery = `
+        SELECT * FROM password_change_sessions WHERE session_id = $1
+    `;
+    const sessionResult = await pool.query(sessionQuery, [sessionId]);
+
+    if (sessionResult.rowCount === 0) {
+      return res.status(404).json({ message: 'Session not found.' });
+    }
+
+    const session = sessionResult.rows[0];
+
+    // Check if session is expired
+    if (new Date(session.expiration) < new Date()) {
+      return res.status(401).json({ message: 'Session expired.' });
+    }
+
+	   
     //get the id from the req
     const userId = req.user.userId;
 	
@@ -270,10 +288,13 @@ exports.updatePassword = async (req, res) => {
     `;
     await pool.query(insertHistoryQuery, [userId, storedPassword]);
 	   
-    console.log('updatePassword : Password changed successfully.');
+    console.log('updatePassword : Password updated successfully.');
 	   
-    //return { success: true, message: 'Password changed successfully.' };
-    return res.status(200).json({ success: true, message: 'Password changed successfully.' });  
+   // Update the session to reflect that the new password has been applied
+    await updateSession(sessionId, { is_new_password_applied: true });
+
+    console.log('updatePassword: Password updated and session marked as completed.');
+    return res.status(200).json({ message: 'Password updated successfully.' });
   
    }catch(error){
 	console.error('updatePassword : ' + error);
@@ -285,25 +306,41 @@ exports.updatePassword = async (req, res) => {
 exports.matchPassword = async (req, res) => {
    try{ 
     console.log('matchPassword\n');
-	
-    const {password } = req.body;
-    console.log('matchPassword : password : ', password);
+    const { updateSession  } = require('../services/passwordChangeService');
     
+    const { sessionId, password } = req.body;
+    console.log('matchPassword : sessionId : ', sessionId, ' password : ', password);
+
+     // Retrieve the session from the database
+     const sessionQuery = `
+            SELECT * FROM password_change_sessions WHERE session_id = $1
+        `;
+     const sessionResult = await pool.query(sessionQuery, [sessionId]);
+
+     if (sessionResult.rowCount === 0) {
+            return res.status(404).json({ message: 'Session not found.' });
+     }
+
+     const session = sessionResult.rows[0];
+
+     // Check if session is expired
+     if (new Date(session.expiration) < new Date()) {
+            return res.status(401).json({ message: 'Session expired.' });
+     }  
+	   
     /*
     //hash the password
     const passwordHash = await bcrypt.hash(password, 10);
 	   
-    
     //Get the id knowing the 'username'
     const userId = await getUserId__(username);
     if(userId == null){
 	   console.warn('User not found for username:', username);
            return res.status(404).json({ message: 'User not found' });
     }
-   
     console.log('matchPassword : req.user : ', req.user);
-    */
-	   
+    
+    */   
     //get the id from the req
     const userId = req.user.userId;
 	
@@ -348,8 +385,13 @@ exports.matchPassword = async (req, res) => {
         }
     }
      console.log('matchPassword : Password is valid.');
-     return res.status(200).json({ success: true, message: 'Password is valid.' });  
-  
+     
+     // Update the session to reflect that the new password is verified
+     await updateSession(sessionId, { is_new_password_verified: true });
+
+     console.log('matchPassword : session updated successfully. Password verified successfully ');
+     return res.status(200).json({ message: 'Password verified successfully.' });
+     
    }catch(error){
 	console.error('matchPassword : ' + error);
         res.status(500).json({ message: 'Server error' });
