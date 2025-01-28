@@ -1,6 +1,6 @@
 // services/passwordChangeService.js
 const { v4: uuidv4 } = require('uuid');
-const pool = require('../config/db'); // Adjust the path to your database pool configuration
+const pool           = require('../db'); // Adjust the path to your database pool configuration
 
 // Function to create a session
 const createSession = async (userId) => {
