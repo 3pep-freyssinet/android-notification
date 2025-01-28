@@ -182,8 +182,11 @@ exports.registerUser = async (req, res) => {
 //check credentials (username, password)
 exports.checkCredentials = async (req, res) => {
    try{ 
-    console.log('checkCredentials\n');
-	
+   console.log('checkCredentials\n');
+   const { createSession } = require('../services/passwordChangeService');
+    
+   console.log('checkCredentials : createSession :', createSession,'\n');
+
     const {username, password } = req.body;
     console.log('checkCredentials : username : ', username, ' password : ', password);
 	 
@@ -215,7 +218,14 @@ exports.checkCredentials = async (req, res) => {
             return res.status(400).json({ message: 'Invalid username or password' });
         }
 	  console.log('checkCredentials : Password is valid.');
-	 return res.status(200).json({ success: true, message: 'Password is valid.' });  
+
+	// Create a password change session
+        const sessionId = await createSession(userId);
+
+        // Respond with the session ID
+        return res.status(200).json({ message: 'Credentials verified', sessionId });
+    
+	 //return res.status(200).json({ success: true, message: 'Password is valid.' });  
   }catch(error){
 	console.error('checkCredentials : ' + error);
         res.status(500).json({ message: 'Server error' });
