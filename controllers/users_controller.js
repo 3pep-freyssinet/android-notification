@@ -223,7 +223,7 @@ exports.checkCredentials = async (req, res) => {
         const sessionId = await createSession(userId);
 
         // Respond with the session ID
-        return res.status(200).json({ message: 'Credentials verified', sessionId });
+        return res.status(200).json({ message: 'Credentials verified', sessionId:sessionId });
     
 	 //return res.status(200).json({ success: true, message: 'Password is valid.' });  
   }catch(error){
