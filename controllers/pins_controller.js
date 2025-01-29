@@ -152,7 +152,7 @@ exports.renewSHA256Certificate = async (req, res) => {
 };
 
 
-// Fetch Certificate (Logic Only)
+// Fetch Certificate (Logic Only) : get sha256 pin from server
 exports.fetchCertificate = async (req, res) => {
     console.log('fetchCertificate : start');
 	
