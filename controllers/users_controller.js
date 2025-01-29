@@ -760,10 +760,21 @@ exports.getStoredSharedPreferences = async (req, res) => {
    
 	  //2nd step, get stored jwt for this user
 	    const jwt_token = await pool.query('SELECT jwt_token FROM jwt_tokens WHERE user_id = $1', [user_id]); 
-	    console.log('getStoredSharedPreferences : jwt_token : ', jwt_token.rows[0].jwt_token);
+	    if (jwt_token.rowCount === 0) {
+	           console.log('getStoredSharedPreferences :  jwt_token : jwt_token not found');   
+		   return res.status(404).json({ message: 'jwt_token not found' });
+	    }
+
+	   //here the jwt is found
+	   console.log('getStoredSharedPreferences : jwt_token : ', jwt_token.rows[0].jwt_token);
 		  
 	    //3rd step, get refresh token
 	    const refresh_token_ = await pool.query('SELECT refresh_token, expires_at FROM refresh_tokens WHERE user_id = $1', [user_id]); 
+	    if (refresh_token_.rowCount === 0) {
+	           console.log('getStoredSharedPreferences :  refresh_token_ : refresh_token_ not found');   
+		   return res.status(404).json({ message: 'refresh_token_ not found' });
+	    }
+	    //here the 'refresh_token_' is found.
 	    const refresh_token  = refresh_token_.rows[0].refresh_token;
 	    const refresh_expiry = refresh_token_.rows[0].expires_at;  
 		  
@@ -773,10 +784,22 @@ exports.getStoredSharedPreferences = async (req, res) => {
 	  
 	    //4th step, get sha256 pin
 	    const sha256_pin = await pool.query('SELECT sha256_pin FROM pins WHERE user_id = $1', [user_id]); 
+	
+	    if (sha256_pin.rowCount === 0) {
+	           console.log('getStoredSharedPreferences :  sha256_pin : user id : sha256_pin not found');   
+		   return res.status(404).json({ message: 'sha256_pin not found' });
+	    }
+	    
+	    //here the 	sha256_pin is found.
 	    console.log('getStoredSharedPreferences : sha256_pin : ', sha256_pin.rows[0].sha256_pin);
 	
 	    //5th step, get fcm token
 	    const fcm_token = await pool.query('SELECT fcm_token FROM fcm_tokens WHERE user_id = $1', [user_id]); 
+	    if (fcm_token.rowCount === 0) {
+	           console.log('getStoredSharedPreferences :  fcm_token : fcm_token not found');   
+		   return res.status(404).json({ message: 'fcm_token not found' });
+	    }
+	    //here the fcm_token is found
 	    console.log('getStoredSharedPreferences : fcm_token : ', fcm_token.rows[0].fcm_token);
 		  
 	    res.status(200).json({
