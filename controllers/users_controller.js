@@ -237,8 +237,8 @@ exports.updatePassword = async (req, res) => {
    try{ 
     console.log('updatePassword\n');
 	
-    const { sessionId } = req.body;
-    console.log('updatePassword : sessionId:', sessionId);
+    const { sessionId, password } = req.body;
+    console.log('updatePassword : sessionId:', sessionId, ' password : ', password);
 
     // Retrieve the session from the database
     const sessionQuery = `
@@ -256,8 +256,7 @@ exports.updatePassword = async (req, res) => {
     if (new Date(session.expiration) < new Date()) {
       return res.status(401).json({ message: 'Session expired.' });
     }
-
-	   
+   
     //get the id from the req
     const userId = req.user.userId;
 	
