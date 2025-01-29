@@ -11,11 +11,9 @@ console.log('routes : pins');
 
 router.post('/renew-certificate', authMiddleware, pinsController.renewSHA256Certificate);  // POST /pins/renew-certificate
 
-/*
 // Define routes
 router.get('/get-pins', authMiddleware, pinsController.getPins);                           // GET /pins/get-pins
 router.get('/get-latest-sha256pin', authMiddleware, pinsController.getLatestSHA256Pin);    // GET /pins/get-latest-sha256pin
-*/
 
 /*
 //used in "cron-job"
