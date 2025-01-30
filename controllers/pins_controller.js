@@ -197,9 +197,13 @@ exports.fetchCertificate = async (req, res) => {
             res.json({ domain, sha256Fingerprint });
         }
 	*/
-	    
+
+	//set the expiration date of the sha256 pin
+        const expiration = new Date();
+        expiration.setDate(expiration.getDate() + 30); // Expire in 30 days
+	
         // Always return the result for internal use
-        return { domain, sha256Fingerprint };
+        return { domain, sha256Fingerprint, expiration };
     } catch (error) {
         console.error('Error fetching certificate:', error);
 
