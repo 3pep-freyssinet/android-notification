@@ -243,7 +243,7 @@ try {
             expires_at = $4
         `;
 
-	console.log('storeCertificate : sha256Fingerprint : ', sha256Fingerprint, ' user_id : ', user_id, ' updated_at : ', updated_at, ' expires_at : ', expiration);
+	console.log('storeCertificate : sha256Fingerprint : ', sha256Fingerprint, ' userId : ', userId, ' updated_at : ', updated_at, ' expires_at : ', expiration);
         
 	await pool.query(query, [sha256Fingerprint, userId, NOW(), expiration]);
 
