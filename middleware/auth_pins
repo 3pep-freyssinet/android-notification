@@ -10,7 +10,12 @@ module.exports = (req, res, next) => {
         // Check for the Authorization header
         const authHeader = req.headers.authorization;
 
-        console.log('auth_pins: authHeader : ', authHeader);
+        if (!authHeader) {
+            console.log("No JWT token found. Proceeding without authentication.");
+            return next(); // Allow unauthenticated access
+        }
+        
+        console.log('auth_pins: authHeader : ', authHeader)
 
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
             console.log('auth_pins: Missing or invalid Authorization header');
