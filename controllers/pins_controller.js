@@ -220,14 +220,14 @@ exports.fetchCertificate = async (req, res) => {
 };
 
 
-// Store Certificate (Logic Only). If it is running separately, provide : domain, sha256Fingerprint.
-exports.storeCertificate = async (domain, sha256Fingerprint, user_id, updated_at) => {
-const expiration = new Date();
-    expiration.setDate(expiration.getDate() + 30); // Expire in 30 days
+// Store Certificate (Logic Only). If it is running separately, provide : userId, domain, sha256Fingerprint, updated_at, expires_at.
+exports.storeCertificate = async (userId, domain, sha256Fingerprint, updated_at, expires_at) => {
+//const expiration = new Date();
+//    expiration.setDate(expiration.getDate() + 30); // Expire in 30 days
 
 /*
     await pool.query(
-        `INSERT INTO pins (sha256_pin, updated_at, expires_at) VALUES ($1, NOW(), $2) 
+        `INSERT INTO pins (user_id, sha256_pin, updated_at, expires_at) VALUES ($1, $2, NOW(), $3) 
          ON CONFLICT (sha256_pin) DO NOTHING`,
         [sha256Fingerprint, expiration]
     );   
@@ -245,7 +245,7 @@ try {
 
 	console.log('storeCertificate : sha256Fingerprint : ', sha256Fingerprint, ' user_id : ', user_id, ' updated_at : ', updated_at, ' expires_at : ', expiration);
         
-	await pool.query(query, [sha256Fingerprint, user_id, updated_at, expiration]);
+	await pool.query(query, [sha256Fingerprint, userId, NOW(), expiration]);
 
         console.log('Certificate stored successfully:', { domain, sha256Fingerprint });
         return { success: true };
@@ -258,7 +258,8 @@ try {
 // Fetch and Store Certificate
 exports.fetchStoreCertificate = async (req, res) => {
 	console.log('fetchStoreCertificate : start');
-	
+	const userId = req.user.userId;
+	console.log('fetchStoreCertificate : user_id : ', userId);
     try {
         // Step 1: Fetch Certificate
         const { domain, sha256Fingerprint, expiration } = await exports.fetchCertificate(req, res);
@@ -266,7 +267,7 @@ exports.fetchStoreCertificate = async (req, res) => {
 	console.log('fetchStoreCertificate : sha256Fingerprint : ', sha256Fingerprint, ' expiration(days) : ', expiration, ' domain : ', domain);
 	    
         // Step 2: Store Certificate
-        await exports.storeCertificate(domain, sha256Fingerprint, expiration);
+        await exports.storeCertificate(userId, domain, sha256Fingerprint, Now(), expiration);
 
         // Respond with success
         res.json({ success: true, domain, sha256Fingerprint, expiration });
