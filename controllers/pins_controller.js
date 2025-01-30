@@ -218,19 +218,30 @@ exports.fetchCertificate = async (req, res) => {
 
 // Store Certificate (Logic Only). If it is running separately, provide : domain, sha256Fingerprint.
 exports.storeCertificate = async (domain, sha256Fingerprint, user_id, updated_at) => {
-    try {
+const expiration = new Date();
+    expiration.setDate(expiration.getDate() + 30); // Expire in 30 days
+
+/*
+    await pool.query(
+        `INSERT INTO pins (sha256_pin, updated_at, expires_at) VALUES ($1, NOW(), $2) 
+         ON CONFLICT (sha256_pin) DO NOTHING`,
+        [sha256Fingerprint, expiration]
+    );   
+*/
+try {
         const query = `
-            INSERT INTO pins (sha256_pin, user_id, updated_at)
-            VALUES ($1, $2, $3)
+            INSERT INTO pins (sha256_pin, user_id, updated_at, expires_at )
+            VALUES ($1, $2, $3, $4)
             ON CONFLICT (user_id) 
 	    DO UPDATE SET 
 	    sha256_pin = $1, 
-	    updated_at = $3;
+	    updated_at = $3,
+            expires_at = $4
         `;
 
-	console.log('storeCertificate : sha256Fingerprint : ', sha256Fingerprint, ' user_id : ', user_id, ' updated_at : ', updated_at);
+	console.log('storeCertificate : sha256Fingerprint : ', sha256Fingerprint, ' user_id : ', user_id, ' updated_at : ', updated_at, ' expires_at : ', expiration);
         
-	    await pool.query(query, [sha256Fingerprint, user_id, updated_at]);
+	await pool.query(query, [sha256Fingerprint, user_id, updated_at, expiration]);
 
         console.log('Certificate stored successfully:', { domain, sha256Fingerprint });
         return { success: true };
