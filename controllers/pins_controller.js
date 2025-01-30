@@ -267,7 +267,9 @@ exports.fetchStoreCertificate = async (req, res) => {
 	console.log('fetchStoreCertificate : sha256Fingerprint : ', sha256Fingerprint, ' expiration(days) : ', expiration, ' domain : ', domain);
 	    
         // Step 2: Store Certificate
-        await exports.storeCertificate(userId, domain, sha256Fingerprint, Now(), expiration);
+	const updated_at = new Date(); //now()
+
+        await exports.storeCertificate(userId, domain, sha256Fingerprint, updated_at, expiration);
 
         // Respond with success
         res.json({ success: true, domain, sha256Fingerprint, expiration });
