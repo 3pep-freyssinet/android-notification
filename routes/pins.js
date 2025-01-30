@@ -17,7 +17,7 @@ router.get('/get-latest-sha256pin', authMiddleware, pinsController.getLatestSHA2
 
 //router.get('/fetch-certificate',        authMiddleware, pinsController.fetchCertificate);       // GET /pins/fetch-certificate
 //router.post('/store-certificate',       authMiddleware, pinsController.storeCertificate);       // POST /pins/store-certificate
-router.post('/fetch-store-certificate', authMiddleware, pinsController.fetchStoreCertificate);  // POST /pins/fetch-store-certificate
+router.post('/fetch-store-certificate',   authMiddleware, pinsController.fetchStoreCertificate);  // POST /pins/fetch-store-certificate
 
 //router.get('/get-all-fcm-tokens',   fcmController.getAllFCMTokens);                // GET /fcm/get-all-fcm-tokens
 //router.post('/store-fcm-tokens',    fcmController.storeFCMTokens);                 // POST /fcm/store-fcm-tokens
