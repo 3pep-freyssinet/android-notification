@@ -263,14 +263,17 @@ exports.fetchStoreCertificate = async (req, res) => {
 	if(!req.user.userId){
 	    const androidId = req.body.androidId;
 	    if(androidId == null){
-              
+	       console.warn('fetchStoreCertificate : androidId not found.');
+               return res.status(404).json({ message: 'androidId not found' });
 	    }
+		
 	    //get userId from the database
 	    const result = await pool.query('SELECT * FROM users_notification WHERE android_id = $1', [androidId]);
 	    if (result.rowCount === 0) {
-	      return res.status(404).json({ message: 'android id not found' });
-	      //return null;  // Explicitly indicate no result
+	      console.warn('fetchStoreCertificate : userId not found.');
+	      return res.status(404).json({ message: 'userId id not found' });
 	    }
+		
 	    console.log('fetchStoreCertificate : getUserId : userId : ', result.rows[0].id);
 	    const userId = result.rows[0].id;
 	}
