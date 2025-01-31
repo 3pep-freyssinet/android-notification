@@ -183,7 +183,7 @@ exports.fetchCertificate = async (req, res) => {
         });
 
         const cert = await certificatePromise;
-        console.log('fetchCertificate : cert : ', cert);
+        //console.log('fetchCertificate : cert : ', cert);
         const sha256Fingerprint = `sha256/${crypto
             .createHash('sha256')
             .update(cert.raw)
