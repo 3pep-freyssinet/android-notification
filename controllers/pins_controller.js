@@ -269,7 +269,7 @@ exports.fetchStoreCertificate = async (req, res) => {
         // Step 2: Store Certificate
 	const updated_at = new Date(); //now()
 
-        await exports.storeCertificate(userId, domain, sha256Fingerprint, updated_at, expiration);
+        //await exports.storeCertificate(userId, domain, sha256Fingerprint, updated_at, expiration);
 
         // Respond with success
         res.json({ success: true, domain, sha256Fingerprint, expiration });
