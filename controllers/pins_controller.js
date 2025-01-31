@@ -277,10 +277,10 @@ try {
 	    }
 		
 	    console.log('fetchStoreCertificate : userId retrieved from androidId : ', result.rows[0].id);
-	    const userId = result.rows[0].id;
+	    userId = result.rows[0].id;
 	}
 	else{
-	    const userId = req.user.userId;
+	    userId = req.user.userId;
 	    console.log('fetchStoreCertificate : user_id retrieved from the header: ', userId);
 	}
     
