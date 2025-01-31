@@ -259,7 +259,7 @@ try {
 exports.fetchStoreCertificate = async (req, res) => {
 	console.log('fetchStoreCertificate : start');
 
-	//In case the header is not sent, we cannot access 'userId'. then we get it from database knowin 'androidId' for the the device.
+	//In case the header is not sent, we cannot access 'userId'. then we get it from database knowing 'androidId' for the the device.
 	if(!req.user.userId){
 	    const androidId = req.body.androidId;
 	    if(androidId == null){
