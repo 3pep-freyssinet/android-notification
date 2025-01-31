@@ -258,6 +258,12 @@ try {
 // Fetch and Store Certificate
 exports.fetchStoreCertificate = async (req, res) => {
 	console.log('fetchStoreCertificate : start');
+
+	//In case the header is not sent, we cannot access 'userId'
+	if(!req.user.userId){
+		//get userId from the database
+		
+	}
 	const userId = req.user.userId;
 	console.log('fetchStoreCertificate : user_id : ', userId);
 	
