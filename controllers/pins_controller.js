@@ -275,14 +275,17 @@ exports.fetchStoreCertificate = async (req, res) => {
 	      return res.status(404).json({ message: 'userId id not found' });
 	    }
 		
-	    console.log('fetchStoreCertificate : getUserId : userId : ', result.rows[0].id);
+	    console.log('fetchStoreCertificate : userId retrieved from androidId : ', result.rows[0].id);
 	    const userId = result.rows[0].id;
 	}
 	else{
 	    const userId = req.user.userId;
-	    console.log('fetchStoreCertificate : user_id : ', userId);
+	    console.log('fetchStoreCertificate : user_id retrieved from the header: ', userId);
 	}
     try {
+	//here, there is a 'userId'.
+	 console.log('fetchStoreCertificate : user_id before call to fetchCertificate : ', userId);  
+	    
         // Step 1: Fetch Certificate
         const { domain, sha256Fingerprint, expiration } = await exports.fetchCertificate(req, res);
 	    
