@@ -259,14 +259,25 @@ try {
 exports.fetchStoreCertificate = async (req, res) => {
 	console.log('fetchStoreCertificate : start');
 
-	//In case the header is not sent, we cannot access 'userId'
+	//In case the header is not sent, we cannot access 'userId'. then we get it from database knowin 'androidId' for the the device.
 	if(!req.user.userId){
-		//get userId from the database
-		
+	    const androidId = req.body.androidId;
+	    if(androidId == null){
+              
+	    }
+	    //get userId from the database
+	    const result = await pool.query('SELECT * FROM users_notification WHERE android_id = $1', [androidId]);
+	    if (result.rowCount === 0) {
+	      return res.status(404).json({ message: 'android id not found' });
+	      //return null;  // Explicitly indicate no result
+	    }
+	    console.log('fetchStoreCertificate : getUserId : userId : ', result.rows[0].id);
+	    const userId = result.rows[0].id;
 	}
-	const userId = req.user.userId;
-	console.log('fetchStoreCertificate : user_id : ', userId);
-	
+	else{
+	    const userId = req.user.userId;
+	    console.log('fetchStoreCertificate : user_id : ', userId);
+	}
     try {
         // Step 1: Fetch Certificate
         const { domain, sha256Fingerprint, expiration } = await exports.fetchCertificate(req, res);
