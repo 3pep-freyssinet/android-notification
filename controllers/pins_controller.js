@@ -222,6 +222,9 @@ exports.fetchCertificate = async (req, res) => {
 
 // Store Certificate (Logic Only). If it is running separately, provide : userId, domain, sha256Fingerprint, updated_at, expires_at.
 exports.storeCertificate = async (userId, domain, sha256Fingerprint, updated_at, expires_at) => {
+
+console.log('storeCertificate : userId : ', userId, ' sha256Fingerprint : ', sha256Fingerprint, ' updated_at : ', updated_at, ' expires_at : ', expires_at);
+
 //const expiration = new Date();
 //    expiration.setDate(expiration.getDate() + 30); // Expire in 30 days
 
