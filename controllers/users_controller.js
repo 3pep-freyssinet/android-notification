@@ -238,7 +238,8 @@ exports.getChangePasswordSessionProgress = async (req, res) => {
     const { sessionId } = req.query;
     console.log('checkPasswordSession : sessionId : ', sessionId);
     if (!sessionId) {
-        return res.status(400).json({ message: "Session ID required" });
+        console.log('getChangePasswordSessionProgress : Session ID required');
+	return res.status(400).json({ message: "Session ID required" });
     }
 
     const result = await pool.query(
@@ -248,9 +249,11 @@ exports.getChangePasswordSessionProgress = async (req, res) => {
     );
 
     if (result.rowCount === 0) {
-        return res.status(404).json({ message: "Session not found" });
+         console.log('getChangePasswordSessionProgress : Session not found');
+	return res.status(404).json({ message: "Session not found" });
     }
-
+    
+    console.log('getChangePasswordSessionProgress : is_authenticated : ', result.rows[0].is_authenticated, ' is_new_password_verified : ', result.rows[0].is_new_password_verified, ' is_new_password_applied : ', result.rows[0].is_new_password_applied);
     res.status(200).json(result.rows[0]);
 };
 
