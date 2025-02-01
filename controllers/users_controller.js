@@ -256,8 +256,7 @@ exports.getChangePasswordSessionProgress = async (req, res) => {
 
 
 
-//change password session
-String url = "https://android-notification.onrender.com/users/check-change-password-session?sessionId=" + sessionId;
+//check change password session : if the session changing the password is ended or not
 exports.checkPasswordSession = async (req, res) => {
     console.log('checkPasswordSession : Start...');
     const { sessionId } = req.query;
