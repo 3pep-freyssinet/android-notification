@@ -232,6 +232,54 @@ exports.checkCredentials = async (req, res) => {
   }   
 }
 
+//get change password session progress
+exports.getChangePasswordSessionProgress = async (req, res) => {
+    console.log('getChangePasswordSessionProgress : Start...');
+    const { sessionId } = req.query;
+    console.log('checkPasswordSession : sessionId : ', sessionId);
+    if (!sessionId) {
+        return res.status(400).json({ message: "Session ID required" });
+    }
+
+    const result = await pool.query(
+        `SELECT is_authenticated, is_new_password_verified, is_new_password_applied 
+         FROM password_change_sessions WHERE session_id = $1`,
+        [sessionId]
+    );
+
+    if (result.rowCount === 0) {
+        return res.status(404).json({ message: "Session not found" });
+    }
+
+    res.status(200).json(result.rows[0]);
+};
+
+
+
+//change password session
+String url = "https://android-notification.onrender.com/users/check-change-password-session?sessionId=" + sessionId;
+exports.checkPasswordSession = async (req, res) => {
+    console.log('checkPasswordSession : Start...');
+    const { sessionId } = req.query;
+    console.log('checkPasswordSession : sessionId : ', sessionId);
+    if (!sessionId) {
+        console.log('checkPasswordSession : sessionId : Session ID required');
+	return res.status(400).json({ message: "Session ID required" });
+    }
+
+    const result = await pool.query(
+        "SELECT * FROM password_change_sessions WHERE session_id = $1 AND is_new_password_applied = false",
+        [sessionId]
+    );
+
+    if (result.rowCount === 0) {
+	console.log('checkPasswordSession : No active session found');    
+        return res.status(404).json({ message: "No active session found" });
+    }
+
+    res.status(200).json({ message: "Session is active" });
+};
+
 //update password. change password. replace the current password by the supplied new password.
 exports.updatePassword = async (req, res) => {
    try{ 
