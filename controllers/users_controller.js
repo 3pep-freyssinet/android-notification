@@ -478,7 +478,7 @@ exports.matchPassword = async (req, res) => {
   }   
 }
 
-//change pwd
+//change pwd : replace the current password by the new password.
 exports.changePassword = async (req, res) => {
    try{ 
     console.log('changePassword\n');
@@ -882,7 +882,20 @@ exports.getStoredSharedPreferences = async (req, res) => {
 	    }
 	    //here the fcm_token is found
 	    console.log('getStoredSharedPreferences : fcm_token : ', fcm_token.rows[0].fcm_token);
-		  
+
+	  ///////////////////
+          6th step : Retrieve the session id from the database
+          const sessionQuery = `
+            SELECT * FROM password_change_sessions WHERE WHERE user_id = $1
+            `;
+          const sessionResult = await pool.query(sessionQuery, [user_id]);
+	  let sessionId;
+	  if(sessionResult){
+	    sessionId = sessionResult.rows[0].sessionId;
+	  }else{
+	    sessionId = null;
+	  }
+	  
 	    res.status(200).json({
 	  	isRegistered:true,
 		jwtToken: jwt_token.rows[0].jwt_token, 
@@ -892,7 +905,8 @@ exports.getStoredSharedPreferences = async (req, res) => {
 		fcmToken:  fcm_token.rows[0].fcm_token,
 	        failedAttempts: failed_attempts,
                 lockoutUntil: lockout_until,
-		isSessionClosed: is_session_closed
+		isSessionClosed: is_session_closed,
+		sessionId:sessionId 
 	});  
   } catch (error) {
     console.error('getStoredSharedPreferences : error : ', error);
