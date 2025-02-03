@@ -884,8 +884,7 @@ exports.getStoredSharedPreferences = async (req, res) => {
 	    console.log('getStoredSharedPreferences : fcm_token : ', fcm_token.rows[0].fcm_token);
 
           //6th step : Retrieve the session id from the database
-          const sessionQuery = `
-            SELECT * FROM password_change_sessions WHERE user_id = $1`;
+          const sessionQuery = `SELECT * FROM password_change_sessions WHERE user_id = $1`;
           const sessionResult = await pool.query(sessionQuery, [user_id]);
 	  let sessionId;
 	  if(sessionResult){
@@ -893,6 +892,7 @@ exports.getStoredSharedPreferences = async (req, res) => {
 	  }else{
 	    sessionId = null;
 	  }
+	   console.log('getStoredSharedPreferences : sessionId : ', sessionId);
 	  
 	    res.status(200).json({
 	  	isRegistered:true,
