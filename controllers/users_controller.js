@@ -242,7 +242,7 @@ exports.getChangePasswordSessionProgress = async (req, res) => {
 	return res.status(400).json({ message: "Session ID required" });
     }
 
-    const result = await pool.query(
+    const result = await pool.query( //'is_new_password_verified' not used
         `SELECT is_authenticated, is_new_password_verified, is_new_password_applied 
          FROM password_change_sessions WHERE session_id = $1`,
         [sessionId]
