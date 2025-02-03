@@ -259,7 +259,7 @@ exports.getChangePasswordSessionProgress = async (req, res) => {
 
 
 
-//check change password session : if the session changing the password is ended or not
+//check change password session : if the change password session is completed or not
 exports.checkPasswordSession = async (req, res) => {
     console.log('checkPasswordSession : Start...');
     const { sessionId } = req.query;
@@ -282,7 +282,7 @@ exports.checkPasswordSession = async (req, res) => {
     res.status(200).json({ message: "Session is active" });
 };
 
-//update password. change password. replace the current password by the supplied new password.
+//update password. apply change password. replace the current password by the supplied new password.
 exports.updatePassword = async (req, res) => {
    try{ 
     console.log('updatePassword\n');
@@ -351,7 +351,8 @@ exports.updatePassword = async (req, res) => {
   }   
 }
 
-//match password. if the provided password match the previous password
+//match password. if the provided password match the previous password.
+//store new password.
 exports.matchPassword = async (req, res) => {
    try{ 
     console.log('matchPassword\n');
@@ -434,9 +435,39 @@ exports.matchPassword = async (req, res) => {
         }
     }
      console.log('matchPassword : Password is valid.');
-     
-     // Update the session to reflect that the new password is verified
-     await updateSession(sessionId, { is_new_password_verified: true });
+
+     //store the new password
+     /*
+     // Fetch stored password hash and last changed date
+    const userQuery = `
+        SELECT password, last_password_changed 
+        FROM users_notification 
+        WHERE id = $1
+    `;
+    const userResult     = await pool.query(userQuery, [userId]);
+    const storedPassword = userResult.rows[0]?.password;
+    */
+	   
+    // Update password and record history
+    const newHash = await bcrypt.hash(password, 10);
+    const updateQuery = `
+        UPDATE users_notification 
+        SET password = $1, last_password_changed = NOW() 
+        WHERE id = $2
+    `;
+    await pool.query(updateQuery, [newHash, userId]);
+
+    // Insert old password into history
+    const insertHistoryQuery = `
+        INSERT INTO password_history (user_id, password) 
+        VALUES ($1, $2)
+    `;
+    await pool.query(insertHistoryQuery, [userId, storedPassword]);
+	   
+    console.log('updatePassword : Password updated successfully.');
+	   
+   // Update the session to reflect that the new password has been applied
+    await updateSession(sessionId, { is_new_password_applied: true });
 
      console.log('matchPassword : session updated successfully. Password verified successfully ');
      return res.status(200).json({ message: 'Password verified successfully.' });
