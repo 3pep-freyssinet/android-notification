@@ -885,8 +885,7 @@ exports.getStoredSharedPreferences = async (req, res) => {
 
           //6th step : Retrieve the session id from the database
           const sessionQuery = `
-            SELECT * FROM password_change_sessions WHERE WHERE user_id = $1
-            `;
+            SELECT * FROM password_change_sessions WHERE user_id = $1`;
           const sessionResult = await pool.query(sessionQuery, [user_id]);
 	  let sessionId;
 	  if(sessionResult){
