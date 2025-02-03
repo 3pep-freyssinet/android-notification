@@ -888,8 +888,8 @@ exports.getStoredSharedPreferences = async (req, res) => {
           const sessionResult = await pool.query(sessionQuery, [user_id]);
 	  let sessionId;
 	  if(sessionResult){
-	    console.log('getStoredSharedPreferences : 6th step : sessionResult : ', session_id);
 	    sessionId = sessionResult.rows[0].session_id;
+	    console.log('getStoredSharedPreferences : 6th step : sessionId : ', sessionId);  
 	  }else{
 	    sessionId = null;
 	  }
