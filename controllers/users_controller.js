@@ -883,8 +883,7 @@ exports.getStoredSharedPreferences = async (req, res) => {
 	    //here the fcm_token is found
 	    console.log('getStoredSharedPreferences : fcm_token : ', fcm_token.rows[0].fcm_token);
 
-	  ///////////////////
-          6th step : Retrieve the session id from the database
+          //6th step : Retrieve the session id from the database
           const sessionQuery = `
             SELECT * FROM password_change_sessions WHERE WHERE user_id = $1
             `;
