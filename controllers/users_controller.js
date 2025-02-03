@@ -808,7 +808,6 @@ async function getUserId__(username){
 	} catch (error) {
 	    console.error('getUserId__ : Error querying user ID:', error.message, { username });
     	    throw new Error('Database query failed'); // Throw an error for unexpected issues
-  
   	}	  	  
 }
 
@@ -884,10 +883,12 @@ exports.getStoredSharedPreferences = async (req, res) => {
 	    console.log('getStoredSharedPreferences : fcm_token : ', fcm_token.rows[0].fcm_token);
 
           //6th step : Retrieve the session id from the database
+	  console.log('getStoredSharedPreferences : 6th step : user_id : ', user_id);
           const sessionQuery = `SELECT * FROM password_change_sessions WHERE user_id = $1`;
           const sessionResult = await pool.query(sessionQuery, [user_id]);
 	  let sessionId;
 	  if(sessionResult){
+	    console.log('getStoredSharedPreferences : 6th step : sessionResult : ', sessionResult);
 	    sessionId = sessionResult.rows[0].sessionId;
 	  }else{
 	    sessionId = null;
