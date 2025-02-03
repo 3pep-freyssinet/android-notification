@@ -883,13 +883,13 @@ exports.getStoredSharedPreferences = async (req, res) => {
 	    console.log('getStoredSharedPreferences : fcm_token : ', fcm_token.rows[0].fcm_token);
 
           //6th step : Retrieve the session id from the database
-	  console.log('getStoredSharedPreferences : 6th step : user_id : ', user_id);
+	  //console.log('getStoredSharedPreferences : 6th step : user_id : ', user_id);
           const sessionQuery = `SELECT * FROM password_change_sessions WHERE user_id = $1`;
           const sessionResult = await pool.query(sessionQuery, [user_id]);
 	  let sessionId;
 	  if(sessionResult){
-	    console.log('getStoredSharedPreferences : 6th step : sessionResult : ', sessionResult);
-	    sessionId = sessionResult.rows[0].sessionId;
+	    console.log('getStoredSharedPreferences : 6th step : sessionResult : ', session_id);
+	    sessionId = sessionResult.rows[0].session_id;
 	  }else{
 	    sessionId = null;
 	  }
