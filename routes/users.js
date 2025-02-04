@@ -20,6 +20,7 @@ router.post('/set-lockout-status', authMiddleware,    usersController.setLockout
 router.post('/reset-lockout-status',  authMiddleware, usersController.resetLockoutStatus);            // POST /users/reset-lockout-status
 router.post('/set-session-status',  authMiddleware,   usersController.setSessionStatus);              // POST /users/set-session-status
 router.get('/get-change-password-session-progress',   authMiddleware,   usersController.getChangePasswordSessionProgress);  // GET /users/get-change-password-session-progress
+router.get('/check-change-password-session',          authMiddleware,   usersController.checkChangePasswordSession);        // GET /users/check-change-password-session
 
 //router.get('/:id', 		   usersController.getUser);                 // GET /users/:id
 //router.put('/:id', 		   usersController.updateUser);              // PUT /users/:id
