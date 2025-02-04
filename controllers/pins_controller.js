@@ -151,9 +151,6 @@ exports.renewSHA256Certificate = async (req, res) => {
     }
 };
 
-const crypto = require('crypto');
-const https = require('https');
-
 exports.fetchCertificate = async (req, res) => {
     console.log('fetchCertificate : start');
     
