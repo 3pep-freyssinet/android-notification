@@ -278,6 +278,7 @@ exports.checkChangePasswordSession = async (req, res) => {
         console.error("Error checking password session:", error);
         res.status(500).json({ message: "Internal server error" });
     }
+}
 
 //check change password session : if the change password session is completed or not
 exports.checkPasswordSession = async (req, res) => {
