@@ -151,9 +151,56 @@ exports.renewSHA256Certificate = async (req, res) => {
     }
 };
 
+exports.fetchCertificate = async (req, res) => {
+    console.log('fetchCertificate : start');
+	
+    try {
+        const domain = req.query.domain || 'android-notification.onrender.com';
+
+        const certificatePromise = new Promise((resolve, reject) => {
+            const options = {
+                hostname: domain,
+                port: 443,
+                method: 'GET',
+            };
+
+            const request = https.request(options, (response) => {
+                const cert = response.socket.getPeerCertificate();
+                if (Object.keys(cert).length === 0) {
+                    reject(new Error('The certificate was empty or unavailable.'));
+                } else {
+                    resolve(cert);
+                }
+            });
+
+            request.on('error', (error) => {
+                reject(error);
+            });
+
+            request.end();
+        });
+
+        const cert = await certificatePromise;
+
+        // Convert public key to DER format and hash it
+        const publicKey = cert.pubkey; // This should be the public key in PEM format
+        const publicKeyDER = Buffer.from(publicKey, 'base64'); // Convert to DER format
+        const sha256Fingerprint = `sha256/${crypto
+            .createHash('sha256')
+            .update(publicKeyDER)
+            .digest('base64')}`;
+
+        console.log('fetchCertificate : Corrected sha256Fingerprint : ', sha256Fingerprint);
+
+        return { domain, sha256Fingerprint };
+    } catch (error) {
+        console.error('Error fetching certificate:', error);
+        throw error;
+    }
+};
 
 // Fetch Certificate (Logic Only) : get sha256 pin from server
-exports.fetchCertificate = async (req, res) => {
+exports.fetchCertificate__ = async (req, res) => {
     console.log('fetchCertificate : start');
 	
     try {
