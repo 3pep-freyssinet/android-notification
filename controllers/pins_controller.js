@@ -190,7 +190,7 @@ exports.fetchCertificate = async (req, res) => {
             .createHash('sha256')
             .update(publicKeyDer)
             .digest('base64')}`;
-
+        console.log('fetchCertificate : Full Certificate:', cert);
         console.log('fetchCertificate : Corrected sha256Fingerprint : ', sha256Fingerprint);
 
         return { domain, sha256Fingerprint };
