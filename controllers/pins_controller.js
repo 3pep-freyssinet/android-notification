@@ -151,7 +151,63 @@ exports.renewSHA256Certificate = async (req, res) => {
     }
 };
 
+const https = require('https');
+const crypto = require('crypto');
+
+// Fetch Public Key SHA-256 for Pinning
 exports.fetchCertificate = async (req, res) => {
+    console.log('fetchCertificate : start');
+
+    try {
+        const domain = req.query.domain || 'android-notification.onrender.com'; // Accept domain as query param
+
+        const certificatePromise = new Promise((resolve, reject) => {
+            const options = {
+                hostname: domain,
+                port: 443,
+                method: 'GET',
+            };
+
+            const request = https.request(options, (response) => {
+                const cert = response.socket.getPeerCertificate();
+                if (!cert || !cert.raw) {
+                    reject(new Error('The certificate was empty or unavailable.'));
+                } else {
+                    resolve(cert);
+                }
+            });
+
+            request.on('error', (error) => reject(error));
+            request.end();
+        });
+
+        const cert = await certificatePromise;
+
+        // Extract and hash the public key (SPKI format)
+        const publicKeyDer = crypto.createPublicKey(cert.pubkey).export({ type: 'spki', format: 'der' });
+        const sha256Fingerprint = `sha256/${crypto.createHash('sha256').update(publicKeyDer).digest('base64')}`;
+
+        console.log('fetchCertificate : sha256Fingerprint :', sha256Fingerprint);
+
+        // Set expiration date for reference
+        const expiration = new Date();
+        expiration.setDate(expiration.getDate() + 30); // Expire in 30 days
+
+        // Return response
+        return res.json({
+            domain,
+            sha256Fingerprint,
+            expiration
+        });
+
+    } catch (error) {
+        console.error('Error fetching certificate:', error);
+        return res.status(500).json({ error: 'Failed to fetch certificate' });
+    }
+};
+
+
+exports.fetchCertificate_4 = async (req, res) => {
     console.log('fetchCertificate : start');
     
     try {
