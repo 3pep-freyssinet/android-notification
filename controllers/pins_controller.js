@@ -180,6 +180,68 @@ exports.fetchCertificate = async (req, res) => {
 
         const cert = await certificatePromise;
 
+        // Convert the certificate to PEM format
+        const certPem = `-----BEGIN CERTIFICATE-----\n${cert.raw.toString('base64').match(/.{1,64}/g).join('\n')}\n-----END CERTIFICATE-----`;
+
+        // Create a public key object from the certificate
+        const publicKeyObj = crypto.createPublicKey(certPem);
+
+        // Export the public key in SubjectPublicKeyInfo (SPKI) DER format
+        const publicKeyDer = publicKeyObj.export({ type: 'spki', format: 'der' });
+
+        // Compute SHA-256 fingerprint
+        const sha256Fingerprint = `sha256/${crypto.createHash('sha256').update(publicKeyDer).digest('base64')}`;
+
+        console.log('fetchCertificate : sha256Fingerprint :', sha256Fingerprint);
+
+        // Set expiration date for reference
+        const expiration = new Date();
+        expiration.setDate(expiration.getDate() + 30); // Expire in 30 days
+
+        // Return response
+        return res.json({
+            domain,
+            sha256Fingerprint,
+            expiration
+        });
+
+    } catch (error) {
+        console.error('Error fetching certificate:', error);
+        return res.status(500).json({ error: 'Failed to fetch certificate' });
+    }
+};
+
+
+
+// Fetch Public Key SHA-256 for Pinning
+exports.fetchCertificate_5 = async (req, res) => {
+    console.log('fetchCertificate : start');
+
+    try {
+        const domain = req.query.domain || 'android-notification.onrender.com'; // Accept domain as query param
+
+        const certificatePromise = new Promise((resolve, reject) => {
+            const options = {
+                hostname: domain,
+                port: 443,
+                method: 'GET',
+            };
+
+            const request = https.request(options, (response) => {
+                const cert = response.socket.getPeerCertificate();
+                if (!cert || !cert.raw) {
+                    reject(new Error('The certificate was empty or unavailable.'));
+                } else {
+                    resolve(cert);
+                }
+            });
+
+            request.on('error', (error) => reject(error));
+            request.end();
+        });
+
+        const cert = await certificatePromise;
+
         // Extract and hash the public key (SPKI format)
         const publicKeyDer = crypto.createPublicKey(cert.pubkey).export({ type: 'spki', format: 'der' });
         const sha256Fingerprint = `sha256/${crypto.createHash('sha256').update(publicKeyDer).digest('base64')}`;
