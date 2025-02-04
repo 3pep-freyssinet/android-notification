@@ -257,7 +257,27 @@ exports.getChangePasswordSessionProgress = async (req, res) => {
     res.status(200).json(result.rows[0]);
 };
 
+//checkChangePasswordSession
+exports.checkChangePasswordSession = async (req, res) => {
+    const { sessionId } = req.query;
+    const userId        = req.user.userId;
+    console.log('checkChangePasswordSession : sessionId : ', sessionId,  ' userId : ', userId);
+    if (!sessionId) {
+        return res.status(400).json({ message: "Session ID is required" });
+    }
 
+    try {
+        const session = await pool.query(
+            "SELECT * FROM password_change_sessions WHERE session_id = $1 AND user_id = $2 AND is_new_password_applied = false",
+            [sessionId, userId]
+        );
+
+        res.json({ hasActiveSession: session.rowCount > 0 });
+	 console.log('checkChangePasswordSession : is_new_password_applied : ', is_new_password_applied);    
+    } catch (error) {
+        console.error("Error checking password session:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
 
 //check change password session : if the change password session is completed or not
 exports.checkPasswordSession = async (req, res) => {
