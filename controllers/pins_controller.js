@@ -151,9 +151,6 @@ exports.renewSHA256Certificate = async (req, res) => {
     }
 };
 
-const https = require('https');
-const crypto = require('crypto');
-
 // Fetch Public Key SHA-256 for Pinning
 exports.fetchCertificate = async (req, res) => {
     console.log('fetchCertificate : start');
