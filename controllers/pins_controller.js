@@ -198,20 +198,23 @@ exports.fetchCertificate = async (req, res) => {
         const expiration = new Date();
         expiration.setDate(expiration.getDate() + 30); // Expire in 30 days
 
+	/*
         // Return response
         return res.json({
             domain,
             sha256Fingerprint,
             expiration
         });
-
+	*/
+	    
+         return {domain, sha256Fingerprint, expiration};
+	    
     } catch (error) {
         console.error('Error fetching certificate:', error);
-        return res.status(500).json({ error: 'Failed to fetch certificate' });
+        //return res.status(500).json({ error: 'Failed to fetch certificate' });
+	return { error: 'Failed to fetch certificate' };    
     }
 };
-
-
 
 // Fetch Public Key SHA-256 for Pinning
 exports.fetchCertificate_5 = async (req, res) => {
