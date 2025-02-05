@@ -268,12 +268,14 @@ exports.checkChangePasswordSession = async (req, res) => {
 
     try {
         const session = await pool.query(
-            "SELECT * FROM password_change_sessions WHERE session_id = $1 AND user_id = $2 AND is_new_password_applied = false",
+            //"SELECT * FROM password_change_sessions WHERE session_id = $1 AND user_id = $2 AND is_new_password_applied = false",
+	    "SELECT * FROM password_change_sessions WHERE session_id = $1 AND user_id = $2",
             [sessionId, userId]
         );
 
-        res.json({ hasActiveSession: session.rowCount > 0 });
-	 console.log('checkChangePasswordSession : is_new_password_applied : ', session.rows[0].is_new_password_applied);    
+        //res.json({ hasActiveSession: session.rowCount > 0 });
+	res.json({ is_authenticated: session.rows[0].is_authenticated,  is_new_password_applied:session.rows[0].is_new_password_applied});  
+	console.log('checkChangePasswordSession : is_authenticated : ', session.rows[0].is_authenticated, ' is_new_password_applied : ', session.rows[0].is_new_password_applied);    
     } catch (error) {
         console.error("Error checking password session:", error);
         res.status(500).json({ message: "Internal server error" });
