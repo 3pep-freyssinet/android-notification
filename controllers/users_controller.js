@@ -294,7 +294,7 @@ exports.checkChangePasswordSession = async (req, res) => {
             [sessionId, userId]
         );
 
-	if(!session){
+	if(!session.row.Count > 0){
 		console.log('checkChangePasswordSession : session error.');
 		return res.status(400).json({ message: "session error." });
 	}
