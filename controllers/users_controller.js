@@ -298,6 +298,8 @@ exports.checkChangePasswordSession = async (req, res) => {
 		console.log('checkChangePasswordSession : session error.');
 		return res.status(400).json({ message: "session error." });
 	}
+	console.log('checkChangePasswordSession : session : ', session);
+	    
         //res.json({ hasActiveSession: session.rowCount > 0 });
 	console.log('checkChangePasswordSession : is_authenticated : ', session.rows[0].is_authenticated, ' is_new_password_applied : ', session.rows[0].is_new_password_applied);    
 	res.json({ isAuthenticated: session.rows[0].is_authenticated,
