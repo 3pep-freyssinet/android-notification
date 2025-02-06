@@ -274,10 +274,10 @@ exports.checkChangePasswordSession = async (req, res) => {
         );
 
         //res.json({ hasActiveSession: session.rowCount > 0 });
+	console.log('checkChangePasswordSession : is_authenticated : ', session.rows[0].is_authenticated, ' is_new_password_applied : ', session.rows[0].is_new_password_applied);    
 	res.json({ isAuthenticated: session.rows[0].is_authenticated,
 		   isNewPasswordApplied:session.rows[0].is_new_password_applied});  
-	console.log('checkChangePasswordSession : is_authenticated : ', session.rows[0].is_authenticated, ' is_new_password_applied : ', session.rows[0].is_new_password_applied);    
-    } catch (error) {
+	 } catch (error) {
         console.error("Error checking password session:", error);
         res.status(500).json({ message: "Internal server error" });
     }
