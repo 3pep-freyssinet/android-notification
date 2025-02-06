@@ -150,9 +150,44 @@ exports.renewSHA256Certificate = async (req, res) => {
         });
     }
 };
+///////////////////////////////////////
+/////////////////////////// get latest sha-256 pin /////////////////////////////////
+// Fetch the latest SHA-256 pin
+const fetchLatestPin = async (domain) => {
+    return new Promise((resolve, reject) => {
+        console.log('fetchLatestPin, start ...');
+		const domain = 'android-notification.onrender.com';
+		const options = { hostname: domain, port: 443, method: 'GET' };
 
+        const request = https.request(options, (response) => {
+            const cert = response.socket.getPeerCertificate();
+			console.log('fetchLatestPin, cert : ', cert);
+            if (!cert || Object.keys(cert).length === 0) {
+                reject(new Error('No certificate available'));
+            } else {
+                const sha256Fingerprint = `sha256/${crypto.createHash('sha256').update(cert.raw).digest('base64')}`;
+                resolve(sha256Fingerprint);
+            }
+        });
+        console.log('fetchLatestPin, request : ', request);
+        request.on('error', (error) => reject(error));
+        request.end();
+    });
+};
+
+// API endpoint to get the latest SHA-256 pin
+
+exports.fetchCertificate =  async (req, res) => {
+    try {
+        const pin = await fetchLatestPin('android-notification.onrender.com');
+        res.json({ sha256Pin: pin });
+    } catch (error) {
+        res.status(500).json({ error: 'Failed to fetch certificate' });
+    }
+});
+//////////////////////////////////////
 // Fetch Public Key SHA-256 for Pinning
-exports.fetchCertificate = async (req, res) => {
+exports.fetchCertificate_marche = async (req, res) => {
     console.log('fetchCertificate : start');
 
     try {
