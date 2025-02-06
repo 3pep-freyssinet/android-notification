@@ -257,6 +257,27 @@ exports.getChangePasswordSessionProgress = async (req, res) => {
     res.status(200).json(result.rows[0]);
 };
 
+
+//clear change password session
+exports.clearChangePasswordSession = async (req, res) => {
+    const userId = req.user.userId;
+    console.log('clearChangePasswordSession : userId : ', userId);
+    if (!userId) {
+        return res.status(400).json({ message: "userId not found" });
+    }
+    try {
+        await pool.query(
+            "DELETE FROM password_change_sessions WHERE user_id = $1",
+            [userId]
+        );
+	console.log('clearChangePasswordSession : Password change session cleared');    
+        res.status(200).json({ message: "Password change session cleared" });
+    } catch (error) {
+        console.error("Error clearing session:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
 //checkChangePasswordSession
 exports.checkChangePasswordSession = async (req, res) => {
     const { sessionId } = req.query;
