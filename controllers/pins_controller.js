@@ -471,9 +471,9 @@ exports.fetchCertificate__ = async (req, res) => {
 
 
 // Store Certificate (Logic Only). If it is running separately, provide : userId, domain, sha256Fingerprint, updated_at, expires_at.
-exports.storeCertificate = async (userId, domain, sha256Fingerprint, updated_at, expires_at) => {
+exports.storeCertificate = async (userId, sha256Fingerprint, updated_at) => {
 
-console.log('storeCertificate : userId : ', userId, ' sha256Fingerprint : ', sha256Fingerprint, ' updated_at : ', updated_at, ' expires_at : ', expires_at);
+console.log('storeCertificate : userId : ', userId, ' sha256Fingerprint : ', sha256Fingerprint, ' updated_at : ', updated_at);
 
 //const expiration = new Date();
 //    expiration.setDate(expiration.getDate() + 30); // Expire in 30 days
@@ -496,7 +496,7 @@ try {
             expires_at = $4
         `;
 
-	console.log('storeCertificate : sha256Fingerprint : ', sha256Fingerprint, ' userId : ', userId, ' updated_at : ', updated_at, ' expires_at : ', expires_at);
+	console.log('storeCertificate : sha256Fingerprint : ', sha256Fingerprint, ' userId : ', userId, ' updated_at : ', updated_at, ' expires_at : ', updated_at);
         
 	await pool.query(query, [sha256Fingerprint, userId, updated_at, expires_at]);
 
@@ -541,14 +541,14 @@ try {
 	 console.log('fetchStoreCertificate : user_id before call to fetchCertificate : ', userId);  
 	    
         // Step 1: Fetch Certificate
-        const { domain, sha256Fingerprint, expiration } = await exports.fetchCertificate(req, res);
+        const {sha256Fingerprint} = await exports.fetchCertificate(req, res);
 	    
-	console.log('fetchStoreCertificate : sha256Fingerprint : ', sha256Fingerprint, ' expiration(days) : ', expiration, ' domain : ', domain);
+	console.log('fetchStoreCertificate : sha256Fingerprint : ', sha256Fingerprint);
 	    
         // Step 2: Store Certificate
 	const updated_at = new Date(); //now()
 
-        await exports.storeCertificate(userId, domain, sha256Fingerprint, updated_at, expiration);
+        await exports.storeCertificate(userId, sha256Fingerprint, updated_at);
 
         // Respond with success
         res.json({ success: true, domain, sha256Fingerprint, expiration });
