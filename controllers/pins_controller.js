@@ -161,7 +161,7 @@ const fetchLatestPin = async (domain) => {
 
         const request = https.request(options, (response) => {
             const cert = response.socket.getPeerCertificate();
-			console.log('fetchLatestPin, cert : ', cert);
+			//console.log('fetchLatestPin, cert : ', cert);
             if (!cert || Object.keys(cert).length === 0) {
                 reject(new Error('No certificate available'));
             } else {
@@ -169,7 +169,7 @@ const fetchLatestPin = async (domain) => {
                 resolve(sha256Fingerprint);
             }
         });
-        console.log('fetchLatestPin, request : ', request);
+        //console.log('fetchLatestPin, request : ', request);
         request.on('error', (error) => reject(error));
         request.end();
     });
