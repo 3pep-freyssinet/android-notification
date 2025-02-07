@@ -153,7 +153,7 @@ exports.renewSHA256Certificate = async (req, res) => {
 ///////////////////////////////////////
 /////////////////////////// get latest sha-256 pin /////////////////////////////////
 // Fetch the latest SHA-256 pin
-const fetchLatestPin = async (domain) => {
+const fetchLatestPin = async () => {
     return new Promise((resolve, reject) => {
         console.log('fetchLatestPin, start ...');
 		const domain = 'android-notification.onrender.com';
@@ -179,7 +179,7 @@ const fetchLatestPin = async (domain) => {
 
 exports.fetchCertificate =  async (req, res) => {
     try {
-        const pin = await fetchLatestPin('android-notification.onrender.com');
+        const pin = await fetchLatestPin();
         res.json({ sha256Pin: pin });
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch certificate' });
