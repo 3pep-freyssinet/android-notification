@@ -541,17 +541,17 @@ try {
 	 console.log('fetchStoreCertificate : user_id before call to fetchCertificate : ', userId);  
 	    
         // Step 1: Fetch Certificate
-        const {sha256Fingerprint} = await exports.fetchCertificate(req, res);
+        const {sha256Fingerprint_} = await exports.fetchCertificate(req, res);
 	    
-	console.log('fetchStoreCertificate : sha256Fingerprint : ', sha256Fingerprint);
+	console.log('fetchStoreCertificate : sha256Fingerprint : ', sha256Fingerprint_);
 	    
         // Step 2: Store Certificate
 	const updated_at = new Date(); //now()
 
-        await exports.storeCertificate(userId, sha256Fingerprint, updated_at);
+        await exports.storeCertificate(userId, sha256Fingerprint_, updated_at);
 
         // Respond with success
-        res.json({ success: true, domain, sha256Fingerprint, expiration });
+        res.json({ success: true, domain, sha256Fingerprint_, expiration });
     } catch (error) {
         console.error('Error in fetchStoreCertificate:', error);
         res.status(500).json({ error: 'Failed to fetch and store certificate' });
