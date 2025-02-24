@@ -180,6 +180,7 @@ const fetchLatestPin = async () => {
 exports.fetchCertificate =  async (req, res) => {
     try {
         const pin = await fetchLatestPin();
+	console.log('fetchCertificate, pin : ', pin);    
         res.json({ sha256Pin: pin });
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch certificate' });
