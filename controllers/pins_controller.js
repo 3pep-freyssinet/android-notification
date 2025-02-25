@@ -501,7 +501,7 @@ try {
 
 	console.log('storeCertificate : sha256Fingerprint : ', sha256Fingerprint, ' userId : ', userId, ' updated_at : ', updated_at, ' expires_at : ', updated_at);
         
-	await pool.query(query, [sha256Fingerprint, userId, updated_at, expires_at]);
+	await pool.query(query, [sha256Fingerprint, userId, updated_at, updated_at]);
 
         console.log('Certificate stored successfully:', { domain, sha256Fingerprint,  expires_at});
         return { success: true };
