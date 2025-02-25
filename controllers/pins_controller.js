@@ -474,12 +474,12 @@ exports.fetchCertificate__ = async (req, res) => {
 
 
 // Store Certificate (Logic Only). If it is running separately, provide : userId, domain, sha256Fingerprint, updated_at, expires_at.
-exports.storeCertificate = async (userId, sha256Fingerprint, updated_at) => {
+exports.storeCertificate = async (userId, sha256Fingerprint, updated_at, expires_at) => {
 
-console.log('storeCertificate : userId : ', userId, ' sha256Fingerprint : ', sha256Fingerprint, ' updated_at : ', updated_at);
+console.log('storeCertificate : userId : ', userId, ' sha256Fingerprint : ', sha256Fingerprint, ' updated_at : ', expires_at);
 
 //const expiration = new Date();
-//    expiration.setDate(expiration.getDate() + 30); // Expire in 30 days
+//expiration.setDate(expiration.getDate() + 30); // Expire in 30 days
 
 /*
     await pool.query(
@@ -499,11 +499,11 @@ try {
             expires_at = $4
         `;
 
-	console.log('storeCertificate : sha256Fingerprint : ', sha256Fingerprint, ' userId : ', userId, ' updated_at : ', updated_at, ' expires_at : ', updated_at);
+	console.log('storeCertificate : sha256Fingerprint : ', sha256Fingerprint, ' userId : ', userId, ' updated_at : ', updated_at, ' expires_at : ', expires_at);
         
-	await pool.query(query, [sha256Fingerprint, userId, updated_at, updated_at]);
+	await pool.query(query, [sha256Fingerprint, userId, updated_at, expires_at]);
 
-        console.log('Certificate stored successfully:', { domain, sha256Fingerprint,  expires_at});
+        console.log('Certificate stored successfully:', { domain, sha256Fingerprint,  updated_at, expires_at});
         return { success: true };
     } catch (error) {
         console.error('Error storing certificate:', error);
@@ -543,18 +543,20 @@ try {
 	//here, there is a 'userId'.
 	 console.log('fetchStoreCertificate : user_id before call to fetchCertificate : ', userId);  
 	    
-        // Step 1: Fetch Certificate
+        // Step 1: Fetch Certificate (create a certificate)
         const {sha256Pin} = await exports.fetchCertificate(req, res);
 	    
 	console.log('fetchStoreCertificate : sha256Fingerprint : ', sha256Pin);
 	    
         // Step 2: Store Certificate
 	const updated_at = new Date(); //now()
+	const expires_at = new Date();
+	expires_at.setDate(updated_at.getDate() + 30); // Expire in 30 days from the updated date
 
-        await exports.storeCertificate(userId, sha256Pin, updated_at);
+        await exports.storeCertificate(userId, sha256Pin, updated_at, expires_at);
 
         // Respond with success
-        res.json({ success: true, domain, sha256Pin, expiration });
+        res.json({ success: true, domain, sha256Pin, expires_at });
     } catch (error) {
         console.error('Error in fetchStoreCertificate:', error);
         res.status(500).json({ error: 'Failed to fetch and store certificate' });
