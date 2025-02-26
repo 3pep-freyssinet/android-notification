@@ -128,7 +128,9 @@ exports.renewSHA256Certificate = async (req, res) => {
 
 	//store the sha256Fingerprint in database
 	const updated_at             = new Date(Date.now());
-	const storeSHA256Certificate = await exports.storeCertificate(domain, sha256Fingerprint, user_id, updated_at); 
+	
+	const storeSHA256Certificate = await exports.storeCertificate(user_id, sha256Fingerprint, updated_at, expires_at); 
+	  
         console.log('RenewSHA256Certificate :storeSHA256Certificate : ', storeSHA256Certificate);
 
 	if(storeSHA256Certificate.success){
