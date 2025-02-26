@@ -128,6 +128,8 @@ exports.renewSHA256Certificate = async (req, res) => {
 
 	//store the sha256Fingerprint in database
 	const updated_at             = new Date(Date.now());
+	const expires_at = new Date();
+        expires_at.setDate(expires_at.getDate() + 30); // Expire in 30 days
 	
 	const storeSHA256Certificate = await exports.storeCertificate(user_id, sha256Fingerprint, updated_at, expires_at); 
 	  
