@@ -46,12 +46,12 @@ exports.storeFCMToken = async (req, res) => {
    console.log('fcm token : store fcm token');
 	
    // Extract token and user information
-   const { fcmToken } = req.body;
+   const { fcm_token } = req.body;
    
-   console.log('fcm token from req.body : ', fcmToken);
+   console.log('fcm token from req.body : ', fcm_token);
 	
    // Validate input
-   if (!fcmToken) {
+   if (!fcm_token) {
 	return res.status(400).json({ error: 'FCM token is required' });
    }	
 
