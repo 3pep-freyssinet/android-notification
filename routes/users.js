@@ -12,8 +12,10 @@ router.post('/login',    usersController.loginUser);                            
 router.post('/change-password',   authMiddleware, usersController.changePassword);   // POST /users/change-password
 router.post('/check-credentials', authMiddleware, usersController.checkCredentials); // POST /users/check-credentials
 router.post('/match-password',    authMiddleware, usersController.matchPassword);    // POST /users/match-password
-router.post('/update-password',   authMiddleware, usersController.updatePassword);    // POST /users/update-password
+router.post('/update-password',   authMiddleware, usersController.updatePassword);   // POST /users/update-password
+router.post('/forgot-password',   usersController.forgotPassword);                   // POST /users/forgot-password
 
+forgot-password
 router.get('/user_id',                                usersController.getUserId);                     // GET /users/user_id?user_id=
 router.get('/get-stored-shared-preferences',          usersController.getStoredSharedPreferences);    // GET /users/get-stored-shared-preferences?android-id=
 router.post('/set-lockout-status', authMiddleware,    usersController.setLockoutStatus);              // POST /users/set-lockout-status
