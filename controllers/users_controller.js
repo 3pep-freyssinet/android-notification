@@ -102,7 +102,7 @@ exports.forgotPassword = async (req, res) => {
     console.error('Forgot Password Error:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
-});
+};
 
 
 // Register a new user
