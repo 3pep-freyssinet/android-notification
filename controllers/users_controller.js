@@ -35,6 +35,9 @@ const LOCKOUT_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
 const CAPTCHA_SECRET   = process.env.CAPTCHA_SECRET;
 const CAPTCHA_SITE_KEY = process.env.CAPTCHA_SITE_KEY;
 
+const YAHOO_USER = process.env.YAHOO_USER;
+const YAHOO_PASS = process.env.YAHOO_PASS;
+
 //console.log('process.env.DATABASE_URL = ' + process.env.DATABASE_URL);
 
 console.log('pool = ' + pool);
@@ -103,10 +106,10 @@ exports.forgotPassword = async (req, res) => {
 });
 
     
-    const resetLink = `https://your-app.com/reset-password?token=${resetToken}&user=${userId}`;
+    const resetLink = `https://android-notification.onrender.com/users/forgot-password?token=${resetToken}&user=${userId}`;
     
     await transporter.sendMail({
-      from: '"Your App" <your-email@gmail.com>',
+      from: '"Your App" <tomcat.user@yahoo.co.in>',
       to: email,
       subject: 'Password Reset Request',
       text: `Click the link to reset your password: ${resetLink}`,
