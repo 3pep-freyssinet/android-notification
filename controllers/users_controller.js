@@ -12,12 +12,13 @@
 */
 
 require('dotenv').config();
-const pool   = require('../db'); // Assuming you use a database pool for Postgres or MySQL
-const bcrypt = require('bcryptjs');
-const jwt    = require('jsonwebtoken');
-const crypto = require('crypto');
-const axios  = require('axios');
-const http   = require('http');
+const pool       = require('../db'); // Assuming you use a database pool for Postgres or MySQL
+const bcrypt     = require('bcryptjs');
+const jwt        = require('jsonwebtoken');
+const crypto     = require('crypto');
+const axios      = require('axios');
+const http       = require('http');
+const nodemailer = require('nodemailer');
 
 const JWT_SECRET 		= process.env.JWT_SECRET;
 const REFRESH_TOKEN_SECRET 	= process.env.REFRESH_TOKEN_SECRET;
@@ -56,6 +57,53 @@ if (decoded && decoded.exp) {
 }
 
 */
+
+// POST /api/forgot-password
+exports.forgot-password = async (req, res) => {
+  const { email } = req.body;
+  try {
+    // Verify user exists
+    const userResult = await pool.query('SELECT id FROM users_notification WHERE email = $1', [email]);
+    if (userResult.rowCount === 0) {
+      return res.status(404).json({ message: 'No user found with this email' });
+    }
+    const userId = userResult.rows[0].id;
+
+    // Generate a reset token and set expiration (e.g., 1 hour)
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const tokenExpiry = new Date(Date.now() + 3600000); // 1 hour from now
+
+    // Save token to database (create a "password_reset" table if not exists)
+    await pool.query(`
+      INSERT INTO password_reset (user_id, token, expires_at)
+      VALUES ($1, $2, $3)
+      ON CONFLICT (user_id) DO UPDATE SET token = $2, expires_at = $3
+    `, [userId, resetToken, tokenExpiry]);
+
+    // Send reset email using nodemailer (configure your transporter)
+    const transporter = nodemailer.createTransport({
+      // e.g., SMTP configuration or a service like SendGrid
+      service: 'gmail',
+      auth: { user: 'your-email@gmail.com', pass: 'your-password' }
+    });
+    
+    const resetLink = `https://your-app.com/reset-password?token=${resetToken}&user=${userId}`;
+    
+    await transporter.sendMail({
+      from: '"Your App" <your-email@gmail.com>',
+      to: email,
+      subject: 'Password Reset Request',
+      text: `Click the link to reset your password: ${resetLink}`,
+      html: `<p>Click the link to reset your password: <a href="${resetLink}">${resetLink}</a></p>`
+    });
+    
+    res.json({ message: 'Password reset email sent' });
+  } catch (error) {
+    console.error('Forgot Password Error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
 
 // Register a new user
 exports.registerUser = async (req, res) => {
