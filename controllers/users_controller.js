@@ -107,10 +107,10 @@ exports.forgotPassword = async (req, res) => {
 
     
     const resetLink = `https://android-notification.onrender.com/users/forgot-password?token=${resetToken}&user=${userId}`;
-    
+    const email_ = 'tomcat.suser@yahoo.fr';
     await transporter.sendMail({
       from: '"Your App" <tomcat.user@yahoo.co.in>',
-      to: email,
+      to: email_, //email,
       subject: 'Password Reset Request',
       text: `Click the link to reset your password: ${resetLink}`,
       html: `<p>Click the link to reset your password: <a href="${resetLink}">${resetLink}</a></p>`
