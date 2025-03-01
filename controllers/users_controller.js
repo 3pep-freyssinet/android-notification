@@ -84,7 +84,8 @@ exports.forgotPassword = async (req, res) => {
     const transporter = nodemailer.createTransport({
       // e.g., SMTP configuration or a service like SendGrid
       service: 'gmail',
-      auth: { user: 'your-email@gmail.com', pass: 'your-password' }
+      //auth: { user: 'your-email@gmail.com', pass: 'your-password' }
+      auth: { user: 'beldi.chergui@gmail.com', pass: 'your-password' }
     });
     
     const resetLink = `https://your-app.com/reset-password?token=${resetToken}&user=${userId}`;
