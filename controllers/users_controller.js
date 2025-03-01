@@ -59,7 +59,7 @@ if (decoded && decoded.exp) {
 */
 
 // POST /api/forgot-password
-exports.forgot-password = async (req, res) => {
+exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
   try {
     // Verify user exists
