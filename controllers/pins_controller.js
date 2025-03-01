@@ -549,7 +549,6 @@ try {
 	 console.log('fetchStoreCertificate : user_id before call to fetchCertificate : ', userId);  
 	    
         // Step 1: Fetch Certificate (create a certificate)
-        const {sha256Pin} 
 	const certificateResult = await exports.fetchCertificate(req, res);
 	
 	// Check if an error occurred in fetchCertificate
