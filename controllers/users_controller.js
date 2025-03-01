@@ -81,12 +81,27 @@ exports.forgotPassword = async (req, res) => {
     `, [userId, resetToken, tokenExpiry]);
 
     // Send reset email using nodemailer (configure your transporter)
+    /*
+    //Google mail
     const transporter = nodemailer.createTransport({
       // e.g., SMTP configuration or a service like SendGrid
       service: 'gmail',
       //auth: { user: 'your-email@gmail.com', pass: 'your-password' }
       auth: { user: 'beldi.chergui@gmail.com', pass: 'your-password' }
     });
+    */
+	  
+  //Yahoo mail
+  const transporter = nodemailer.createTransport({
+  host: 'smtp.mail.yahoo.com',
+  port: 465, // Use 465 for SSL; use 587 for TLS if preferred
+  secure: true, // true for port 465, false for port 587
+  auth: {
+    user: 'tomcat.user@yahoo.co.in', //process.env.YAHOO_USER, // your Yahoo email address, e.g., 'your-email@yahoo.com'
+    pass: 'TomCat@14200',            //process.env.YAHOO_PASS  // your Yahoo app password (if using 2FA)
+  }
+});
+
     
     const resetLink = `https://your-app.com/reset-password?token=${resetToken}&user=${userId}`;
     
