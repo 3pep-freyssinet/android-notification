@@ -93,7 +93,7 @@ exports.forgotPassword = async (req, res) => {
       auth: { user: 'beldi.chergui@gmail.com', pass: 'your-password' }
     });
     */
-   if(true)res.json({ message: 'Password reset email sent' })
+   
 	  
   //Yahoo mail
   const transporter = nodemailer.createTransport({
@@ -106,7 +106,8 @@ exports.forgotPassword = async (req, res) => {
   }
 });
 
-    
+    if(true)res.json({ message: 'Password reset email sent' });
+	  
     const resetLink = `https://android-notification.onrender.com/users/forgot-password?token=${resetToken}&user=${userId}`;
     const email_ = 'tomcat.suser@yahoo.fr';
     await transporter.sendMail({
