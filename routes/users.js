@@ -14,6 +14,7 @@ router.post('/check-credentials', authMiddleware, usersController.checkCredentia
 router.post('/match-password',    authMiddleware, usersController.matchPassword);    // POST /users/match-password
 router.post('/update-password',   authMiddleware, usersController.updatePassword);   // POST /users/update-password
 router.post('/forgot-password',   usersController.forgotPassword);                   // POST /users/forgot-password
+router.post('/reset-password',    usersController.resetPassword);                    // POST /users/reset-password
 
 router.get('/user_id',                                usersController.getUserId);                     // GET /users/user_id?user_id=
 router.get('/get-stored-shared-preferences',          usersController.getStoredSharedPreferences);    // GET /users/get-stored-shared-preferences?android-id=
