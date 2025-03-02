@@ -61,6 +61,38 @@ if (decoded && decoded.exp) {
 
 */
 
+// POST /api/reset-password
+exports.resetPassword = async (req, res) => {
+  const { userId, token, newPassword } = req.body;
+  try {
+    // Retrieve the token entry
+    const result = await pool.query(`
+      SELECT * FROM password_reset 
+      WHERE user_id = $1 AND token = $2 AND expires_at > NOW()
+    `, [userId, token]);
+    
+    if (result.rowCount === 0) {
+      return res.status(400).json({ message: 'Invalid or expired token' });
+    }
+    
+    // Hash the new password (using bcrypt)
+    const bcrypt = require('bcrypt');
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    
+    // Update the user's password in the users table
+    await pool.query(`UPDATE users_notification SET password = $1 WHERE id = $2`, [hashedPassword, userId]);
+    
+    // Optionally, remove the reset token
+    await pool.query(`DELETE FROM password_reset WHERE user_id = $1`, [userId]);
+    
+    res.json({ message: 'Password has been reset successfully' });
+  } catch (error) {
+    console.error('Reset Password Error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+});
+
+
 // POST /api/forgot-password
 exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
