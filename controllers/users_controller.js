@@ -117,7 +117,6 @@ exports.forgotPassword = async (req, res) => {
 
     // Send reset email using nodemailer (configure your transporter)
 
-    
     //Google mail
     const transporter = nodemailer.createTransport({
       // e.g., SMTP configuration or a service like SendGrid
@@ -141,7 +140,7 @@ exports.forgotPassword = async (req, res) => {
 */
     //if(true)res.json({ message: 'Password reset email sent' });
 	  
-    const resetLink = `https://android-notification.onrender.com/users/forgot-password?token=${resetToken}&user=${userId}`;
+    const resetLink = `https://android-notification.onrender.com/reset-password?token=${resetToken}&user=${userId}`;
     const email_ = 'tomcat.super@yahoo.fr';
     await transporter.sendMail({
       from: '"Your App" <beldi.chergui@gmail.com>',
