@@ -93,7 +93,7 @@ exports.forgotPassword = async (req, res) => {
       auth: { user: 'beldi.chergui@gmail.com', pass: 'your-password' }
     });
     */
-   if(true)return;
+   if(true)res.json({ message: 'Password reset email sent' })
 	  
   //Yahoo mail
   const transporter = nodemailer.createTransport({
