@@ -102,7 +102,7 @@ exports.forgotPassword = async (req, res) => {
   secure: true, // true for port 465, false for port 587
   auth: {
     user: 'tomcat.user@yahoo.co.in', //process.env.YAHOO_USER, // your Yahoo email address, e.g., 'your-email@yahoo.com'
-    pass: 'TomCat@14200',            //process.env.YAHOO_PASS  // your Yahoo app password (if using 2FA)
+    pass: 'faddafadda',            //process.env.YAHOO_PASS  // your Yahoo app password (if using 2FA)
   }
 });
 */
