@@ -91,7 +91,7 @@ exports.forgotPassword = async (req, res) => {
       // e.g., SMTP configuration or a service like SendGrid
       service: 'gmail',
       //auth: { user: 'your-email@gmail.com', pass: 'your-password' }
-      auth: { user: 'beldi.chergui@gmail.com', pass: 'FFaaDDaa@24110' }
+      auth: { user: 'beldi.chergui@gmail.com', pass: 'qikixyramfonftcs' }
     });
     
    
