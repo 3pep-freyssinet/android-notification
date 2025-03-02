@@ -139,6 +139,14 @@ app.use('/environ', environ_routes);
 
 // Set EJS as the template engine
 app.set('view engine', 'ejs');
+app.set('views', __dirname + '/views');
+
+app.get('/reset-password', (req, res) => {
+    // Extract token and user from query parameters
+    const { token, user } = req.query;
+    // Render the reset password page, passing token and user if needed
+    res.render('reset-password', { token, user });
+});
 
 return;
 
