@@ -90,7 +90,7 @@ exports.resetPassword = async (req, res) => {
     console.error('Reset Password Error:', error);
     res.status(500).json({ message: 'Internal server error' });
   }
-});
+};
 
 
 // POST /api/forgot-password
