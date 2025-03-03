@@ -104,7 +104,9 @@ if (decoded && decoded.exp) {
 
 // POST /api/reset-password
 exports.resetPassword = async (req, res) => {
+  console.log('resetPassword : start');  
   const { userId, token, newPassword } = req.body;
+  console.log('resetPassword : userId : ', userId, ' token : ', token, ' newPassword : ', newPassword);  
   try {
     // Retrieve the token entry
     const result = await pool.query(`
@@ -113,6 +115,7 @@ exports.resetPassword = async (req, res) => {
     `, [userId, token]);
     
     if (result.rowCount === 0) {
+      console.log('resetPassword : Invalid or expired token');      
       return res.status(400).json({ message: 'Invalid or expired token' });
     }
     
@@ -125,7 +128,7 @@ exports.resetPassword = async (req, res) => {
     
     // Optionally, remove the reset token
     await pool.query(`DELETE FROM password_reset WHERE user_id = $1`, [userId]);
-    
+    console.log('resetPassword : Password has been reset successfully');  
     res.json({ message: 'Password has been reset successfully' });
   } catch (error) {
     console.error('Reset Password Error:', error);
