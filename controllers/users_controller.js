@@ -62,7 +62,7 @@ if (decoded && decoded.exp) {
 */
 
 // POST /users/verify-reset-token
-  exports.verifyResetPassword = async (req, res) => {	
+  exports.verifyResetToken = async (req, res) => {	
   console.log('verifyResetPassword : start');
   
   const { token, userId } = req.body;
