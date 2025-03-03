@@ -65,7 +65,11 @@ if (decoded && decoded.exp) {
   exports.verifyResetToken = async (req, res) => {	
   console.log('verifyResetPassword : start');
   
-  const { token, userId } = req.body;
+  const token = req.query.token;
+  const userId = req.query.userId;
+	  
+  //const { token, userId } = req.body;
+  
   console.log('verifyResetPassword : token : ', token, ' userId : ', userId);
 	  
   // Check if token and userId are provided
