@@ -61,6 +61,42 @@ if (decoded && decoded.exp) {
 
 */
 
+// POST /users/verify-reset-token
+  exports.verifyResetPassword = async (req, res) => {	
+  console.log('verifyResetPassword : start');
+  
+  const { token, userId } = req.body;
+  console.log('verifyResetPassword : token : ', token, ' userId : ', userId);
+	  
+  // Check if token and userId are provided
+  if (!token || !userId) {
+    console.log('verifyResetPassword : Token and userId are required');  
+    return res.status(400).json({ message: 'Token and userId are required' });
+  }
+  
+  try {
+    // Query the database for a matching token for the given user
+    const query = `
+      SELECT * FROM password_reset 
+      WHERE user_id = $1 AND token = $2 AND expires_at > NOW()
+    `;
+    const result = await pool.query(query, [userId, token]);
+    
+    if (result.rowCount === 0) {
+      // No valid token found (either invalid or expired)
+      console.log('verifyResetPassword : Invalid or expired token');      
+      return res.status(400).json({ success: false, message: 'Invalid or expired token' });
+    }
+    
+    // Token is valid
+    console.log('verifyResetPassword : token is valid');  
+    return res.json({ success: true, message: 'Token is valid' });
+  } catch (error) {
+    console.error('Error verifying reset token:', error);
+    return res.status(500).json({ success: false, message: 'Internal server error' });
+  }
+};
+
 // POST /api/reset-password
 exports.resetPassword = async (req, res) => {
   const { userId, token, newPassword } = req.body;
