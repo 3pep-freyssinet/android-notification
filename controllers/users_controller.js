@@ -64,11 +64,12 @@ if (decoded && decoded.exp) {
 // POST /users/verify-reset-token
   exports.verifyResetToken = async (req, res) => {	
   console.log('verifyResetPassword : start');
-  
-  const token = req.query.token;
-  const userId = req.query.userId;
+
+  //used in curl
+  //const token = req.query.token;
+  //const userId = req.query.userId;
 	  
-  //const { token, userId } = req.body;
+  const { token, userId} = req.body;
   
   console.log('verifyResetPassword : token : ', token, ' userId : ', userId);
 	  
@@ -180,7 +181,7 @@ exports.forgotPassword = async (req, res) => {
 */
     //if(true)res.json({ message: 'Password reset email sent' });
 	  
-    const resetLink = `https://android-notification.onrender.com/reset-password?token=${resetToken}&user=${userId}`;
+    const resetLink = `https://android-notification.onrender.com/reset-password?token=${resetToken}&userId=${userId}`;
     const email_ = 'tomcat.super@yahoo.fr';
     await transporter.sendMail({
       from: '"Your App" <beldi.chergui@gmail.com>',
