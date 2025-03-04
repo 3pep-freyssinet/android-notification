@@ -123,7 +123,6 @@ exports.resetPassword = async (req, res) => {
     //if(true)return;
 	  
     // Hash the new password (using bcrypt)
-    const bcrypt = require('bcrypt');
     const hashedPassword = await bcrypt.hash(newPassword, 10);
     
     // Update the user's password in the users table
