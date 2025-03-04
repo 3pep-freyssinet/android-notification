@@ -120,7 +120,7 @@ exports.resetPassword = async (req, res) => {
       return res.status(400).json({ message: 'Invalid or expired token' });
     }
     
-    if(true)return;
+    //if(true)return;
 	  
     // Hash the new password (using bcrypt)
     const bcrypt = require('bcrypt');
@@ -140,7 +140,7 @@ exports.resetPassword = async (req, res) => {
 };
 
 
-// POST /api/forgot-password
+// POST /users/forgot-password
 exports.forgotPassword = async (req, res) => {
   const { email } = req.body;
   try {
