@@ -170,6 +170,7 @@ exports.resetPassword = async (req, res) => {
 
 // POST /users/forgot-password
 exports.forgotPassword = async (req, res) => {
+  console.log('forgotPassword : start');
   const { email } = req.body;
   try {
     // Verify user exists
@@ -224,7 +225,8 @@ exports.forgotPassword = async (req, res) => {
       text: `Click the link to reset your password: ${resetLink}`,
       html: `<p>Click the link to reset your password: <a href="${resetLink}">${resetLink}</a></p>`
     });
-    
+	  
+     console.log('forgotPassword : Password reset email sent');
     res.json({ message: 'Password reset email sent' });
   } catch (error) {
     console.error('Forgot Password Error:', error);
