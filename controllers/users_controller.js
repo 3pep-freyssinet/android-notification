@@ -139,6 +139,8 @@ exports.resetPassword = async (req, res) => {
     
     // After a successful password reset, redirect to the deep link URL.
     //res.redirect('myapp://login');
+    
+    res.setHeader('Content-type','text/html')  
     res.send(`
       <!DOCTYPE html>
       <html>
