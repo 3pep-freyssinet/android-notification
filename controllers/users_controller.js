@@ -132,7 +132,7 @@ exports.resetPassword = async (req, res) => {
     // Optionally, remove the reset token
     await pool.query(`DELETE FROM password_reset WHERE user_id = $1`, [userId]);
     console.log('resetPassword : Password has been reset successfully');  
-    res.json({ message: 'Password has been reset successfully' });
+    //res.json({ message: 'Password has been reset successfully' });
     
     // After a successful password reset, redirect to the deep link URL.
     //res.redirect('myapp://login');
