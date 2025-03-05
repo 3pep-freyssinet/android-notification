@@ -134,7 +134,32 @@ exports.resetPassword = async (req, res) => {
     res.json({ message: 'Password has been reset successfully' });
     
     // After a successful password reset, redirect to the deep link URL.
-    res.redirect('myapp://login');
+    //res.redirect('myapp://login');
+    res.send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>Password Reset Successful</title>
+      </head>
+      <body>
+        <p>Your password has been reset successfully.</p>
+        <p>Redirecting you to the app...</p>
+        <script type="text/javascript">
+          // Attempt to open the app using the custom URL scheme
+          window.location = "myapp://login";
+          // Fallback: provide a clickable link
+          setTimeout(function() {
+            document.getElementById("fallback").style.display = "block";
+          }, 3000);
+        </script>
+        <p id="fallback" style="display:none;">
+          If the app did not open automatically, 
+          <a href="myapp://login">click here</a> to open it.
+        </p>
+      </body>
+      </html>
+    `);
   } catch (error) {
     console.error('Reset Password Error:', error);
     res.status(500).json({ message: 'Internal server error' });
