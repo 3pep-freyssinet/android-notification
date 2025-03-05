@@ -106,6 +106,7 @@ if (decoded && decoded.exp) {
 exports.resetPassword = async (req, res) => {
   console.log('resetPassword : start');  
   const { userId, token, newPassword } = req.body;
+  
   console.log('resetPassword : userId : ', userId, ' token : ', token, ' newPassword : ', newPassword); 
 	
   try {
