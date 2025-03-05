@@ -102,8 +102,26 @@ if (decoded && decoded.exp) {
   }
 };
 
+
 // POST /api/reset-password
 exports.resetPassword = async (req, res) => {
+  console.log('resetPassword : start');  
+res.send(`
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="UTF-8">
+        <title>Password Reset Successful</title>
+      </head>
+      <body>
+        <p>Hello the World.</p>
+      </body>
+      </html>
+    `);
+}
+
+// POST /api/reset-password
+exports.resetPassword_ = async (req, res) => {
   console.log('resetPassword : start');  
   const { userId, token, newPassword } = req.body;
   
