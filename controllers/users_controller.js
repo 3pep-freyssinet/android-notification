@@ -126,8 +126,7 @@ exports.resetPassword = async (req, res) => {
   const { userId, token, newPassword } = req.body;
   
   console.log('resetPassword : userId : ', userId, ' token : ', token, ' newPassword : ', newPassword); 
-  
-  
+
   try {
   /*
     // Retrieve the token entry
@@ -154,7 +153,7 @@ exports.resetPassword = async (req, res) => {
     await pool.query(`DELETE FROM password_reset WHERE user_id = $1`, [userId]);
 	  
     console.log('resetPassword : Password has been reset successfully');  
-    res.json({ message: 'Password has been reset successfully' });
+    res.json({ success:true, message: 'Password has been reset successfully' });
   } catch (error) {
     console.error('Reset Password Error:', error);
     //res.status(500).json({ message: 'Internal server error' });
