@@ -104,7 +104,7 @@ if (decoded && decoded.exp) {
 
 
 // POST /api/reset-password
-exports.resetPassword = async (req, res) => {
+exports.resetPassword_ = async (req, res) => {
   console.log('resetPassword : start');  
 res.send(`
       <!DOCTYPE html>
@@ -121,7 +121,7 @@ res.send(`
 }
 
 // POST /api/reset-password
-exports.resetPassword_ = async (req, res) => {
+exports.resetPassword = async (req, res) => {
   console.log('resetPassword : start');  
   const { userId, token, newPassword } = req.body;
   
@@ -152,38 +152,9 @@ exports.resetPassword_ = async (req, res) => {
     
     // Optionally, remove the reset token
     await pool.query(`DELETE FROM password_reset WHERE user_id = $1`, [userId]);
+	  
     console.log('resetPassword : Password has been reset successfully');  
-    //res.json({ message: 'Password has been reset successfully' });
-    
-    // After a successful password reset, redirect to the deep link URL.
-    //res.redirect('myapp://login');
-    
-    res.setHeader('Content-type','text/html')  
-    res.send(`
-      <!DOCTYPE html>
-      <html>
-      <head>
-        <meta charset="UTF-8">
-        <title>Password Reset Successful</title>
-      </head>
-      <body>
-        <p>Your password has been reset successfully.</p>
-        <p>Redirecting you to the app...</p>
-        <script type="text/javascript">
-          // Attempt to open the app using the custom URL scheme
-          window.location = "myapp://login";
-          // Fallback: provide a clickable link
-          setTimeout(function() {
-            document.getElementById("fallback").style.display = "block";
-          }, 3000);
-        </script>
-        <p id="fallback" style="display:none;">
-          If the app did not open automatically, 
-          <a href="myapp://login">click here</a> to open it.
-        </p>
-      </body>
-      </html>
-    `);
+    res.json({ message: 'Password has been reset successfully' });
   } catch (error) {
     console.error('Reset Password Error:', error);
     //res.status(500).json({ message: 'Internal server error' });
