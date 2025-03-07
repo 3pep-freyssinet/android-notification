@@ -162,7 +162,7 @@ exports.resetPassword = async (req, res) => {
 
 
 // POST /users/forgot-password
-exports.forgotPassword = async (req, res) => {
+exports.forgotPassword_ = async (req, res) => {
  console.error('forgotPassword : start');	
 res.send(`
     <!DOCTYPE html>
@@ -184,7 +184,7 @@ res.send(`
 
 
 // POST /users/forgot-password
-exports.forgotPassword_1 = async (req, res) => {
+exports.forgotPassword = async (req, res) => {
   console.log('forgotPassword : start');
   const { email } = req.body;
   try {
