@@ -163,6 +163,7 @@ exports.resetPassword = async (req, res) => {
 
 // POST /users/forgot-password
 exports.forgotPassword = async (req, res) => {
+ console.error('forgotPassword : start');	
 res.send(`
     <!DOCTYPE html>
     <html>
