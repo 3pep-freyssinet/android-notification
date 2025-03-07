@@ -153,6 +153,7 @@ exports.resetPassword = async (req, res) => {
 	  
     console.log('resetPassword : Password has been reset successfully');  
     res.json({ success:true, message: 'Password has been reset successfully' });
+    
   } catch (error) {
     console.error('Reset Password Error:', error);
     //res.status(500).json({ message: 'Internal server error' });
