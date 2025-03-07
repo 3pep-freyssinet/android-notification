@@ -128,7 +128,7 @@ exports.resetPassword = async (req, res) => {
   console.log('resetPassword : userId : ', userId, ' token : ', token, ' newPassword : ', newPassword); 
 
   try {
-  /*
+  
     // Retrieve the token entry
     const result = await pool.query(`
       SELECT * FROM password_reset 
@@ -139,8 +139,7 @@ exports.resetPassword = async (req, res) => {
       console.log('resetPassword : Invalid or expired token');      
       return res.status(400).json({ message: 'Invalid or expired token' });
     }
-    */
-	  
+     
     //if(true)return;
 	  
     // Hash the new password (using bcrypt)
