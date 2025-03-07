@@ -137,7 +137,7 @@ exports.resetPassword = async (req, res) => {
     
     if (result.rowCount === 0) {
       console.log('resetPassword : Invalid or expired token');      
-      return res.status(400).json({ message: 'Invalid or expired token' });
+      return res.status(400).json({ success:false, message: 'Invalid or expired token' });
     }
      
     //if(true)return;
@@ -156,7 +156,7 @@ exports.resetPassword = async (req, res) => {
     
   } catch (error) {
     console.error('Reset Password Error:', error);
-    //res.status(500).json({ message: 'Internal server error' });
+    res.status(500).json({ success:false, message: 'Internal server error' });
   }
 };
 
