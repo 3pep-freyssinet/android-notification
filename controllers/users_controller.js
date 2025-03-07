@@ -163,6 +163,27 @@ exports.resetPassword = async (req, res) => {
 
 // POST /users/forgot-password
 exports.forgotPassword = async (req, res) => {
+res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>Password Reset Successful</title>
+    </head>
+    <body>
+      <p>Your password has been reset successfully.</p>
+      <p>Redirecting to login...</p>
+      <script>
+        window.location.href = "myapp://login";
+      </script>
+    </body>
+    </html>
+  `);
+}
+
+
+// POST /users/forgot-password
+exports.forgotPassword_ = async (req, res) => {
   console.log('forgotPassword : start');
   const { email } = req.body;
   try {
