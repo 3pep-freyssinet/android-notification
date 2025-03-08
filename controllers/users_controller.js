@@ -199,10 +199,6 @@ try{
 	    </head>
 	    <body>
 	      <p>Your password has been reset successfully.</p>
-	      <p>Redirecting to login...</p>
-	      <script>
-	        window.location.href = "myapp://login";
-	      </script>
 	    </body>
 	    </html>
 	  `);
