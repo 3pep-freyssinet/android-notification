@@ -199,7 +199,7 @@ try{
 	    </head>
 	    <body>
 	      <p>Your password has been reset successfully.</p>
-              <p><a href="myapp://login">Retour à la page de connexion</a></p>
+              <p><button onclick="Android.openLoginActivity()">Retour à la page de connexion</button></p>
 	    </body>
 	    </html>
 	  `);
