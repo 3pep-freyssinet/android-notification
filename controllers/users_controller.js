@@ -193,7 +193,7 @@ res.send(`
 
 
 // POST /users/forgot-password
-exports.forgotPassword = async (req, res) => {
+exports.forgotPassword__ = async (req, res) => {
   console.log('forgotPassword : start');
   const { email } = req.body;
 try{
@@ -220,6 +220,90 @@ try{
 }
 };
 
+exports.forgotPassword = async (req, res) => {
+  console.log('forgotPassword : start');
+  const { email } = req.body;
+  try {
+    // Verify user exists
+    const userResult = await pool.query('SELECT id FROM users_notification WHERE email = $1', [email]);
+    if (userResult.rowCount === 0) {
+      return res.status(404).json({ message: 'No user found with this email' });
+    }
+    const userId = userResult.rows[0].id;
+
+    // Generate a reset token and set expiration (e.g., 1 hour)
+    const resetToken = crypto.randomBytes(32).toString('hex');
+    const tokenExpiry = new Date(Date.now() + 3600000); // 1 hour from now
+
+    // Save token to database (create a "password_reset" table if not exists)
+    await pool.query(`
+      INSERT INTO password_reset (user_id, token, expires_at)
+      VALUES ($1, $2, $3)
+      ON CONFLICT (user_id) DO UPDATE SET token = $2, expires_at = $3
+    `, [userId, resetToken, tokenExpiry]);
+
+    // Send reset email using nodemailer (configure your transporter)
+
+    //Google mail
+    const transporter = nodemailer.createTransport({
+      // e.g., SMTP configuration or a service like SendGrid
+      service: 'gmail',
+      //auth: { user: 'your-email@gmail.com', pass: 'your-password' }
+      auth: { user: 'beldi.chergui@gmail.com', pass: 'qikixyramfonftcs' }
+    });
+    
+   
+  /*
+  //Yahoo mail
+  const transporter = nodemailer.createTransport({
+  host: 'smtp.mail.yahoo.com',
+  port: 465, // Use 465 for SSL; use 587 for TLS if preferred
+  secure: true, // true for port 465, false for port 587
+  auth: {
+    user: 'tomcat.user@yahoo.co.in', //process.env.YAHOO_USER, // your Yahoo email address, e.g., 'your-email@yahoo.com'
+    pass: 'faddafadda',            //process.env.YAHOO_PASS  // your Yahoo app password (if using 2FA)
+  }
+});
+*/
+    //if(true)res.json({ message: 'Password reset email sent' });
+	  
+    const resetLink = `https://android-notification.onrender.com/reset-password?token=${resetToken}&userId=${userId}`;
+    const email_ = 'tomcat.super@yahoo.fr';
+    await transporter.sendMail({
+      from: '"Your App" <beldi.chergui@gmail.com>',
+      to: email_, //email,
+      subject: 'Password Reset Request',
+      text: `Click the link to reset your password: ${resetLink}`,
+      html: `<p>Click the link to reset your password: <a href="${resetLink}">${resetLink}</a></p>`
+    });
+	  
+     console.log('forgotPassword : Password reset email sent');
+    res.json({ message: 'Password reset email sent' });
+  } catch (error) {
+    console.error('Forgot Password Error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
+exports.forgotPassword_ = async (req, res) => {
+ console.log('forgotPassword : start');	
+res.send(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <meta charset="UTF-8">
+      <title>Password Reset Successful</title>
+    </head>
+    <body>
+      <p>Your password has been reset successfully.</p>
+      <p>Redirecting to login...</p>
+      <script>
+        window.location.href = "myapp://login";
+      </script>
+    </body>
+    </html>
+  `);
+}
 
 // Register a new user
 exports.registerUser = async (req, res) => {
