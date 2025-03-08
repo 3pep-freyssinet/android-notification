@@ -206,7 +206,6 @@ try{
 	    </body>
 	    </html>
 	  `);
-}
 } catch (error) {
 	console.error('Erreur dans forgotPassword:', error);
 	res.status(500).send('Erreur interne du serveur');
