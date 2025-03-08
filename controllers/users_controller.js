@@ -187,7 +187,8 @@ res.send(`
 exports.forgotPassword = async (req, res) => {
   console.log('forgotPassword : start');
   const { email } = req.body;
-console.log('forgotPassword : start');	
+console.log('forgotPassword : start');
+res.setHeader('Content-Type', 'text/html');	
 res.send(`
     <!DOCTYPE html>
     <html>
