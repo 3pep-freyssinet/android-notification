@@ -151,12 +151,21 @@ exports.resetPassword = async (req, res) => {
     // Optionally, remove the reset token
     await pool.query(`DELETE FROM password_reset WHERE user_id = $1`, [userId]);
 	  
-    console.log('resetPassword : Password has been reset successfully');  
-    res.json({ success:true, message: 'Password has been reset successfully' });
+    //console.log('resetPassword : Password has been reset successfully');  
+    res.status(200).json({
+            success: true,
+            message: 'Your password has been reset successfully.',
+            loginLink: 'myapp://login', // Lien pour ouvrir LoginActivity
+        });
+	  
     
   } catch (error) {
     console.error('Reset Password Error:', error);
-    res.status(500).json({ success:false, message: 'Internal server error' });
+    //res.status(500).json({ success:false, message: 'Internal server error' });
+    res.status(500).json({
+            success: false,
+            message: 'An error occurred while resetting your password.',
+        });	  
   }
 };
 
