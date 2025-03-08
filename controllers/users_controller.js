@@ -199,6 +199,7 @@ try{
 	    </head>
 	    <body>
 	      <p>Your password has been reset successfully.</p>
+              <p><a href="myapp://login">Retour à la page de connexion</a></p>
 	    </body>
 	    </html>
 	  `);
