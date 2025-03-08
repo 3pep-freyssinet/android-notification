@@ -13,7 +13,7 @@ router.post('/change-password',   authMiddleware, usersController.changePassword
 router.post('/check-credentials', authMiddleware, usersController.checkCredentials); // POST /users/check-credentials
 router.post('/match-password',    authMiddleware, usersController.matchPassword);    // POST /users/match-password
 router.post('/update-password',   authMiddleware, usersController.updatePassword);   // POST /users/update-password
-router.post('/forgot-password',   usersController.forgotPassword);                   // POST /users/forgot-password
+router.get('/forgot-password',   usersController.forgotPassword);                   // POST /users/forgot-password
 router.post('/reset-password',    usersController.resetPassword);                    // POST /users/reset-password
 router.post('/verify-reset-token',    usersController.verifyResetToken);             // POST /users/verify-reset-token
 
