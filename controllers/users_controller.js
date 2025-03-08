@@ -187,24 +187,30 @@ res.send(`
 exports.forgotPassword = async (req, res) => {
   console.log('forgotPassword : start');
   const { email } = req.body;
-console.log('forgotPassword : start');
-res.setHeader('Content-Type', 'text/html');	
-res.send(`
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <meta charset="UTF-8">
-      <title>Password Reset Successful</title>
-    </head>
-    <body>
-      <p>Your password has been reset successfully.</p>
-      <p>Redirecting to login...</p>
-      <script>
-        window.location.href = "myapp://login";
-      </script>
-    </body>
-    </html>
-  `);
+try{
+	console.log('forgotPassword : start');
+	res.setHeader('Content-Type', 'text/html');	
+	res.send(`
+	    <!DOCTYPE html>
+	    <html>
+	    <head>
+	      <meta charset="UTF-8">
+	      <title>Password Reset Successful</title>
+	    </head>
+	    <body>
+	      <p>Your password has been reset successfully.</p>
+	      <p>Redirecting to login...</p>
+	      <script>
+	        window.location.href = "myapp://login";
+	      </script>
+	    </body>
+	    </html>
+	  `);
+}
+} catch (error) {
+	console.error('Erreur dans forgotPassword:', error);
+	res.status(500).send('Erreur interne du serveur');
+}
 };
 
 
