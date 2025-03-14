@@ -72,9 +72,7 @@ if (decoded && decoded.exp) {
   const { token, userId} = req.body;
   
   console.log('verifyResetPassword : token : ', token, ' userId : ', userId);
-
-   if(true) throw new Error('502 Bad Gateway: The server received an invalid response from the upstream server.');
-	  
+  
   // Check if token and userId are provided
   if (!token || !userId) {
     console.log('verifyResetPassword : Token and userId are required');  
