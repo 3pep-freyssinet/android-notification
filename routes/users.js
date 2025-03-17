@@ -17,6 +17,8 @@ router.post('/forgot-password',   usersController.forgotPassword);              
 router.post('/reset-password',    usersController.resetPassword);                    // POST /users/reset-password
 router.post('/verify-reset-token',    usersController.verifyResetToken);             // POST /users/verify-reset-token
 
+router.delete('/delete-resset-password-token',    usersController.deleteRessetPasswordToken);   // POST /users/delete-resset-password-token
+
 router.get('/user_id',                                usersController.getUserId);                     // GET /users/user_id?user_id=
 router.get('/get-stored-shared-preferences',          usersController.getStoredSharedPreferences);    // GET /users/get-stored-shared-preferences?android-id=
 router.post('/set-lockout-status', authMiddleware,    usersController.setLockoutStatus);              // POST /users/set-lockout-status
