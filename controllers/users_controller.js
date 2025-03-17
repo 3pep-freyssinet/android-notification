@@ -61,6 +61,21 @@ if (decoded && decoded.exp) {
 
 */
 
+//delete resset password token  deleteRessetPasswordToken
+ exports.deleteRessetPasswordToken = async (req, res) => {	
+  console.log('deleteRessetPasswordToken : start');
+  const { androidId } = req.body;
+  try {
+    // Verify user exists
+    const userResult = await pool.query('SELECT id FROM users_notification WHERE email = $1', [email]);
+    if (userResult.rowCount === 0) {
+      return res.status(404).json({ message: 'No user found with this email' });
+    }
+    const userId = userResult.rows[0].id;
+
+  }
+
+	 
 // POST /users/verify-reset-token
   exports.verifyResetToken = async (req, res) => {	
   console.log('verifyResetPassword : start');
