@@ -73,7 +73,7 @@ if (decoded && decoded.exp) {
     const userResult = await pool.query('SELECT id FROM users_notification WHERE android_id = $1', [androidId]);
     if (userResult.rowCount === 0) {
       console.log('deleteRessetPasswordToken : No user found with this androidId');
-      return res.status(404).json({ message: 'No user found with this androidId' });
+      return res.status(404).json({ message: "No user found with this androidId" });
     }
     const userId = userResult.rows[0].id;
     console.log('deleteRessetPasswordToken : userId : ', userId);
@@ -84,14 +84,14 @@ if (decoded && decoded.exp) {
     console.log('deleteRessetPasswordToken : Token has been successfully deleted');  
     res.status(200).json({
             success: true,
-            message: 'Token has been successfully deleted.'
+            message: "Token has been successfully deleted."
         });
   } catch (error) {
     console.error('deleteRessetPasswordToken :', error);
-    //res.status(500).json({ success:false, message: 'Internal server error' });
+    //res.status(500).json({ success:false, message: "Internal server error" });
     res.status(500).json({
             success: false,
-            message: 'An error occurred while deleting the token.',
+            message: "An error occurred while deleting the token.",
         });	  
   }
  }
