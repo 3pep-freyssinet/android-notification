@@ -73,7 +73,8 @@ if (decoded && decoded.exp) {
       return res.status(404).json({ message: 'No user found with this androidId' });
     }
     const userId = userResult.rows[0].id;
-
+    console.log('deleteRessetPasswordToken : userId : ', userId);
+	  
     //delete the token
     await pool.query(`DELETE FROM password_reset WHERE user_id = $1`, [userId]);
 	  
