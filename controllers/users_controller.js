@@ -65,6 +65,9 @@ if (decoded && decoded.exp) {
  exports.deleteRessetPasswordToken = async (req, res) => {	
   console.log('deleteRessetPasswordToken : start');
   const { androidId } = req.body;
+	 
+  console.log('deleteRessetPasswordToken : androidId : ', androidId);	
+	 
   try {
     // Verify user exists
     const userResult = await pool.query('SELECT id FROM users_notification WHERE android_id = $1', [androidId]);
