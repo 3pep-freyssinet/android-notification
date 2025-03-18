@@ -67,7 +67,7 @@ if (decoded && decoded.exp) {
   const { androidId } = req.body;
   try {
     // Verify user exists
-    const userResult = await pool.query('SELECT id FROM users_notification WHERE email = $1', [androidId]);
+    const userResult = await pool.query('SELECT id FROM users_notification WHERE android_id = $1', [androidId]);
     if (userResult.rowCount === 0) {
       console.log('deleteRessetPasswordToken : No user found with this androidId');
       return res.status(404).json({ message: 'No user found with this androidId' });
