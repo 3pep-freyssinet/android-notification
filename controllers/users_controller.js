@@ -61,20 +61,36 @@ if (decoded && decoded.exp) {
 
 */
 
-//delete resset password token  deleteRessetPasswordToken
+//delete resset password token 
  exports.deleteRessetPasswordToken = async (req, res) => {	
   console.log('deleteRessetPasswordToken : start');
   const { androidId } = req.body;
   try {
     // Verify user exists
-    const userResult = await pool.query('SELECT id FROM users_notification WHERE email = $1', [email]);
+    const userResult = await pool.query('SELECT id FROM users_notification WHERE email = $1', [androidId]);
     if (userResult.rowCount === 0) {
-      return res.status(404).json({ message: 'No user found with this email' });
+      console.log('deleteRessetPasswordToken : No user found with this androidId');
+      return res.status(404).json({ message: 'No user found with this androidId' });
     }
     const userId = userResult.rows[0].id;
 
+    //delete the token
+    await pool.query(`DELETE FROM password_reset WHERE user_id = $1`, [userId]);
+	  
+    console.log('deleteRessetPasswordToken : Token has been successfully deleted');  
+    res.status(200).json({
+            success: true,
+            message: 'Token has been successfully deleted.'
+        });
+  } catch (error) {
+    console.error('deleteRessetPasswordToken :', error);
+    //res.status(500).json({ success:false, message: 'Internal server error' });
+    res.status(500).json({
+            success: false,
+            message: 'An error occurred while deleting the token.',
+        });	  
   }
-
+ }
 	 
 // POST /users/verify-reset-token
   exports.verifyResetToken = async (req, res) => {	
