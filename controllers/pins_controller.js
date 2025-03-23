@@ -157,7 +157,7 @@ exports.renewSHA256Certificate = async (req, res) => {
 ///////////////////////////////////////
 /////////////////////////// get latest sha-256 pin /////////////////////////////////
 // Fetch the latest SHA-256 pin
-const fetchLatestPin = async () => {
+const fetchLatestPin = async (userId) => {
     return new Promise((resolve, reject) => {
         console.log('fetchLatestPin, start ...');
 		const domain = 'android-notification.onrender.com';
@@ -165,31 +165,78 @@ const fetchLatestPin = async () => {
 
         const request = https.request(options, (response) => {
             const cert = response.socket.getPeerCertificate();
-			//console.log('fetchLatestPin, cert : ', cert);
+	//console.log('fetchLatestPin, cert : ', cert);
             if (!cert || Object.keys(cert).length === 0) {
-                reject(new Error('No certificate available'));
+                //reject(new Error('No certificate available'));
+		console.warn('fetchLatestPin: No certificate available, using last known valid pin');
+                resolve(getCachedPin(userId)); // Use cached pin if available.
             } else {
                 const sha256Fingerprint = `sha256/${crypto.createHash('sha256').update(cert.raw).digest('base64')}`;
+                resolve(sha256Fingerprint);
+
+		cachePin(sha256Fingerprint); // Store for future use
                 resolve(sha256Fingerprint);
             }
         });
         //console.log('fetchLatestPin, request : ', request);
-        request.on('error', (error) => reject(error));
+        request.on('error', (error) => {
+            console.error('fetchLatestPin Error:', error);
+            resolve(getCachedPin(userId)); // Use cached pin if fetch fails
+        });
         request.end();
     });
 };
 
+// Store last known valid pin
+//let cachedPin = null;
+//const cachePin = (pin) => {
+//    cachedPin = pin;
+//};
+
+const getCachedPin = async (userId) => {
+    try {
+	console.log('getCachedPin, start ...');
+        const res = await pool.query(`SELECT sha256_pin FROM pins WHERE user_id = $1;`, [userId]);
+	if(res.rows.length > 0){
+	   console.log('getCachedPin, sha256_pin :', res.rows[0].sha256_pin);
+	}else{
+	   console.log('getCachedPin, sha256_pin :', null);
+	}
+        
+	return res.rows.length ? res.rows[0].sha256_pin : null;
+    } catch (error) {
+        console.error('Error fetching cached pin from DB:', error);
+        return null;
+    }
+};
+
+
 // API endpoint to get the latest SHA-256 pin
 
 exports.fetchCertificate =  async (req, res) => {
+    console.log('fetchCertificate, start... '); 
+
+    const userId = req.userId
+    console.log('fetchCertificate, userId : ', userId); 
+
+    if(userId == null){
+	console.log('fetchCertificate, no userId found'); 
+	return res.status(500).json({ error: 'cannot get valid SHA pin for unknown user' });    
+    }
+
+    //here, there is a 'userId'
     try {
-        const pin = await fetchLatestPin();
-	console.log('fetchCertificate, pin : ', pin);    
+        const pin = await fetchLatestPin(userId);
+	console.log('fetchCertificate, pin : ', pin);  
+	if (!pin) {
+            console.warn('fetchCertificate: No valid SHA pin available.');
+            return res.status(500).json({ error: 'No valid SHA pin available' });
+        }
         //res.json({ sha256Pin: pin });
 	return { sha256Pin: pin }; 
     } catch (error) {
         //res.status(500).json({ error: 'Failed to fetch certificate' });
-	console.log('fetchCertificate :  Failed to fetch certificate ');     
+	console.error('fetchCertificate :  Failed to fetch certificate ');     
 	return { error: 'Failed to fetch certificate' };
     }
 }
@@ -547,7 +594,10 @@ try {
     
 	//here, there is a 'userId'.
 	 console.log('fetchStoreCertificate : user_id before call to fetchCertificate : ', userId);  
-	    
+
+	//add 'userId' to the request
+	 req.userId = userId;
+	
         // Step 1: Fetch Certificate (create a certificate)
 	const certificateResult = await exports.fetchCertificate(req, res);
 	
