@@ -213,10 +213,9 @@ const getCachedPin = async (userId) => {
 
 // API endpoint to get the latest SHA-256 pin
 
-exports.fetchCertificate =  async (req, res) => {
+exports.fetchCertificate =  async (userId, req, res) => {
     console.log('fetchCertificate, start... '); 
 
-    const userId = req.userId
     console.log('fetchCertificate, userId : ', userId); 
 
     if(userId == null){
@@ -594,12 +593,9 @@ try {
     
 	//here, there is a 'userId'.
 	 console.log('fetchStoreCertificate : user_id before call to fetchCertificate : ', userId);  
-
-	//add 'userId' to the request
-	 req.userId = userId;
 	
         // Step 1: Fetch Certificate (create a certificate)
-	const certificateResult = await exports.fetchCertificate(req, res);
+	const certificateResult = await exports.fetchCertificate(userId, req, res);
 	
 	// Check if an error occurred in fetchCertificate
         if (certificateResult.error) {
