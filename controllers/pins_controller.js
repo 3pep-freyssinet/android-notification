@@ -174,8 +174,8 @@ const fetchLatestPin = async (userId) => {
                 const sha256Fingerprint = `sha256/${crypto.createHash('sha256').update(cert.raw).digest('base64')}`;
                 resolve(sha256Fingerprint);
 
-		cachePin(sha256Fingerprint); // Store for future use
-                resolve(sha256Fingerprint);
+		//cachePin(sha256Fingerprint); // Store for future use
+                //resolve(sha256Fingerprint);
             }
         });
         //console.log('fetchLatestPin, request : ', request);
