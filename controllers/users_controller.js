@@ -38,6 +38,10 @@ const CAPTCHA_SITE_KEY = process.env.CAPTCHA_SITE_KEY;
 const YAHOO_USER = process.env.YAHOO_USER;
 const YAHOO_PASS = process.env.YAHOO_PASS;
 
+const EMAIL_FROM = process.env.EMAIL_FROM;
+const EMAIL_TO   = process.env.EMAIL_TO;
+
+
 //console.log('process.env.DATABASE_URL = ' + process.env.DATABASE_URL);
 
 console.log('pool = ' + pool);
@@ -302,10 +306,11 @@ exports.forgotPassword = async (req, res) => {
     //if(true)res.json({ message: 'Password reset email sent' });
 	  
     const resetLink = `https://android-notification.onrender.com/reset-password?token=${resetToken}&userId=${userId}`;
-    const email_ = 'tomcat.super@yahoo.fr';
+    //const email_ = 'tomcat.super@yahoo.fr';
     await transporter.sendMail({
-      from: '"Your App" <beldi.chergui@gmail.com>',
-      to: email_, //email,
+      //from: '"Your App" <beldi.chergui@gmail.com>',
+      from: '"Android Notification " <' + EMAIL_FROM + '>',
+      to: EMAIL_TO, //EMAIL_,
       subject: 'Password Reset Request',
       text: `Click the link to reset your password: ${resetLink}`,
       //html: `<p>Click the link to reset your password: <a href="${resetLink}">${resetLink}</a></p>`
