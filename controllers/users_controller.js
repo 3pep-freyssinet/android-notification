@@ -308,7 +308,8 @@ exports.forgotPassword = async (req, res) => {
       to: email_, //email,
       subject: 'Password Reset Request',
       text: `Click the link to reset your password: ${resetLink}`,
-      html: `<p>Click the link to reset your password: <a href="${resetLink}">${resetLink}</a></p>`
+      //html: `<p>Click the link to reset your password: <a href="${resetLink}">${resetLink}</a></p>`
+      html: `<p>Click the link to reset your password : <a href="${resetLink}">link</a></p>`
     });
 	  
      console.log('forgotPassword : Password reset email sent');
