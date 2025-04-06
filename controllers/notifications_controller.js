@@ -45,8 +45,8 @@ exports.postNotificationsToAllUsers = async (req, res) => {
         data: {
 			title: "Custom Notification",
 			body: message, //"This is a custom message",
-			//icon: "ic_fcm_notification" // vect icon, working
-			icon: "fcm_icon_fresh_transparent_2" // vect icon, working
+			//icon: "ic_fcm_notification" // vect icon, working. The file is in Firebase storage.
+			icon: "fcm_icon_fresh_transparent_2" // vect icon, working. The file is in Firebase storage.
 		}
 	
        };
