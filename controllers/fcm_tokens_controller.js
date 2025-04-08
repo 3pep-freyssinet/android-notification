@@ -102,6 +102,59 @@ console.log('storeFCMTokens : user_id = ', userId, ' fcm_token = ', fcm_token, '
   }
 }
 
+//revoke FCM tokens
+exports.revokeFCMToken = async (req, res) => {
+   console.log('revokeFCMToken : start');
+   // Extract token and user information
+   const { fcm_token } = req.body;
+   
+   console.log('revokeFCMToken : fcm token from req.body : ', fcm_token);
+	
+   // Validate input
+   if (!fcm_token) {
+	return res.status(400).json({ error: 'revoke fcm token, FCM token is required' });
+   }	
+
+const userId = req.user.userId; // Assuming user ID comes from middleware after verifying the JWT
+	
+console.log('revokeFCMToken : user_id = ', userId, ' fcm_token = ', fcm_token, '\n');
+	
+  
+    /*
+    const result = await pool.query('INSERT into fcm_tokens (user_id, fcm_token) VALUES ($1, $2) RETURNING id', [
+				userId,
+				fcm_token	
+			]);
+    */
+
+const query = `DELETE FROM fcm_tokens WHERE user_id = $1`;	  
+try {
+    const result = await pool.query(query, [userId]);
+
+    if (result.rowCount > 0) {
+      // Success: Tokens deleted
+      return res.status(200).json({
+        success: true,
+        message: `Deleted ${result.rowCount} token(s) for user_id=${userId}`,
+      });
+    } else {
+      // No tokens found
+      return res.status(404).json({
+        success: false,
+        message: `No tokens found to delete for user_id=${userId}`,
+      });
+    }
+  } catch (error) {
+    // DB error
+    console.error('Error deleting token:', error);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal server error while deleting token',
+      error: error.message,
+    });
+  }
+}
+
 // get all fcm tokens
 exports.getAllFCMTokens = async (req, res) => {
 	   
