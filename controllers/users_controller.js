@@ -69,9 +69,26 @@ if (decoded && decoded.exp) {
 //update FirebaseId
  exports.updateFirebaseId = async (req, res) => {	
   console.log('updateFirebaseId : start');
-  const { androidId } = req.body;
+  
+  const { userId, firebaseId } = req.body
 	 
-  console.log('deleteRessetPasswordToken : androidId : ', androidId);	
+  console.log('updateFirebaseId : androidId : ', androidId, ' firebaseId : ', firebaseId);
+	 
+    // Update only if firebase_id is currently NULL
+    const result = await pool.query(
+        `UPDATE users_notification 
+         SET firebase_id = $1 
+         WHERE id = $2 AND firebase_id IS NULL`,
+        [firebaseId, userId]
+    );
+
+    if (result.rowCount === 0) {
+	 console.log('updateFirebaseId : Firebase ID already set');   
+        return res.status(400).json({ error: "Firebase ID already set" });
+    }
+    
+    console.log('updateFirebaseId : Firebase ID successfully updated'); 
+    res.sendStatus(200).json({ success: "Firebase ID successfully updated" });	 
  }
 
 
