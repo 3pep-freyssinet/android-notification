@@ -351,9 +351,9 @@ exports.registerUser = async (req, res) => {
     
     console.log('register\n');
 	
-	const { username, password, androidId, sector, branch } = req.body;
+	const { username, password, androidId, firebaseId, sector, branch } = req.body;
 
-	console.log('register : username : ', username, ' password : ', password, ' androidId : ', androidId, ' sector : ', sector, ' branch : ', branch);
+	console.log('register : username : ', username, ' password : ', password, ' androidId : ', androidId, ' firebaseId : ', firebaseId, ' sector : ', sector, ' branch : ', branch);
 	
     try {
         // Check if user already exists
@@ -382,9 +382,14 @@ exports.registerUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         // Store user in database
-        result = await pool.query('INSERT INTO users_notification (username, password, android_id, sector, branch)' + 
-		                          ' VALUES ($1, $2, $3, $4, $5) RETURNING id', [username, hashedPassword, androidId, sector, branch]);
-	  
+        result = await pool.query('INSERT INTO users_notification (username, password, android_id, firebaseId, sector, branch)' + 
+		                          ' VALUES ($1, $2, $3, $4, $5, $6) RETURNING id', [username, hashedPassword, androidId, firebaseId, sector, branch]);
+
+	if (result.rows.length == 0 ) {
+                    console.error('register : cannot register the user');
+		    return res.status(400).json({ message: 'cannot register the user' });
+                 }  
+	    
 	//console.log('register : result : ', result);
 		
         // Get the generated id from the result
