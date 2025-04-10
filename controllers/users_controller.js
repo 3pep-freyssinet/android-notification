@@ -65,6 +65,16 @@ if (decoded && decoded.exp) {
 
 */
 
+
+//update FirebaseId
+ exports.updateFirebaseId = async (req, res) => {	
+  console.log('updateFirebaseId : start');
+  const { androidId } = req.body;
+	 
+  console.log('deleteRessetPasswordToken : androidId : ', androidId);	
+ }
+
+
 //delete resset password token 
  exports.deleteRessetPasswordToken = async (req, res) => {	
   console.log('deleteRessetPasswordToken : start');
