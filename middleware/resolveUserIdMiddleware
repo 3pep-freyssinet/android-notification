@@ -1,0 +1,42 @@
+// resolveUserIdMiddleware.js
+const resolveUserId = async (req, res, next) => {
+  const { androidId, firebaseId } = req.body;
+
+  // 🔴 CASE 1: Authenticated user (JWT)
+  if (req.authType === 'user') {
+    req.resolvedUserId = req.user.id; // Attach to req
+    return next();
+  }
+
+  // 🔴 CASE 2: Guest (androidId or firebaseId)
+  if (androidId || firebaseId) {
+    try {
+      const identifier = androidId 
+        ? { column: 'android_id', value: androidId }
+        : { column: 'firebase_id', value: firebaseId };
+
+      const result = await pool.query(
+        `SELECT id FROM users_notification WHERE ${identifier.column} = $1`,
+        [identifier.value]
+      );
+
+      if (result.rows.length === 0) {
+        return res.status(404).json({ 
+          error: `User not found with ${identifier.column.replace('_', '')}: ${identifier.value}`
+        });
+      }
+
+      req.resolvedUserId = result.rows[0].id; // Attach to req
+      return next();
+    } catch (err) {
+      return res.status(500).json({ error: "Failed to resolve user" });
+    }
+  }
+
+  // 🔴 CASE 3: Reject if no valid identifiers
+  return res.status(400).json({ 
+    error: "Requires: Authorization header OR androidId/firebaseId" 
+  });
+};
+
+module.exports = resolveUserId;
