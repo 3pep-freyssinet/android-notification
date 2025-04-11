@@ -73,13 +73,22 @@ if (decoded && decoded.exp) {
   const { androidId, firebaseId } = req.body
 	 
   console.log('updateFirebaseId : androidId : ', androidId, ' firebaseId : ', firebaseId);
+
+  //get user id
+  const userResult = await pool.query('SELECT id FROM users_notification WHERE android_id = $1', [androidId]);
+    if (userResult.rowCount === 0) {
+      console.log('updateFirebaseId : No user found with this androidId');
+      return res.status(404).json({ message: "No user found with this androidId" });
+    }
+    const userId = userResult.rows[0].id;
+    console.log('updateFirebaseId : userId : ', userId);
 	 
     // Update only if firebase_id is currently NULL
     const result = await pool.query(
         `UPDATE users_notification 
          SET firebase_id = $1 
          WHERE id = $2 AND firebase_id IS NULL`,
-        [firebaseId, androidId]
+        [firebaseId, userId]
     );
 
     if (result.rowCount === 0) {
