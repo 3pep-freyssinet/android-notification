@@ -1,9 +1,10 @@
 // routes/users.js
 const express         = require('express');
 const router          = express.Router();
-const usersController = require('../controllers/users_controller'); // Point to your controller
-const authMiddleware  = require('../middleware/auth');
-const resolveUserId   = require('./resolveUserIdMiddleware');
+
+const usersController           = require('../controllers/users_controller'); // Point to your controller
+const authMiddleware            = require('../middleware/auth');
+const resolveUserIdMiddleware   = require('../middleware/resolveUserIdMiddleware');
 
 
 console.log(' routes users ');
@@ -31,7 +32,7 @@ router.get('/check-change-password-session',          authMiddleware,   usersCon
 
 router.delete('/clear-change-password-session',       authMiddleware,   usersController.clearChangePasswordSession);        // DELETE /users/clear-change-password-session
 
-router.patch('/update-firebase-id',                   usersController.updateFirebaseId);                                    // PATCH /users/update-firebase-id
+router.patch('/update-firebase-id', authMiddleware, resolveUserIdMiddleware, usersController.updateFirebaseId);             // PATCH /users/update-firebase-id
 
 //router.get('/:id', 		   usersController.getUser);                 // GET /users/:id
 //router.put('/:id', 		   usersController.updateUser);              // PUT /users/:id
