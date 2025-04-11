@@ -79,7 +79,7 @@ if (decoded && decoded.exp) {
         `UPDATE users_notification 
          SET firebase_id = $1 
          WHERE id = $2 AND firebase_id IS NULL`,
-        [firebaseId, userId]
+        [firebaseId, androidId]
     );
 
     if (result.rowCount === 0) {
