@@ -69,9 +69,15 @@ if (decoded && decoded.exp) {
 //update FirebaseId
  exports.updateFirebaseId = async (req, res) => {	
   console.log('updateFirebaseId : start');
-  
-  const { androidId, firebaseId } = req.body
+
+  const { androidId, firebaseId } = req.body 
+  console.log('updateFirebaseId : androidId : ', androidId, ' firebaseId : ', firebaseId);
 	 
+ const userId = req.resolvedUserId;
+ console.log('updateFirebaseId : userId : ', userId);
+	 
+  /*
+  const { androidId, firebaseId } = req.body 
   console.log('updateFirebaseId : androidId : ', androidId, ' firebaseId : ', firebaseId);
 
   //get user id
@@ -82,6 +88,7 @@ if (decoded && decoded.exp) {
     }
     const userId = userResult.rows[0].id;
     console.log('updateFirebaseId : userId : ', userId);
+    */
 	 
     // Update only if firebase_id is currently NULL
     const result = await pool.query(
