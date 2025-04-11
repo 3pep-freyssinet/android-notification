@@ -12,11 +12,17 @@ const authHeader = req.headers['authorization'];
 
  console.log('auth : req.headers["authorization"] : ', authHeader);
  
-console.log('auth : req.body : ', req.body);
+//console.log('auth : req.body : ', req.body);
   
- const authHeader_ = req.headers.authorization;
+ //const authHeader_ = req.headers.authorization;
  
- console.log('auth : req.headers.authorization : ', authHeader_);
+ //console.log('auth : req.headers.authorization : ', authHeader_);
+
+// Case: No auth header (e.g., registration/public routes)
+  if (!authHeader) {
+    console.log('auth: No Authorization header - skipping validation');
+    return next(); // Explicit return to continue middleware chain
+  }
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     console.log('auth : test : true ');
