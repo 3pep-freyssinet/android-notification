@@ -97,7 +97,7 @@ if (decoded && decoded.exp) {
     }
     
     console.log('updateFirebaseId : Firebase ID successfully updated'); 
-    res.sendStatus(200).json({ success: "Firebase ID successfully updated" });	 
+    res.status(200).json({ success: "Firebase ID successfully updated" });	 
  }
 
 
