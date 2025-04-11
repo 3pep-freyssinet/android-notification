@@ -70,7 +70,7 @@ if (decoded && decoded.exp) {
  exports.updateFirebaseId = async (req, res) => {	
   console.log('updateFirebaseId : start');
   
-  const { userId, firebaseId } = req.body
+  const { androidId, firebaseId } = req.body
 	 
   console.log('updateFirebaseId : androidId : ', androidId, ' firebaseId : ', firebaseId);
 	 
