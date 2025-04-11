@@ -3,6 +3,8 @@ const express         = require('express');
 const router          = express.Router();
 const usersController = require('../controllers/users_controller'); // Point to your controller
 const authMiddleware  = require('../middleware/auth');
+const resolveUserId   = require('./resolveUserIdMiddleware');
+
 
 console.log(' routes users ');
 
