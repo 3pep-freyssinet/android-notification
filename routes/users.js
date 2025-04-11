@@ -29,7 +29,7 @@ router.get('/check-change-password-session',          authMiddleware,   usersCon
 
 router.delete('/clear-change-password-session',       authMiddleware,   usersController.clearChangePasswordSession);        // DELETE /users/clear-change-password-session
 
-router.patch('/update-firebase-id',                   authMiddleware,   usersController.updateFirebaseId);                   // PATCH /users/update-firebase-id
+router.patch('/update-firebase-id',                   usersController.updateFirebaseId);                                    // PATCH /users/update-firebase-id
 
 //router.get('/:id', 		   usersController.getUser);                 // GET /users/:id
 //router.put('/:id', 		   usersController.updateUser);              // PUT /users/:id
