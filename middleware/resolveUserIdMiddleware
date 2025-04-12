@@ -25,7 +25,8 @@ const resolveUserId = async (req, res, next) => {
      console.log('resolveUserIdMiddleware : identifier : ', identifier);
      console.log('resolveUserIdMiddleware : identifier.value : ', identifier.value, ' identifier.column : ', identifier.column);
     
-      const result = await pool.query( `SELECT id FROM users_notification WHERE ${identifier.column} = $1`, [identifier.value]);
+      //const result = await pool.query( `SELECT id FROM users_notification WHERE ${identifier.column} = $1`, [identifier.value]);
+      const result = await pool.query( `SELECT id FROM users_notification WHERE android_id = $1`, [identifier.value]);
       
 console.log('resolveUserIdMiddleware : result : ', JSON.stringify(result));
       console.log('resolveUserIdMiddleware : result.rows.length === 0 : ', result.rows.length);
