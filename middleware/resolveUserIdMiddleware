@@ -5,9 +5,10 @@
   // resolveUserIdMiddleware.js
   const resolveUserId = async (req, res, next) => {
   const { androidId, firebaseId } = req.body;
-  console.log('resolveUserIdMiddleware : androidId : ', androidId, ' firebaseId : ', firebaseId);
-  console.log('resolveUserIdMiddleware : req.user : ', JSON.stringify(req.user));
-  console.log('resolveUserIdMiddleware : resolvedUserId : ', req.user.userId);
+
+  //console.log('resolveUserIdMiddleware : androidId : ', androidId, ' firebaseId : ', firebaseId);
+  //console.log('resolveUserIdMiddleware : req.user : ', JSON.stringify(req.user));
+  //console.log('resolveUserIdMiddleware : resolvedUserId : ', req.user.userId);
 
   // 🔴 CASE 1: Authenticated user (JWT)
   if (req.authType === 'user') {
