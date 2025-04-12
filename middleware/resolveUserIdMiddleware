@@ -29,7 +29,7 @@ const resolveUserId = async (req, res, next) => {
         `SELECT id FROM users_notification WHERE ${identifier.column} = $1`,
         [identifier.value]
       );
-
+      console.log('resolveUserIdMiddleware : result : ', JSON.stringify(result));
       console.log('resolveUserIdMiddleware : result.rows.length === 0 : ', result.rows.length);
 
       if (result.rows.length === 0) {
