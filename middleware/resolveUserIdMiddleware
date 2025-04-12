@@ -7,6 +7,7 @@ const resolveUserId = async (req, res, next) => {
 
   // 🔴 CASE 1: Authenticated user (JWT)
   if (req.authType === 'user') {
+   console.log('resolveUserIdMiddleware : CASE 1 ');
     req.resolvedUserId = req.user.userId; // Attach to req
     //console.log('resolveUserIdMiddleware : req.user : ', JSON.stringify(req.user));
     //console.log('resolveUserIdMiddleware : resolvedUserId : ', resolvedUserId);
@@ -15,10 +16,14 @@ const resolveUserId = async (req, res, next) => {
 
   // 🔴 CASE 2: Guest (androidId or firebaseId)
   if (androidId || firebaseId) {
+    console.log('resolveUserIdMiddleware : CASE 2 ');
     try {
       const identifier = androidId 
         ? { column: 'android_id', value: androidId }
         : { column: 'firebase_id', value: firebaseId };
+
+     console.log('resolveUserIdMiddleware : identifier : ', identifier);
+     console.log('resolveUserIdMiddleware : identifier.value : ', identifier.value);
 
       const result = await pool.query(
         `SELECT id FROM users_notification WHERE ${identifier.column} = $1`,
@@ -26,6 +31,7 @@ const resolveUserId = async (req, res, next) => {
       );
 
       console.log('resolveUserIdMiddleware : result.rows.length === 0 : ', result.rows.length);
+
       if (result.rows.length === 0) {
           return res.status(404).json({ 
           error: `User not found with ${identifier.column.replace('_', '')}: ${identifier.value}`
