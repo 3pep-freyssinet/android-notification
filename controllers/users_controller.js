@@ -76,37 +76,33 @@ if (decoded && decoded.exp) {
  const userId = req.resolvedUserId;
  console.log('updateFirebaseId : userId : ', userId);
 	 
-  /*
-  const { androidId, firebaseId } = req.body 
-  console.log('updateFirebaseId : androidId : ', androidId, ' firebaseId : ', firebaseId);
-
-  //get user id
-  const userResult = await pool.query('SELECT id FROM users_notification WHERE android_id = $1', [androidId]);
-    if (userResult.rowCount === 0) {
-      console.log('updateFirebaseId : No user found with this androidId');
-      return res.status(404).json({ message: "No user found with this androidId" });
-    }
-    const userId = userResult.rows[0].id;
-    console.log('updateFirebaseId : userId : ', userId);
-    */
-	 
-    // Update only if firebase_id is currently NULL
+ try {	 	 
+    // Update only if firebase_id is NULL
     const result = await pool.query(
-        `UPDATE users_notification 
-         SET firebase_id = $1 
-         WHERE id = $2 AND firebase_id IS NULL`,
-        [firebaseId, userId]
+      `UPDATE users_notification 
+       SET firebase_id = $1 
+       WHERE id = $2 AND firebase_id IS NULL`,
+      [firebaseId, userId]
     );
 
     if (result.rowCount === 0) {
-	 console.log('updateFirebaseId : Firebase ID already set');   
-        return res.status(400).json({ error: "Firebase ID already set" });
+      console.log('updateFirebaseId : Firebase ID already set');   
+      return res.status(400).json({ 
+        code: "FIREBASE_ID_ALREADY_SET",
+        message: "Firebase ID already exists for this user" 
+      });
     }
     
-    console.log('updateFirebaseId : Firebase ID successfully updated'); 
-    res.status(200).json({ success: "Firebase ID successfully updated" });	 
+    console.log('updateFirebaseId : Firebase ID updated successfully'); 
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('updateFirebaseId : Database error:', error);
+    res.status(500).json({ 
+      code: "SERVER_ERROR", 
+      message: "Temporary server issue. Please retry." 
+    });	 
  }
-
+ }
 
 //delete resset password token 
  exports.deleteRessetPasswordToken = async (req, res) => {	
