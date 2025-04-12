@@ -14,7 +14,7 @@
    console.log('resolveUserIdMiddleware : CASE 1 ');
     req.resolvedUserId = req.user.userId; // Attach to req
     //console.log('resolveUserIdMiddleware : req.user : ', JSON.stringify(req.user));
-    //console.log('resolveUserIdMiddleware : resolvedUserId : ', resolvedUserId);
+    console.log('resolveUserIdMiddleware : CASE 1: resolvedUserId : ', resolvedUserId);
     return next();
   }
 
@@ -30,20 +30,23 @@
       //console.log('resolveUserIdMiddleware : result : ', JSON.stringify(result));
       
       if (result.rows.length === 0) {
+          console.log('resolveUserIdMiddleware : CASE 2 : User not found with');
           return res.status(404).json({ 
           error: `User not found with ${identifier.column.replace('_', '')}: ${identifier.value}`
         });
       }
 
       req.resolvedUserId = result.rows[0].id; // Attach to req
-      console.log('resolveUserIdMiddleware : result.rows[0].id : ', result.rows[0].id);
+      console.log('resolveUserIdMiddleware : CASE 2 : resolvedUserId : ', req.resolvedUserId);
       return next();
     } catch (err) {
+      console.log('resolveUserIdMiddleware : Failed to resolve use');
       return res.status(500).json({ error: "Failed to resolve user" });
     }
   }
 
   // 🔴 CASE 3: Reject if no valid identifiers
+  console.log('Requires: Authorization header OR androidId/firebaseId');
   return res.status(400).json({ 
     error: "Requires: Authorization header OR androidId/firebaseId" 
   });
