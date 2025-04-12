@@ -1,5 +1,9 @@
-// resolveUserIdMiddleware.js
-const resolveUserId = async (req, res, next) => {
+  require('dotenv').config();
+  const jwt  = require('jsonwebtoken');
+  const pool = require('../db'); 
+
+  // resolveUserIdMiddleware.js
+  const resolveUserId = async (req, res, next) => {
   const { androidId, firebaseId } = req.body;
   console.log('resolveUserIdMiddleware : androidId : ', androidId, ' firebaseId : ', firebaseId);
   console.log('resolveUserIdMiddleware : req.user : ', JSON.stringify(req.user));
