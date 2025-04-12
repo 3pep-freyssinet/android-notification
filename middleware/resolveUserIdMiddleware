@@ -25,8 +25,9 @@ const resolveUserId = async (req, res, next) => {
         [identifier.value]
       );
 
+      console.log('resolveUserIdMiddleware : result.rows.length === 0 : ', result.rows.length);
       if (result.rows.length === 0) {
-        return res.status(404).json({ 
+          return res.status(404).json({ 
           error: `User not found with ${identifier.column.replace('_', '')}: ${identifier.value}`
         });
       }
