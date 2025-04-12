@@ -26,15 +26,9 @@
         ? { column: 'android_id', value: androidId }
         : { column: 'firebase_id', value: firebaseId };
 
-     console.log('resolveUserIdMiddleware : identifier : ', identifier);
-     console.log('resolveUserIdMiddleware : identifier.value : ', identifier.value, ' identifier.column : ', identifier.column);
-    
-      //const result = await pool.query( `SELECT id FROM users_notification WHERE ${identifier.column} = $1`, [identifier.value]);
-      //const result = await pool.query( `SELECT id FROM users_notification WHERE android_id = $1`, [identifier.value]);
-      const result = identifier;
-      console.log('resolveUserIdMiddleware : result : ', JSON.stringify(result));
-      console.log('resolveUserIdMiddleware : result.rows.length === 0 : ', result.rows.length);
-
+      const result = await pool.query( `SELECT id FROM users_notification WHERE ${identifier.column} = $1`, [identifier.value]);
+      //console.log('resolveUserIdMiddleware : result : ', JSON.stringify(result));
+      
       if (result.rows.length === 0) {
           return res.status(404).json({ 
           error: `User not found with ${identifier.column.replace('_', '')}: ${identifier.value}`
