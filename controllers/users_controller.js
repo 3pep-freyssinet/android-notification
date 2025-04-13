@@ -811,7 +811,9 @@ exports.matchPassword = async (req, res) => {
     const previousPassword = historyResult.rows.map(row => row.password);
 
     for (const hash of [storedPassword, ...previousPassword]) {
-	console.log('changePassword : loop : hash : ', hash); 
+	console.log('changePassword : loop : hash : ', hash, ' password : ', password); 
+	 const test =  await bcrypt.compare(password, hash);
+	 console.log('changePassword : loop : test : ', test);    
         if (await bcrypt.compare(password, hash)) {
             //throw new Error('New password cannot be the same as the current or previous passwords.');
 	    return res.status(401).json({ message: 'New password cannot be the same as the current or previous passwords.' });
