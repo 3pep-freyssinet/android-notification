@@ -816,6 +816,7 @@ exports.matchPassword = async (req, res) => {
 	 console.log('changePassword : loop : test : ', test);    
         if (await bcrypt.compare(password, hash)) {
             //throw new Error('New password cannot be the same as the current or previous passwords.');
+	    console.error('changePassword : New password cannot be the same as the current or previous passwords.');
 	    return res.status(401).json({ message: 'New password cannot be the same as the current or previous passwords.' });
         }
     }
