@@ -734,7 +734,7 @@ exports.updatePassword = async (req, res) => {
   }   
 }
 
-//match password. if the provided password match the previous password.
+//match password. check, if the provided password match the previous password.
 //store new password.
 exports.matchPassword = async (req, res) => {
    try{ 
