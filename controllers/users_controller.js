@@ -739,14 +739,12 @@ exports.updatePassword = async (req, res) => {
 exports.matchPassword = async (req, res) => {
    try{ 
     console.log('matchPassword\n');
-    const { updateSession  } = require('../services/passwordChangeService');
-	   
-    console.log('matchPassword : updateSession : ', updateSession);
+    //const { updateSession  } = require('../services/passwordChangeService');
 	   
     const { sessionId, password } = req.body;
     console.log('matchPassword : sessionId : ', sessionId, ' password : ', password);
 
-     // Retrieve the session from the database
+     // Retrieve the 'session' from the database
      const sessionQuery = `
             SELECT * FROM password_change_sessions WHERE session_id = $1
         `;
