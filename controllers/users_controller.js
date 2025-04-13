@@ -927,13 +927,15 @@ exports.changePassword = async (req, res) => {
 
     for (const hash of [storedPassword, ...previousPassword]) {
 	console.log('changePassword : loop : hash : ', hash); 
+	const test = await bcrypt.compare(newPassword, hash);
+	console.log('changePassword : loop : test : ', test); 
         if (await bcrypt.compare(newPassword, hash)) {
             //throw new Error('New password cannot be the same as the current or previous passwords.');
 	    console.error('changePassword : New password cannot be the same as the current or previous passwords. '); 
 	    return res.status(401).json({ message: 'New password cannot be the same as the current or previous passwords.' });
         }
     }
-
+    console.log('changePassword : after for loop'); 
     // Update password and record history
     const newHash = await bcrypt.hash(newPassword, 10);
     const updateQuery = `
