@@ -740,7 +740,9 @@ exports.matchPassword = async (req, res) => {
    try{ 
     console.log('matchPassword\n');
     const { updateSession  } = require('../services/passwordChangeService');
-    
+	   
+    console.log('matchPassword : updateSession : ', updateSession);
+	   
     const { sessionId, password } = req.body;
     console.log('matchPassword : sessionId : ', sessionId, ' password : ', password);
 
