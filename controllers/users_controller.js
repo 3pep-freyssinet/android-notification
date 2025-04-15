@@ -240,7 +240,7 @@ exports.resetPassword = async (req, res) => {
     //console.log('resetPassword : userId : ', userId);
        
     //check if the new password is already used
-    const isUnique = await isNewPasswordUnique(userId, newPassword);
+    const isUnique = await isNewPasswordUnique(userId, newPassword, hashedNewPassword);
     if (!isUnique) {
 	//console.log('resetPassword : Password matches a previous/current password.');    
         return res.status(402).json({ error: 'Password matches a previous/current password.' });
