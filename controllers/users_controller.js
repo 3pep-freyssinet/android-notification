@@ -248,7 +248,7 @@ exports.resetPassword = async (req, res) => {
     console.log('resetPassword : the password is unique.');
 	  
     // Update the user's password in the users table
-    await pool.query(`UPDATE users_notification SET password = $1 WHERE id = $2`, [hashedPassword, userId]);
+    await pool.query(`UPDATE users_notification SET password = $1 WHERE id = $2`, [hashedNewPassword, userId]);
     
     // Optionally, remove the reset token
     await pool.query(`DELETE FROM password_reset WHERE user_id = $1`, [userId]);
