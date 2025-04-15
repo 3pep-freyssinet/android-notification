@@ -226,9 +226,12 @@ exports.resetPassword = async (req, res) => {
     const userId = req.user.userId;
 	
     console.log('resetPassword : userId : ', userId);
-    
+       
     //check if it is already used
-    const isnewPasswordValid = await isNewPasswordValid(userId, newPassword);
+    const isNewPasswordExists = await isNewPasswordExists(userId, newPassword);
+    console.log('resetPassword : isNewPasswordExists : ', isNewPasswordExists);
+
+    if(true)return;
 	  
     // Update the user's password in the users table
     await pool.query(`UPDATE users_notification SET password = $1 WHERE id = $2`, [hashedPassword, userId]);
@@ -254,7 +257,7 @@ exports.resetPassword = async (req, res) => {
   }
 };
 
-async function isNewPasswordValid(userId, newPassword){
+async function isNewPasswordExists(userId, newPassword){
 try{
     // Fetch stored password hash and last changed date
     const userQuery = `
