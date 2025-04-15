@@ -215,7 +215,9 @@ exports.resetPassword = async (req, res) => {
     /*	  
     // Retrieve the token entry 
     const result = await pool.query(`
-      SELECT * FROM password_reset`
+      SELECT * FROM password_reset
+      WHERE user_id = $1 AND token = $2`,
+      [userId, token]
     );
     */
      const result = await pool.query(`
