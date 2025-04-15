@@ -741,6 +741,13 @@ exports.matchPassword = async (req, res) => {
     console.log('matchPassword\n');
     //const { updateSession  } = require('../services/passwordChangeService');
 	   
+     //if(true)return res.status(404).json({ message: 'Session not found.' });
+     if(true)return res.status(401).json({ message: 'Session expired.' });
+     //if(true)return res.status(402).json({ message: 'New password cannot be the same as the current or previous passwords.' });
+     //if(true)return res.status(200).json({ message: 'Password verified successfully.' });
+     //if(true)res.status(500).json({ message: 'Server error' });
+
+	   
     const { sessionId, password } = req.body;
     console.log('matchPassword : sessionId : ', sessionId, ' password : ', password);
 
@@ -749,7 +756,6 @@ exports.matchPassword = async (req, res) => {
             SELECT * FROM password_change_sessions WHERE session_id = $1
         `;
      const sessionResult = await pool.query(sessionQuery, [sessionId]);
-     if(true)return res.status(404).json({ message: 'Session not found.' });
      if (sessionResult.rowCount === 0) {
             return res.status(404).json({ message: 'Session not found.' });
      }
