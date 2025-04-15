@@ -739,7 +739,7 @@ exports.updatePassword = async (req, res) => {
 exports.matchPassword = async (req, res) => {
    try{ 
     console.log('matchPassword\n');
-    //const { updateSession  } = require('../services/passwordChangeService');
+    //const { updateSession  } = require('../services/passwordChangeService'); 
 	   
      //if(true)return res.status(404).json({ message: 'Session not found.' });
      //if(true)return res.status(401).json({ message: 'Session expired.' });
