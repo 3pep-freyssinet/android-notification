@@ -205,6 +205,12 @@ exports.resetPassword = async (req, res) => {
   
   console.log('resetPassword : userId : ', userId, ' token : ', token, ' newPassword : ', newPassword); 
 
+  // Validate inputs
+  if (!userId || !token) {
+     console.log('resetPassword : Missing userId or token');	  
+    return res.status(400).json({ error: "Missing userId or token" });
+  }
+	
   try {
     // Retrieve the token entry
     const result = await pool.query(`
