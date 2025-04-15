@@ -242,8 +242,8 @@ exports.resetPassword = async (req, res) => {
     //console.log('resetPassword : userId : ', userId);
        
     //check if it is already used
-    const isNewPasswordExists = await isNewPasswordExists(userId, newPassword);
-    console.log('resetPassword : isNewPasswordExists : ', isNewPasswordExists);
+    //const isNewPasswordExists = await isNewPasswordExists(userId, newPassword);
+    //console.log('resetPassword : isNewPasswordExists : ', isNewPasswordExists);
 
     if(true)return;
 	  
