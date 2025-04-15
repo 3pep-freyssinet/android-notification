@@ -212,13 +212,20 @@ exports.resetPassword = async (req, res) => {
   }
 	
   try {
-    // Retrieve the token entry
+    /*	  
+    // Retrieve the token entry 
     const result = await pool.query(`
       SELECT * FROM password_reset 
       WHERE user_id = $1 AND token = $2 AND expires_at > NOW()`,
       [userId, token]
     );
-    
+    */
+     const result = await pool.query(`
+      SELECT * FROM password_reset 
+      WHERE user_id = $1`,
+      [userId]
+    );
+	  
     if (result.rowCount === 0) {
       console.log('resetPassword : Invalid or expired token');      
       return res.status(400).json({ success:false, message: 'Invalid or expired token' });
