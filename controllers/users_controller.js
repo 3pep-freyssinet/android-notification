@@ -237,9 +237,9 @@ exports.resetPassword = async (req, res) => {
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
     
     //get the id from the req
-    const userId = req.user.userId;
+    //const userId = req.user.userId;
 	
-    console.log('resetPassword : userId : ', userId);
+    //console.log('resetPassword : userId : ', userId);
        
     //check if it is already used
     const isNewPasswordExists = await isNewPasswordExists(userId, newPassword);
