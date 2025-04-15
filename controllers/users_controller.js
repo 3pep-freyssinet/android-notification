@@ -749,7 +749,7 @@ exports.matchPassword = async (req, res) => {
             SELECT * FROM password_change_sessions WHERE session_id = $1
         `;
      const sessionResult = await pool.query(sessionQuery, [sessionId]);
-
+     if(true)return res.status(404).json({ message: 'Session not found.' });
      if (sessionResult.rowCount === 0) {
             return res.status(404).json({ message: 'Session not found.' });
      }
