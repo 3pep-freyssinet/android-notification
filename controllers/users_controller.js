@@ -242,8 +242,13 @@ exports.resetPassword = async (req, res) => {
     //check if the new password is already used
     const isUnique = await isNewPasswordUnique(userId, newPassword, hashedNewPassword);
     if (!isUnique) {
-	//console.log('resetPassword : Password matches a previous/current password.');    
-        return res.status(402).json({ error: 'Password matches a previous/current password.' });
+	console.log('resetPassword : Password matches a previous/current password.');    
+        //return res.status(402).json({ error: 'Password matches a previous/current password.' });
+	    return res.status(402).json({
+            success: false,
+            //message: 'An error occurred while resetting your password.',
+	    message: 'Password matches a previous/current password.'
+        });
     }
     console.log('resetPassword : the password is unique.');
 	  
@@ -262,11 +267,12 @@ exports.resetPassword = async (req, res) => {
 	  
     
   } catch (error) {
-    console.error('Reset Password Error:', error);
+    console.error('Reset Password Error:', error.message);
     //res.status(500).json({ success:false, message: 'Internal server error' });
     res.status(500).json({
             success: false,
-            message: 'An error occurred while resetting your password.',
+            //message: 'An error occurred while resetting your password.',
+	    message: error.message,
         });	  
   }
 };
