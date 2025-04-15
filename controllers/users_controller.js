@@ -239,9 +239,13 @@ exports.resetPassword = async (req, res) => {
 	
     //console.log('resetPassword : userId : ', userId);
        
-    //check if it is already used
-    //const isNewPasswordExists = await isNewPasswordExists(userId, newPassword);
-    //console.log('resetPassword : isNewPasswordExists : ', isNewPasswordExists);
+    //check if the new password is already used
+    const isUnique = await isNewPasswordUnique(userId, newPassword);
+    if (!isUnique) {
+	//console.log('resetPassword : Password matches a previous/current password.');    
+        return res.status(402).json({ error: 'Password matches a previous/current password.' });
+    }
+    console.log('resetPassword : the password is unique.');
 	  
     // Update the user's password in the users table
     await pool.query(`UPDATE users_notification SET password = $1 WHERE id = $2`, [hashedPassword, userId]);
@@ -267,55 +271,48 @@ exports.resetPassword = async (req, res) => {
   }
 };
 
-async function isNewPasswordExists(userId, newPassword){
-try{
-    // Fetch stored password hash and last changed date
+/**
+ * Checks if a new password is unique (not reused from current/history).
+ * @returns {Promise<boolean>} true if password is unique, false if it's a duplicate.
+ */
+async function isNewPasswordUnique(userId, newPassword) {
+  try {
+    // 1. Fetch current password
     const userQuery = `
-        SELECT password, last_password_changed 
-        FROM users_notification 
-        WHERE id = $1
+      SELECT password 
+      FROM users_notification 
+      WHERE id = $1
     `;
-    const userResult     = await pool.query(userQuery, [userId]);
-    const storedPassword = userResult.rows[0]?.password; //the current password
+    const userResult = await pool.query(userQuery, [userId]);
+    const storedPassword = userResult.rows[0]?.password;
 
-    /*
-    //check the validity of the provided current password 'current password' against the stored password 'stored password'.
-    // Compare the provided clear current password with the hashed password stored in the database.
-
-	const isPasswordValid = await bcrypt.compare(password, storedPassword);
-         
-	console.log('matchPassword : isPasswordValid : ', isPasswordValid);
-		
-        if (!isPasswordValid) {
-            return res.status(400).json({ message: 'Invalid username or password' });
-        }
-	*/
-	   
-    // Get all password stored in 'password_history'. 
-    const historyQuery = `
-        SELECT password 
-        FROM password_history 
-        WHERE user_id = $1
-    `;
-    const historyResult    = await pool.query(historyQuery, [userId]);
-    const previousPassword = historyResult.rows.map(row => row.password);
-
-    for (const hash of [storedPassword, ...previousPassword]) {
-	console.log('isNewPasswordValid : loop : hash : ', hash, ' password : ', newPassword); 
-	 const test =  await bcrypt.compare(newPassword, hash);
-	 console.log('isNewPasswordValid : loop : test : ', test);    
-        if (await bcrypt.compare(newPassword, hash)) {
-            //throw new Error('New password cannot be the same as the current or previous passwords.');
-	    console.error('isNewPasswordValid : New password cannot be the same as the current or previous passwords.');
-	    //return res.status(402).json({ message: 'New password cannot be the same as the current or previous passwords.' });
-            return false;
-	}
+    if (!storedPassword) {
+      throw new Error('User not found');
     }
-     console.log('isNewPasswordValid : Password is valid.');
-     return true;
-  }catch(error){
-	console.error('isNewPasswordValid : Password is not valid.' + error);
-	return false;
+
+    // 2. Fetch password history
+    const historyQuery = `
+      SELECT password 
+      FROM password_history 
+      WHERE user_id = $1
+    `;
+    const historyResult = await pool.query(historyQuery, [userId]);
+    const previousPasswords = historyResult.rows.map(row => row.password);
+
+    // 3. Compare new password against current + history
+    for (const hash of [storedPassword, ...previousPasswords]) {
+      if (await bcrypt.compare(newPassword, hash)) {
+        console.error('Password matches a previous/current password.');
+        return false; // Password is NOT unique
+      }
+    }
+
+    console.log('isNewPasswordUnique : Password is unique.');
+    return true; // Password is unique
+
+  } catch (error) {
+    console.error('Validation failed:', error.message);
+    return false; // Fail-safe: Treat errors as invalid
   }
 }
 
