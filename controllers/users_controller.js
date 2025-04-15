@@ -923,7 +923,7 @@ exports.matchPassword = async (req, res) => {
     console.log('matchPassword : Password updated successfully.');
 	   
    // Update the session to reflect that the new password has been applied
-    const updateSession_ = await updateSession(sessionId, { is_new_password_applied: true });
+    await updateSession(sessionId, { is_new_password_applied: true });
     
     //if(updateSession_)return res.status(403).json({ message: 'Password updated failure. Session cannot updated.' });
 	    
