@@ -802,7 +802,7 @@ exports.updatePassword = async (req, res) => {
 exports.matchPassword = async (req, res) => {
    try{ 
     console.log('matchPassword\n');
-    //const { updateSession  } = require('../services/passwordChangeService'); 
+    const { updateSession  } = require('../services/passwordChangeService'); //needed below
 
      //for test
      //if(true)return res.status(404).json({ message: 'Session not found.' });
@@ -881,12 +881,12 @@ exports.matchPassword = async (req, res) => {
     const previousPassword = historyResult.rows.map(row => row.password);
 
     for (const hash of [storedPassword, ...previousPassword]) { //'storedPassword' is the cuurent password
-	console.log('changePassword : loop : hash : ', hash, ' password : ', password); 
+	console.log('matchPassword : loop : hash : ', hash, ' password : ', password); 
 	 const test =  await bcrypt.compare(password, hash);//compare clear with hash
-	 console.log('changePassword : loop : test : ', test);    
+	 console.log('matchPassword : loop : test : ', test);    
         if (await bcrypt.compare(password, hash)) {
             //throw new Error('New password cannot be the same as the current or previous passwords.');
-	    console.error('changePassword : New password cannot be the same as the current or previous passwords.');
+	    console.error('matchPassword : New password cannot be the same as the current or previous passwords.');
 	    return res.status(402).json({ message: 'New password cannot be the same as the current or previous passwords.' });
         }
     }
@@ -920,11 +920,13 @@ exports.matchPassword = async (req, res) => {
     `;
     await pool.query(insertHistoryQuery, [userId, storedPassword]);
 	   
-    console.log('updatePassword : Password updated successfully.');
+    console.log('matchPassword : Password updated successfully.');
 	   
    // Update the session to reflect that the new password has been applied
-    await updateSession(sessionId, { is_new_password_applied: true });
-
+    const updateSession = await updateSession(sessionId, { is_new_password_applied: true });
+    
+    //if(updateSession)return res.status(403).json({ message: 'Password updated failure. Session cannot updated.' });
+	    
      console.log('matchPassword : session updated successfully. Password verified successfully ');
      return res.status(200).json({ message: 'Password verified successfully.' });
      
