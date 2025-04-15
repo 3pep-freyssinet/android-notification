@@ -230,8 +230,6 @@ exports.resetPassword = async (req, res) => {
       console.log('resetPassword : Invalid or expired token');      
       return res.status(400).json({ success:false, message: 'Invalid or expired token' });
     }
-     
-    //if(true)return;
 	  
     // Hash the new password (using bcrypt)
     const hashedNewPassword = await bcrypt.hash(newPassword, 10);
@@ -244,8 +242,6 @@ exports.resetPassword = async (req, res) => {
     //check if it is already used
     //const isNewPasswordExists = await isNewPasswordExists(userId, newPassword);
     //console.log('resetPassword : isNewPasswordExists : ', isNewPasswordExists);
-
-    if(true)return;
 	  
     // Update the user's password in the users table
     await pool.query(`UPDATE users_notification SET password = $1 WHERE id = $2`, [hashedPassword, userId]);
