@@ -302,7 +302,7 @@ async function isNewPasswordUnique(userId, newPassword) {
     // 3. Compare new password against current + history
     for (const hash of [storedPassword, ...previousPasswords]) {
       if (await bcrypt.compare(newPassword, hash)) {
-        console.error('Password matches a previous/current password.');
+        console.error('isNewPasswordUnique : Password matches a previous/current password.');
         return false; // Password is NOT unique
       }
     }
