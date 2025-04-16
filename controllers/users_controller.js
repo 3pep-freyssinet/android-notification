@@ -213,7 +213,8 @@ exports.resetPassword = async (req, res) => {
   // Validate inputs
   if (!userId || !token) {
      console.log('resetPassword : Missing userId or token');	  
-    return res.status(400).json({ success:false, message: "Missing userId or token" });
+    //return res.status(200).json({ success:false, message: "Missing userId or token" });
+    return res.status(200).json({ success:false, message: "Internal error" });
   }
 	
   try {
