@@ -244,7 +244,7 @@ exports.resetPassword = async (req, res) => {
     if (!isUnique) {
 	console.log('resetPassword : Password matches a previous/current password.');    
         //return res.status(402).json({ error: 'Password matches a previous/current password.' });
-	    res.status(402).json({
+	    return res.status(200).json({
             success: false,
             //message: 'An error occurred while resetting your password.',
 	    message: 'Password matches a previous/current password.'
