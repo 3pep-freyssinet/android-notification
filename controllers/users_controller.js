@@ -199,6 +199,11 @@ res.send(`
 }
 
 // POST /api/reset-password
+/*
+response.ok Behavior:
+response.ok is true only for status codes 200-299 (successful responses).
+Any other status (e.g., 402, 400, 500) sets response.ok to false.
+*/
 exports.resetPassword = async (req, res) => {
   console.log('resetPassword : start');  
   const { userId, token, newPassword } = req.body;
