@@ -244,11 +244,12 @@ exports.resetPassword = async (req, res) => {
     if (!isUnique) {
 	console.log('resetPassword : Password matches a previous/current password.');    
         //return res.status(402).json({ error: 'Password matches a previous/current password.' });
-	    return res.status(402).json({
+	    res.status(402).json({
             success: false,
             //message: 'An error occurred while resetting your password.',
-	    message: "Password matches a previous/current password."
+	    message: 'Password matches a previous/current password.'
         });
+	return;
     }
     console.log('resetPassword : the password is unique.');
 	  
@@ -265,14 +266,13 @@ exports.resetPassword = async (req, res) => {
             loginLink: 'myapp://login', // link to redirect to  'LoginActivity'
         });
 	  
-    
   } catch (error) {
     console.error('Reset Password Error:', error.message);
     //res.status(500).json({ success:false, message: 'Internal server error' });
     res.status(500).json({
             success: false,
-            //message: 'An error occurred while resetting your password.',
-	    message: error.message,
+            message: 'catch server, An error occurred while resetting your password.',
+	    //message: error.message,
         });	  
   }
 };
