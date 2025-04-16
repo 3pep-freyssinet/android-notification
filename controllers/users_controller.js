@@ -244,7 +244,7 @@ exports.resetPassword = async (req, res) => {
     if (!isUnique) {
 	console.log('resetPassword : Password matches a previous/current password.');    
         //return res.status(402).json({ error: 'Password matches a previous/current password.' });
-	    return res.status(200).json({
+	    return res.status(402).json({
             success: false,
             //message: 'An error occurred while resetting your password.',
 	    message: 'Password matches a previous/current password.'
@@ -254,11 +254,9 @@ exports.resetPassword = async (req, res) => {
 	  
     // Update the user's password in the users table
     await pool.query(`UPDATE users_notification SET password = $1 WHERE id = $2`, [hashedNewPassword, userId]);
-    console.log('resetPassword : after update.');
-	  
+    
     // Optionally, remove the reset token
     await pool.query(`DELETE FROM password_reset WHERE user_id = $1`, [userId]);
-    console.log('resetPassword : after delete.');
 	  
     console.log('resetPassword : Password has been reset successfully');  
     res.status(200).json({
@@ -272,8 +270,8 @@ exports.resetPassword = async (req, res) => {
     //res.status(500).json({ success:false, message: 'Internal server error' });
     res.status(500).json({
             success: false,
-            message: 'catch server, An error occurred while resetting your password.',
-	    //message: error.message,
+            //message: 'catch server, An error occurred while resetting your password.',
+	    message: error.message,
         });	  
   }
 };
