@@ -214,7 +214,7 @@ exports.resetPassword = async (req, res) => {
   if (!userId || !token) {
      console.log('resetPassword : Missing userId or token');	  
     //return res.status(200).json({ success:false, message: "Missing userId or token" });
-    return res.status(200).json({ success:false, message: "Internal error" });
+    return res.status(200).json({ success:false, message: "Internal error", loginLink: 'myapp://login'});
   }
 	
   try {
@@ -234,7 +234,7 @@ exports.resetPassword = async (req, res) => {
 	  
     if (result.rowCount === 0) {
       console.log('resetPassword : Invalid or expired token');      
-      return res.status(400).json({ success:false, message: "Invalid or expired token" });
+      return res.status(400).json({ success:false, message: "Invalid or expired token", loginLink: 'myapp://login'});
     }
 	  
     // Hash the new password (using bcrypt)
@@ -253,7 +253,9 @@ exports.resetPassword = async (req, res) => {
 	    return res.status(200).json({
             success: false,
             //message: 'An error occurred while resetting your password.',
-	    message: 'Password matches a previous/current password.'
+	    message: 'Password matches a previous/current password.',
+	    loginLink: 'myapp://login', // link to redirect to  'LoginActivity',
+	    mainLink: 'myapp://main', // link to redirect to  'MainActivity'
         });
     }
     console.log('resetPassword : the password is unique.');
@@ -278,6 +280,7 @@ exports.resetPassword = async (req, res) => {
             success: false,
             //message: 'catch server, An error occurred while resetting your password.',
 	    message: error.message,
+	    loginLink: 'myapp://login' // link to redirect to  'LoginActivity',
         });	  
   }
 };
