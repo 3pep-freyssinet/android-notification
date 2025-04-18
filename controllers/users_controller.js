@@ -207,7 +207,9 @@ Any other status (e.g., 402, 400, 500) sets response.ok to false.
 exports.resetPassword = async (req, res) => {
   console.log('resetPassword : start');  
   const { userId, token, newPassword } = req.body;
-
+  
+  /*
+  //for testing, remove in production
   if(true){
   return res.status(400).json({
             success: false,
@@ -219,6 +221,7 @@ exports.resetPassword = async (req, res) => {
 	    loginLink:'myapp://login' // link to redirect to  'LoginActivity'
 	   });
   }
+  */
 	
   console.log('resetPassword : userId : ', userId, ' token : ', token, ' newPassword : ', newPassword); 
 
