@@ -154,7 +154,7 @@ if (decoded && decoded.exp) {
   // Check if token and userId are provided
   if (!token || !userId) {
     console.log('verifyResetPassword : Token and userId are required');  
-    return res.status(400).json({ message: 'Token and userId are required' });
+    return res.status(400).json({ success: false, message: 'Token and userId are required' });
   }
   
   try {
