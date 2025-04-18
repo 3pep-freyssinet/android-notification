@@ -251,7 +251,11 @@ exports.resetPassword = async (req, res) => {
 	  
     if (result.rowCount === 0) {
       console.log('resetPassword : Invalid or expired token');      
-      return res.status(400).json({ success:false, message: "Invalid or expired token", loginLink: 'myapp://login'});
+      return res.status(400).json({ 
+	      success:false, 
+	      status:400,
+	      message: "Invalid or expired token", 
+	      loginLink: 'myapp://login'});
     }
 	  
     // Hash the new password (using bcrypt)
