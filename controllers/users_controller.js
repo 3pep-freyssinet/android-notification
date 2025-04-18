@@ -209,13 +209,13 @@ exports.resetPassword = async (req, res) => {
   const { userId, token, newPassword } = req.body;
 
   if(true){
-  return res.status(200).json({
-            success: true,
-	    status:200,
+  return res.status(400).json({
+            success: false,
+	    status:400,
             //message:'An error occurred while resetting your password.',
-	    message:'Resset password successful.',
+	    //message:'Resset password successful.',
 	    //message:'server error.',
-	    //message:'Internal error',
+	    message:'Internal error',
 	    loginLink:'myapp://login' // link to redirect to  'LoginActivity'
 	   });
   }
