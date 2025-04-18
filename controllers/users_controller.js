@@ -212,22 +212,26 @@ exports.resetPassword = async (req, res) => {
   return res.status(200).json({
             success: true,
 	    status:200,
-            //message: 'An error occurred while resetting your password.',
+            //message:'An error occurred while resetting your password.',
 	    message:'Resset password successful.',
 	    //message:'server error.',
-	    loginLink: 'myapp://login' // link to redirect to  'LoginActivity'
+	    //message:'Internal error',
+	    loginLink:'myapp://login' // link to redirect to  'LoginActivity'
 	   });
   }
-	
-  
 	
   console.log('resetPassword : userId : ', userId, ' token : ', token, ' newPassword : ', newPassword); 
 
   // Validate inputs
   if (!userId || !token) {
      console.log('resetPassword : Missing userId or token');	  
-    //return res.status(200).json({ success:false, message: "Missing userId or token" });
-    return res.status(200).json({ success:false, message: "Internal error", loginLink: 'myapp://login'});
+    //return res.status(400).json({ success:false, message: "Missing userId or token" });
+    return res.status(400).json({
+	    status:400,
+	    success:false, 
+	    message: 'Internal error', 
+	    loginLink: 'myapp://login'
+    });
   }
 	
   try {
@@ -264,8 +268,8 @@ exports.resetPassword = async (req, res) => {
 	console.log('resetPassword : Password matches a previous/current password.');    
         //return res.status(200).json({ error: 'Password matches a previous/current password.' });
 	    return res.status(200).json({
+	    status:200,
             success: false,
-            //message: 'An error occurred while resetting your password.',
 	    message: 'Password matches a previous/current password.',
 	    loginLink: 'myapp://login', // link to redirect to  'LoginActivity',
 	    mainLink: 'myapp://main', // link to redirect to  'MainActivity'
@@ -281,6 +285,7 @@ exports.resetPassword = async (req, res) => {
 	  
     console.log('resetPassword : Password has been reset successfully');  
     res.status(200).json({
+	    status:200,
             success: true,
             message: 'Your password has been reset successfully.',
             loginLink: 'myapp://login', // link to redirect to  'LoginActivity'
