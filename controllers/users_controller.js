@@ -204,6 +204,9 @@ response.ok Behavior:
 response.ok is true only for status codes 200-299 (successful responses).
 Any other status (e.g., 402, 400, 500) sets response.ok to false.
 */
+
+let tries = 0;
+
 exports.resetPassword = async (req, res) => {
   console.log('resetPassword : start');  
   const { userId, token, newPassword } = req.body;
@@ -222,7 +225,7 @@ exports.resetPassword = async (req, res) => {
 	   });
   }
   */
-	
+  
   console.log('resetPassword : userId : ', userId, ' token : ', token, ' newPassword : ', newPassword); 
 
   // Validate inputs
@@ -273,14 +276,15 @@ exports.resetPassword = async (req, res) => {
     const isUnique = await isNewPasswordUnique(userId, newPassword, hashedNewPassword);
     if (!isUnique) {
 	console.log('resetPassword : Password matches a previous/current password.'); 
-            
-	    user_id
-	    password_tries = 
-	    password_tries_at
-	    start_ban_time = 
-		    
+            ////////////////////////////////////////////////
+	passwordTriedAt = 
 	//update the table 'ban_user'
-	const updateBanUser = await updateBanUser(userId, );
+	const updateBanUser = await updateBanUser({
+		    userId: userId,
+		    passwordTries: tries++,
+		    passwordTriedAt: passwordTriedAt,
+		    startBanTime: null
+	});
 	if(!updateBanUser) throw new Error 'internal error';
 	    
         //return res.status(200).json({ error: 'Password matches a previous/current password.' });
