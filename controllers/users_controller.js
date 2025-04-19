@@ -205,8 +205,6 @@ response.ok is true only for status codes 200-299 (successful responses).
 Any other status (e.g., 402, 400, 500) sets response.ok to false.
 */
 
-let tries = 0;
-
 exports.resetPassword = async (req, res) => {
   console.log('resetPassword : start');  
   const { userId, token, newPassword } = req.body;
@@ -276,7 +274,9 @@ exports.resetPassword = async (req, res) => {
     const isUnique = await isNewPasswordUnique(userId, newPassword, hashedNewPassword);
     if (!isUnique) {
 	console.log('resetPassword : Password matches a previous/current password.'); 
-            ////////////////////////////////////////////////
+        //get the stored tries counter from 'ban_user'
+	 const tries = await getTriesCounter(userId);
+	 
 	//update the table 'ban_user'
 	const updateBanUser = await updateBanUser({
 		    userId: userId,
@@ -325,34 +325,50 @@ exports.resetPassword = async (req, res) => {
   }
 };
 
-/**
+async function getTriesCounter(userId) {
+   try{
+   }
+}
 
+
+/**
+update the 'ban_user' with ban infos.
 */
 //////////////////////////////////////////////
-updateBanUser({
-		    userId: userId,
-		    passwordTries: tries++,
-		    passwordTriedAt: new Date(Date.now()),
-		    startBanTime: null
 async function updateBanUser(options) {
- const query = 'INSERT INTO ban_user (user_id, password_tries, password_tried_at, start_ban_time) Values * FROM revoked_tokens WHERE token = $1';
-        const result = await pool.query(query, [token]);
-
+   try{
 	const query = `
 		INSERT INTO ban_user (user_id, password_tries, password_tried_at, start_ban_time)
 		VALUES ($1, $2, $3, $4) 
 		ON CONFLICT (user_id)
-		DO UPDATE SET password_tries    = EXCLUDED.fcm_token, 
+		DO UPDATE SET password_tries    = ban_user.password_tries + 1, 
                               password_tried_at = EXCLUDED.password_tried_at,
 			      start_ban_time    = EXCLUDED.start_ban_time
                 RETURNING id;
 	  `;
 	
-	// Execute the query with userId and fcmToken as parameters
-	const result = await pool.query(query, [options.userId, options.passwordTries, options.passwordTriedAt, options.start_ban_time]);
+	// Execute the query
+	const result = await pool.query(query, [options.userId,
+						1, //Always increment by 1 (let DB handle counting), 
+						options.passwordTriedAt, 
+						options.start_ban_time
+					       ]);
+   
 
+    if(result.rowCount == 1){
+	console.log('updateBanUser successfull update.');
+    	return true;
+    }else{
+	console.log('updateBanUser failed');
+    	return true;
+    }
+  } catch (error) {
+      console.error('updateBanUser :', error.message);
+      return false;
+  }
 }
-//////////////////////////////////////////////
+
+
 /**
  * Checks if a new password is unique (not reused from current/history).
  * @returns {Promise<boolean>} true if password is unique, false if it's a duplicate.
