@@ -335,7 +335,7 @@ exports.resetPassword = async (req, res) => {
             success: false,
 	    status:500,
             //message: 'catch server, An error occurred while resetting your password.',
-	    message: error.message,
+	    message: 'server error : ' + error.message,
 	    loginLink: 'myapp://login' // link to redirect to  'LoginActivity',
         });	  
   }
