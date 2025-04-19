@@ -367,12 +367,14 @@ async function updateBanUser(options) {
 		INSERT INTO ban_user (user_id, password_tries, password_tried_at, start_ban_time)
 		VALUES ($1, $2, $3, $4) 
 		ON CONFLICT (user_id)
-		DO UPDATE SET password_tries    = $2, //EXCLUDED.password_tries, 
-                              password_tried_at = $3, //EXCLUDED.password_tried_at,
+		DO UPDATE SET password_tries    = $2,  
+                              password_tried_at = $3, 
 			      start_ban_time    = EXCLUDED.start_ban_time
                 RETURNING id;
 	  `;
-	
+	//EXCLUDED.password_tries,
+	  //EXCLUDED.password_tried_at, 
+	   
 	// Execute the query
 	const result = await pool.query(query, [options.userId,
 			options.passwordTries,
