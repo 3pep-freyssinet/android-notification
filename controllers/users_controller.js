@@ -284,7 +284,7 @@ exports.resetPassword = async (req, res) => {
 	const shouldBan = newTries >= maxTries;
 	    
 	//update the table 'ban_user'
-	const updateBanUser = await updateBanUser({
+	var updateBanUser = await updateBanUser({
 		    userId: userId,
 		    passwordTries: newTries, //tries + 1, //tries++,
 		    passwordTriedAt: new Date(Date.now()),
@@ -374,21 +374,20 @@ async function updateBanUser(options) {
 	
 	// Execute the query
 	const result = await pool.query(query, [options.userId,
-						options.passwordTries,
-						options.passwordTriedAt, 
-						options.startBanTime
-					       ]);
-   
-
+			options.passwordTries,
+			options.passwordTriedAt, 
+			options.startBanTime
+       ]);
+	   
     if(result.rowCount == 1){
 	console.log('updateBanUser successfull update.');
-    	return true;
+	return true;
     }else{
 	console.log('updateBanUser failed');
-    	return false;
+	return false;
     }
   } catch (error) {
-      console.error('updateBanUser :', error.message);
+      console.error('Server error : updateBanUser :', error.message);
       return false;
   }
 }
