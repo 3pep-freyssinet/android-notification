@@ -934,7 +934,7 @@ exports.matchPassword = async (req, res) => {
         if (await bcrypt.compare(password, hash)) {
             //throw new Error('New password cannot be the same as the current or previous passwords.');
 	    console.error('matchPassword : New password cannot be the same as the current or previous passwords.');
-	    return res.status(402).json({ message: 'New password cannot be the same as the current or previous passwords.' });
+	    return res.status(202).json({ message: 'New password cannot be the same as the current or previous passwords.' });
         }
     }
      console.log('matchPassword : Password is valid.');
