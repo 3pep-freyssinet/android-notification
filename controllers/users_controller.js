@@ -338,6 +338,19 @@ async function updateBanUser(options) {
  const query = 'INSERT INTO ban_user (user_id, password_tries, password_tried_at, start_ban_time) Values * FROM revoked_tokens WHERE token = $1';
         const result = await pool.query(query, [token]);
 
+	const query = `
+		INSERT INTO ban_user (user_id, password_tries, password_tried_at, start_ban_time)
+		VALUES ($1, $2, $3, $4) 
+		ON CONFLICT (user_id)
+		DO UPDATE SET password_tries    = EXCLUDED.fcm_token, 
+                              password_tried_at = EXCLUDED.password_tried_at,
+			      start_ban_time    = EXCLUDED.start_ban_time
+                RETURNING id;
+	  `;
+	
+	// Execute the query with userId and fcmToken as parameters
+	const result = await pool.query(query, [options.userId, options.passwordTries, options.passwordTriedAt, options.start_ban_time]);
+
 }
 //////////////////////////////////////////////
 /**
