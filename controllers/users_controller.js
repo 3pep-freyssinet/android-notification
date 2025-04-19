@@ -277,15 +277,15 @@ exports.resetPassword = async (req, res) => {
     if (!isUnique) {
 	console.log('resetPassword : Password matches a previous/current password.'); 
             ////////////////////////////////////////////////
-	passwordTriedAt = 
 	//update the table 'ban_user'
 	const updateBanUser = await updateBanUser({
 		    userId: userId,
 		    passwordTries: tries++,
-		    passwordTriedAt: passwordTriedAt,
+		    passwordTriedAt: new Date(Date.now()),
 		    startBanTime: null
 	});
-	if(!updateBanUser) throw new Error 'internal error';
+	
+	if(!updateBanUser) throw new Error ('internal error');
 	    
         //return res.status(200).json({ error: 'Password matches a previous/current password.' });
 	    return res.status(200).json({
@@ -325,6 +325,20 @@ exports.resetPassword = async (req, res) => {
   }
 };
 
+/**
+
+*/
+//////////////////////////////////////////////
+updateBanUser({
+		    userId: userId,
+		    passwordTries: tries++,
+		    passwordTriedAt: new Date(Date.now()),
+		    startBanTime: null
+async function updateBanUser(options) {
+ 
+
+}
+//////////////////////////////////////////////
 /**
  * Checks if a new password is unique (not reused from current/history).
  * @returns {Promise<boolean>} true if password is unique, false if it's a duplicate.
