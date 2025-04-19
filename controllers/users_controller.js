@@ -302,7 +302,7 @@ exports.resetPassword = async (req, res) => {
 	            success: false,
 	            message: 'Too many attempts. Account temporarily locked.',
 	            startBanTime: startBanTime, //'30 minutes', // or calculate actual unlock time
-	            supportLink: 'myapp://myapp://login', //contact-support'
+	            loginLink: 'myapp://login', //: 'myapp://myapp://login', //contact-support'
 	        });
         }
 	//here the user is still not banished, continue another try.    
