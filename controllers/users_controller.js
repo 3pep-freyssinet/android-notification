@@ -275,14 +275,21 @@ exports.resetPassword = async (req, res) => {
     if (!isUnique) {
 	console.log('resetPassword : Password matches a previous/current password.'); 
         //get the stored tries counter from 'ban_user'
-	 const tries = await getTriesCounter(userId);
-	 
+	 const currentTries = await getTriesCounter(userId);
+         const newTries = currentTries + 1;
+         const maxTries = 3;
+    
+    // Determine if we need to ban the user
+    const shouldBan = newTries >= maxTries;
+    
+    // Determine if we need to ban the user
+    const shouldBan = newTries >= maxTries;
 	//update the table 'ban_user'
 	const updateBanUser = await updateBanUser({
 		    userId: userId,
-		    passwordTries: tries++,
+		    passwordTries: newTries, //tries + 1, //tries++,
 		    passwordTriedAt: new Date(Date.now()),
-		    startBanTime: null
+		    shouldBan ? new Date(Date.now()) : null // Set ban time if exceeded tries
 	});
 	
 	if(!updateBanUser) throw new Error ('internal error');
@@ -327,7 +334,16 @@ exports.resetPassword = async (req, res) => {
 
 async function getTriesCounter(userId) {
    try{
-   }
+	   const result = await pool.query(
+            'SELECT password_tries FROM ban_user WHERE user_id = $1',
+            [userId]
+            );
+
+	return result.rows[0]?.password_tries || 0; // Default to 0 if no record exists
+   }catch (error){
+   	console.error('getTriesCounter :', error.message);
+        retur 0;
+   }	
 }
 
 
@@ -341,17 +357,17 @@ async function updateBanUser(options) {
 		INSERT INTO ban_user (user_id, password_tries, password_tried_at, start_ban_time)
 		VALUES ($1, $2, $3, $4) 
 		ON CONFLICT (user_id)
-		DO UPDATE SET password_tries    = ban_user.password_tries + 1, 
-                              password_tried_at = EXCLUDED.password_tried_at,
+		DO UPDATE SET password_tries    = $2, //EXCLUDED.password_tries, 
+                              password_tried_at = $3, //EXCLUDED.password_tried_at,
 			      start_ban_time    = EXCLUDED.start_ban_time
                 RETURNING id;
 	  `;
 	
 	// Execute the query
 	const result = await pool.query(query, [options.userId,
-						1, //Always increment by 1 (let DB handle counting), 
+						options.passwordTries,
 						options.passwordTriedAt, 
-						options.start_ban_time
+						options.startBanTime
 					       ]);
    
 
@@ -360,7 +376,7 @@ async function updateBanUser(options) {
     	return true;
     }else{
 	console.log('updateBanUser failed');
-    	return true;
+    	return false;
     }
   } catch (error) {
       console.error('updateBanUser :', error.message);
