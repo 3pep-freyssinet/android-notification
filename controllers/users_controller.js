@@ -296,6 +296,7 @@ exports.resetPassword = async (req, res) => {
 	if(!x) throw new Error ('internal error');
 	
 	if (shouldBan) {
+		//The returned response is managed in 'reset-password.ejs' whitch called this function
 	        return res.status(403).json({
 	            status: 403,
 	            success: false,
@@ -306,6 +307,7 @@ exports.resetPassword = async (req, res) => {
         }
 	//here the user is still not banished, continue another try.    
         //return res.status(200).json({ error: 'Password matches a previous/current password.' });
+	    ////The returned response is managed in 'reset-password.ejs' whitch called this function
 	    return res.status(200).json({
 	    status:200,
             success: false,
@@ -323,6 +325,7 @@ exports.resetPassword = async (req, res) => {
     await pool.query(`DELETE FROM password_reset WHERE user_id = $1`, [userId]);
 	  
     console.log('resetPassword : Password has been reset successfully');  
+    //The returned response is managed in 'reset-password.ejs' whitch called this function
     res.status(200).json({
 	    status:200,
             success: true,
@@ -333,6 +336,7 @@ exports.resetPassword = async (req, res) => {
   } catch (error) {
     console.log('Reset Password Error:', error.message);
     //res.status(500).json({ success:false, message: 'Internal server error' });
+    //The returned response is managed in 'reset-password.ejs' whitch called this function
     res.status(500).json({
             success: false,
 	    status:500,
