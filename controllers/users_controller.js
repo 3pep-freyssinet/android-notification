@@ -852,6 +852,7 @@ exports.matchPassword = async (req, res) => {
     const { updateSession  } = require('../services/passwordChangeService'); //needed below
 
      //for test
+     //if(true)return res.status(400).json({ message: 'SessionId or password are required.' });   
      //if(true)return res.status(404).json({ message: 'Session not found.' });
      //if(true)return res.status(401).json({ message: 'Session expired.' });
      //if(true)return res.status(402).json({ message: 'New password cannot be the same as the current or previous passwords.' });
@@ -860,6 +861,12 @@ exports.matchPassword = async (req, res) => {
 
 	   
     const { sessionId, password } = req.body;
+
+    if (!sessionId || !password) {
+	    console.error('SessionId or password are required.');
+            return res.status(400).json({ message: 'SessionId or password are required.' });
+     }
+	   
     console.log('matchPassword : sessionId : ', sessionId, ' password : ', password);
 
      // Retrieve the 'session' from the database
