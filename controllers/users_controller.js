@@ -282,6 +282,7 @@ exports.resetPassword = async (req, res) => {
     
 	// Determine if we need to ban the user
 	const shouldBan = newTries >= maxTries;
+	    const startBanTime = new Date(Date.now());
 	    
 	//update the table 'ban_user'
 	var x;
@@ -289,7 +290,7 @@ exports.resetPassword = async (req, res) => {
 		    userId: userId,
 		    passwordTries: newTries, //tries + 1, tries++,
 		    passwordTriedAt: new Date(Date.now()),
-		    startBanTime: shouldBan ? new Date(Date.now()) : null, // Set ban time if exceeded tries
+		    startBanTime: shouldBan ? startBanTime : null, // Set ban time if exceeded tries
 	});
 	
 	if(!x) throw new Error ('internal error');
@@ -299,7 +300,7 @@ exports.resetPassword = async (req, res) => {
 	            status: 403,
 	            success: false,
 	            message: 'Too many attempts. Account temporarily locked.',
-	            unlockTime: '30 minutes', // or calculate actual unlock time
+	            startBanTime: startBanTime, //'30 minutes', // or calculate actual unlock time
 	            supportLink: 'myapp://myapp://login', //contact-support'
 	        });
         }
