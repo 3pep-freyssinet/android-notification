@@ -288,7 +288,7 @@ exports.resetPassword = async (req, res) => {
 		    userId: userId,
 		    passwordTries: newTries, //tries + 1, //tries++,
 		    passwordTriedAt: new Date(Date.now()),
-		    shouldBan ? new Date(Date.now()) : null // Set ban time if exceeded tries
+		    startBanTime: shouldBan ? new Date(Date.now()) : null // Set ban time if exceeded tries
 	});
 	
 	if(!updateBanUser) throw new Error ('internal error');
