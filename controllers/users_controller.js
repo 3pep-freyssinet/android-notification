@@ -335,7 +335,8 @@ updateBanUser({
 		    passwordTriedAt: new Date(Date.now()),
 		    startBanTime: null
 async function updateBanUser(options) {
- 
+ const query = 'INSERT INTO ban_user (user_id, password_tries, password_tried_at, start_ban_time) Values * FROM revoked_tokens WHERE token = $1';
+        const result = await pool.query(query, [token]);
 
 }
 //////////////////////////////////////////////
