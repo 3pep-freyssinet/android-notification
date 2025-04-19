@@ -284,7 +284,8 @@ exports.resetPassword = async (req, res) => {
 	const shouldBan = newTries >= maxTries;
 	    
 	//update the table 'ban_user'
-	var updateBanUser = await updateBanUser({
+	var updateBanUser;
+	   updateBanUser = await updateBanUser({
 		    userId: userId,
 		    passwordTries: newTries, //tries + 1, //tries++,
 		    passwordTriedAt: new Date(Date.now()),
