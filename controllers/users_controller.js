@@ -351,7 +351,7 @@ async function getTriesCounter(userId) {
 	return result.rows[0]?.password_tries || 0; // Default to 0 if no record exists
    }catch (error){
    	console.error('getTriesCounter :', error.message);
-        retur 0;
+        return 0;
    }	
 }
 
