@@ -293,7 +293,16 @@ exports.resetPassword = async (req, res) => {
 	});
 	
 	if(!updateBanUser) throw new Error ('internal error');
-	    
+	
+	if (shouldBan) {
+        return res.status(403).json({
+            status: 403,
+            success: false,
+            message: 'Too many attempts. Account temporarily locked.',
+            unlockTime: '30 minutes', // or calculate actual unlock time
+            supportLink: 'myapp://myapp://login', //contact-support'
+        });
+    }
         //return res.status(200).json({ error: 'Password matches a previous/current password.' });
 	    return res.status(200).json({
 	    status:200,
