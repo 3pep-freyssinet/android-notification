@@ -272,7 +272,17 @@ exports.resetPassword = async (req, res) => {
     //check if the new password is already used
     const isUnique = await isNewPasswordUnique(userId, newPassword, hashedNewPassword);
     if (!isUnique) {
-	console.log('resetPassword : Password matches a previous/current password.');    
+	console.log('resetPassword : Password matches a previous/current password.'); 
+            
+	    user_id
+	    password_tries = 
+	    password_tries_at
+	    start_ban_time = 
+		    
+	//update the table 'ban_user'
+	const updateBanUser = await updateBanUser(userId, );
+	if(!updateBanUser) throw new Error 'internal error';
+	    
         //return res.status(200).json({ error: 'Password matches a previous/current password.' });
 	    return res.status(200).json({
 	    status:200,
