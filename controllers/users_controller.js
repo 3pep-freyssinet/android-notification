@@ -314,11 +314,15 @@ exports.resetPassword = async (req, res) => {
     const isUnique = await isNewPasswordUnique(userId, newPassword, hashedNewPassword);
     if (!isUnique) {
 	console.log('resetPassword : Password matches a previous/current password.'); 
-        //get the stored tries counter from 'ban_user'
-	 const currentTries = await getTriesCounter(userId);
+        //get the stored tries counter from 'ban_user' table.
+	const maxTries = 3;  
+	const currentTries = await getTriesCounter(userId);
+	
+	if(currentTries >= maxTries)throw new Error('Unexpected error');
+	    
 	console.log('resetPassword : currentTries : ' + currentTries);  
          const newTries = currentTries + 1;
-         const maxTries = 3;
+         
 	    
          console.log('resetPassword : currentTries : ' + currentTries + ' newTries : ' + newTries); 
 	    
