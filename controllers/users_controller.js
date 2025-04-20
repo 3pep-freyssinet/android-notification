@@ -84,31 +84,24 @@ if (decoded && decoded.exp) {
     
     try {	 	 
         // Update only if firebase_id is NULL
-       const result = await pool.query(
-      `UPDATE user_ban 
-       SET firebase_id = $1 
-       WHERE id = $2 AND firebase_id IS NULL`,
-      [firebaseId, userId]
-    );
-
-    if (result.rowCount === 0) {
-      console.log('updateFirebaseId : Firebase ID already set');   
-      return res.status(400).json({ 
-        code: "FIREBASE_ID_ALREADY_SET",
-        message: "Firebase ID already exists for this user" 
-      });
-    }
-    
-    console.log('updateFirebaseId : Firebase ID updated successfully'); 
-    res.status(200).json({ success: true });
+        var x;
+	   x = await updateBanUser({
+		    userId: userId,
+		    passwordTries: 0, 
+		    passwordTriedAt: null,
+		    startBanTime: null, 
+	});
+	
+	if(!x) throw new Error ('Remove ban : internal error');
+	    
+        console.log('removeBan : removeBan successfully'); 
+        res.status(200).json({ success: true });
   } catch (error) {
-    console.error('updateFirebaseId : Database error:', error);
-    res.status(500).json({ 
-      code: "SERVER_ERROR", 
-      message: "Temporary server issue. Please retry." 
+      console.error('removeBan : Database error:', error.message);
+      res.status(500).json({ 
+        success: false,  
+        message: error.message + 'Please retry again later." 
     });	 
-    
- 
  }
 
 //update FirebaseId
