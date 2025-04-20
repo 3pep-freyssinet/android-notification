@@ -102,6 +102,7 @@ if (decoded && decoded.exp) {
         success: false,  
         message: error.message + 'Please retry again later.' 
     });	 
+  }
  }
 
 //update FirebaseId
