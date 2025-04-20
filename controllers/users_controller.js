@@ -65,6 +65,51 @@ if (decoded && decoded.exp) {
 
 */
 
+//remove ban
+ exports.removeBan = async (req, res) => {	
+  console.log('removeBan : start');
+ 
+  //get the id from the auth req
+    const userId = req.user.userId;
+
+    if(userId == null){
+      console.error('removeBan : userId is required.');
+      return res.status(400).json({ 
+        success: false,
+        message: "Remove Ban : userId is required." 
+      });
+    }
+	 
+    console.log('removeBan : userId : ', userId);
+    
+    try {	 	 
+        // Update only if firebase_id is NULL
+       const result = await pool.query(
+      `UPDATE user_ban 
+       SET firebase_id = $1 
+       WHERE id = $2 AND firebase_id IS NULL`,
+      [firebaseId, userId]
+    );
+
+    if (result.rowCount === 0) {
+      console.log('updateFirebaseId : Firebase ID already set');   
+      return res.status(400).json({ 
+        code: "FIREBASE_ID_ALREADY_SET",
+        message: "Firebase ID already exists for this user" 
+      });
+    }
+    
+    console.log('updateFirebaseId : Firebase ID updated successfully'); 
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.error('updateFirebaseId : Database error:', error);
+    res.status(500).json({ 
+      code: "SERVER_ERROR", 
+      message: "Temporary server issue. Please retry." 
+    });	 
+    
+ 
+ }
 
 //update FirebaseId
  exports.updateFirebaseId = async (req, res) => {	
