@@ -100,7 +100,7 @@ if (decoded && decoded.exp) {
       console.error('removeBan : Database error:', error.message);
       res.status(500).json({ 
         success: false,  
-        message: error.message + 'Please retry again later." 
+        message: error.message + 'Please retry again later.' 
     });	 
  }
 
