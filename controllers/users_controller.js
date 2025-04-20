@@ -316,10 +316,12 @@ exports.resetPassword = async (req, res) => {
 	console.log('resetPassword : Password matches a previous/current password.'); 
         //get the stored tries counter from 'ban_user'
 	 const currentTries = await getTriesCounter(userId);
-	    
+	console.log('resetPassword : currentTries : ' + currentTries);  
          const newTries = currentTries + 1;
          const maxTries = 3;
-    
+	    
+         console.log('resetPassword : currentTries : ' + currentTries + ' newTries : ' + newTries); 
+	    
 	// Determine if we need to ban the user
 	const shouldBan = newTries >= maxTries;
 	    const startBanTime = new Date(Date.now());
