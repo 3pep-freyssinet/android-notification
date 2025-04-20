@@ -97,10 +97,10 @@ if (decoded && decoded.exp) {
         console.log('removeBan : removeBan successfully'); 
         res.status(200).json({ success: true });
   } catch (error) {
-      console.error('removeBan : Database error:', error.message);
+      console.error('removeBan : catch :', error.message);
       res.status(500).json({ 
         success: false,  
-        message: error.message + 'Please retry again later.' 
+        message: error.message, 
     });	 
   }
  }
