@@ -19,6 +19,7 @@ router.post('/update-password',   authMiddleware, usersController.updatePassword
 router.post('/forgot-password',   usersController.forgotPassword);                   // POST /users/forgot-password
 router.post('/reset-password',    usersController.resetPassword);                    // POST /users/reset-password
 router.post('/verify-reset-token',    usersController.verifyResetToken);             // POST /users/verify-reset-token
+router.post('/remove-ban',        authMiddleware, usersController.removeBan);        // POST /users/remove-ban
 
 router.delete('/delete-resset-password-token',    usersController.deleteRessetPasswordToken);   // POST /users/delete-resset-password-token
 
