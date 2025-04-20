@@ -83,7 +83,7 @@ if (decoded && decoded.exp) {
     console.log('removeBan : userId : ', userId);
     
     try {	 	 
-        // Update only if firebase_id is NULL
+        // Update 
         var x;
 	   x = await updateBanUser({
 		    userId: userId,
@@ -358,6 +358,12 @@ exports.resetPassword = async (req, res) => {
     }
     console.log('resetPassword : the password is unique.');
 	  
+     // Only reset tries if there were prior failures
+     const hadPriorFailures = await checkPriorFailures(userId);
+     if (hadPriorFailures) {
+        await resetBanCounter(userId); // Reset ONLY if tries > 0
+     }
+	  
     // Update the user's password in the users table
     await pool.query(`UPDATE users_notification SET password = $1 WHERE id = $2`, [hashedNewPassword, userId]);
     
@@ -386,6 +392,25 @@ exports.resetPassword = async (req, res) => {
         });	  
   }
 };
+
+async function checkPriorFailures(userId) {
+  const result = await pool.query(
+    `SELECT password_tries FROM ban_user WHERE user_id = $1`,
+    [userId]
+  );
+  
+  // Return true if record exists AND tries > 0
+  return result.rows[0]?.password_tries > 0;
+}
+
+async function resetBanCounter(userId) {
+  await pool.query(
+    `UPDATE ban_user 
+     SET password_tries = 0, password_tried_at = NULL, start_ban_time = NULL
+     WHERE user_id = $1`,
+    [userId]
+  );
+}
 
 async function getTriesCounter(userId) {
    try{
