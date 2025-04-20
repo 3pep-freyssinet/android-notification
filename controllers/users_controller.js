@@ -258,7 +258,7 @@ exports.resetPassword = async (req, res) => {
 	    //message:'Resset password successful.',
 	    //message:'server error.',
 	    message:'Internal error',
-	    loginLink:'myapp://login' // link to redirect to  'LoginActivity'
+	    loginLink: 'myapp://login?action=handleExitResetPassword&startBanTime= 0' // link to redirect to  'LoginActivity'
 	   });
   }
   */
@@ -273,7 +273,7 @@ exports.resetPassword = async (req, res) => {
 	    status:400,
 	    success:false, 
 	    message: 'Internal error', 
-	    loginLink: 'myapp://login'
+	    loginLink: 'myapp://login?action=handleExitResetPassword&startBanTime= 0'
     });
   }
 	
@@ -298,7 +298,8 @@ exports.resetPassword = async (req, res) => {
 	      success:false, 
 	      status:400,
 	      message: "Invalid or expired token", 
-	      loginLink: 'myapp://login'});
+	      loginLink: 'myapp://login?action=handleExitResetPassword&startBanTime= 0'
+      });
     }
 	  
     // Hash the new password (using bcrypt)
@@ -352,7 +353,7 @@ exports.resetPassword = async (req, res) => {
 	    status:200,
             success: false,
 	    message: 'Password matches a previous/current password.',
-	    loginLink: 'myapp://login', // link to redirect to  'LoginActivity',
+	    loginLink: 'myapp://login?action=handleExitResetPassword&startBanTime= 0',// link to redirect to  'LoginActivity',
 	    mainLink: 'myapp://main', // link to redirect to  'MainActivity'
         });
     }
@@ -376,7 +377,7 @@ exports.resetPassword = async (req, res) => {
 	    status:200,
             success: true,
             message: 'Your password has been reset successfully.',
-            loginLink: 'myapp://login', // link to redirect to  'LoginActivity'
+            loginLink: 'myapp://login?action=handleExitResetPassword&startBanTime= 0', // link to redirect to  'LoginActivity'
         });
 	  
   } catch (error) {
@@ -388,7 +389,7 @@ exports.resetPassword = async (req, res) => {
 	    status:500,
             //message: 'catch server, An error occurred while resetting your password.',
 	    message: 'server error : ' + error.message,
-	    loginLink: 'myapp://login' // link to redirect to  'LoginActivity',
+	    loginLink: 'myapp://login?action=handleExitResetPassword&startBanTime= 0' // link to redirect to  'LoginActivity',
         });	  
   }
 };
