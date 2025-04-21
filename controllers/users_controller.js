@@ -318,7 +318,17 @@ exports.resetPassword = async (req, res) => {
 	const maxTries = 3;  
 	const currentTries = await getTriesCounter(userId);
 	
-	if(currentTries >= maxTries)throw new Error('Unexpected error');
+	if(currentTries >= maxTries){
+		//throw new Error('Unexpected error');
+		return res.status(405).json({
+	            status: 405,
+	            success: false,
+	            message: 'Unexpected error.',
+	            //startBanTime: startBanTime, //'30 minutes', // or calculate actual unlock time
+	            //loginLink: 'myapp://login', //: 'myapp://myapp://login', //contact-support'
+		    loginLink: 'myapp://login?action=handleExitResetPassword&startBanTime=0', 
+	        });
+	}
 	    
 	console.log('resetPassword : currentTries : ' + currentTries);  
          const newTries = currentTries + 1;
