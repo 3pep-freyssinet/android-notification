@@ -369,6 +369,7 @@ exports.resetPassword = async (req, res) => {
 	    status:200,
             success: false,
 	    message: 'Password matches a previous/current password.',
+	    retryCount:newTries,
 	    loginLink: 'myapp://login?action=handleExitResetPassword&startBanTime=0',// link to redirect to  'LoginActivity',
 	    mainLink: 'myapp://main', // link to redirect to  'MainActivity'
         });
