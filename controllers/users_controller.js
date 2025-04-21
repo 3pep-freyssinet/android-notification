@@ -318,7 +318,7 @@ exports.resetPassword = async (req, res) => {
 	const maxTries = 3;  
 	const currentTries = await getTriesCounter(userId);
 	
-	if(currentTries >= maxTries)throw new Error('Unexpected error');
+	if(currentTries > maxTries)throw new Error('Unexpected error');
 	    
 	console.log('resetPassword : currentTries : ' + currentTries);  
          const newTries = currentTries + 1;
