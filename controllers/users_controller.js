@@ -1583,6 +1583,18 @@ exports.getStoredSharedPreferences = async (req, res) => {
 	  }
 	   console.log('getStoredSharedPreferences : sessionId : ', sessionId);
 	  
+	   //7th step : Retrieve 'start_ban_time' from the database
+          const startBanTimeQuery  = `SELECT * FROM ban_user WHERE user_id = $1`;
+          const startBanTimeResult = await pool.query(sessionQuery, [user_id]);
+	  let startBanTime;
+	  if(startBanTimeResult.rowCount > 0){
+	    startBanTime = startBanTimeResult.rows[0].start_ban_time;
+	    console.log('getStoredSharedPreferences : 7th step : startBanTime : ', startBanTime);  
+	  }else{
+	    startBanTime = null;
+	  }
+	   console.log('getStoredSharedPreferences : startBanTime : ', startBanTime);
+	 
 	    res.status(200).json({
 	  	isRegistered:true,
 		jwtToken: jwt_token.rows[0].jwt_token, 
@@ -1593,8 +1605,11 @@ exports.getStoredSharedPreferences = async (req, res) => {
 	        failedAttempts: failed_attempts,
                 lockoutUntil: lockout_until,
 		isSessionClosed: is_session_closed,
-		sessionId:sessionId 
+		sessionId:sessionId,
+		startBanTime:startBanTime
 	});  
+
+	  
   } catch (error) {
     console.error('getStoredSharedPreferences : error : ', error);
     res.status(500).json({ message: 'Error retrieving android id' });
