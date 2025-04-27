@@ -1759,7 +1759,7 @@ exports.loginUser = async (req, res) => {
 			const lockoutUntil = new Date(Date.now() + LOCKOUT_DURATION);
 			await pool.query('UPDATE users_notification SET failed_attempts = $1, lockout_until = $2 WHERE username = $3', [failedAttempts, lockoutUntil, username]);
 			//return { error: "Account locked due to too many failed attempts. Try again in 1 hour." };
-			return res.status(400).json({ error: "Account locked due to too many failed attempts. Try again in 1 hour." });
+			return res.status(400).json({ error: "Account locked due to too many failed attempts. Try again in " + LOCKOUT_DURATION + " hour." });
 		} else {
 			console.log('!passwordMatch : failedAttempts : ', failedAttempts, ' MAX_ATTEMPTS : ', MAX_ATTEMPTS);
 			await pool.query('UPDATE users_notification SET failed_attempts = $1 WHERE username = $2', [failedAttempts, username]);
