@@ -1759,12 +1759,20 @@ exports.loginUser = async (req, res) => {
 			const lockoutUntil = new Date(Date.now() + LOCKOUT_DURATION);
 			await pool.query('UPDATE users_notification SET failed_attempts = $1, lockout_until = $2 WHERE username = $3', [failedAttempts, lockoutUntil, username]);
 			//return { error: "Account locked due to too many failed attempts. Try again in 1 hour." };
-			return res.status(400).json({ error: "Account locked due to too many failed attempts. Try again in " + LOCKOUT_DURATION + " hour." });
+			return res.status(400).json({ 
+				error: "Account locked due to too many failed attempts. Try again in " + LOCKOUT_DURATION + " hour.",
+			        failedAttempts: failedAttempts,
+				lockoutUntil:lockoutUntil,
+			});
 		} else {
 			console.log('!passwordMatch : failedAttempts : ', failedAttempts, ' MAX_ATTEMPTS : ', MAX_ATTEMPTS);
 			await pool.query('UPDATE users_notification SET failed_attempts = $1 WHERE username = $2', [failedAttempts, username]);
 			//return { error: `Invalid credentials. You have ${MAX_ATTEMPTS - failedAttempts} attempts remaining.` };
-			return res.status(400).json({ error: `Invalid credentials. You have ${MAX_ATTEMPTS - failedAttempts} attempts remaining.` });
+			return res.status(400).json({
+				error: `Invalid credentials. You have ${MAX_ATTEMPTS - failedAttempts} attempts remaining.`,
+			        failedAttempts: failedAttempts,
+				lockoutUntil:0,
+			});
 			}
 		}
 		
@@ -1868,7 +1876,11 @@ exports.loginUser = async (req, res) => {
 	    
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({
+		error: 'Network error. Please, try again later',
+	        failedAttempts: failedAttempts,
+		lockoutUntil:0,
+	});
     }
 };
 
