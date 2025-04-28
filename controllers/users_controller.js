@@ -30,7 +30,7 @@ const JWT_EXPIRY 		= process.env.JWT_EXPIRY;
 const REFRESH_EXPIRY 		= process.env.JWT_REFRESH_EXPIRY;
 
 const MAX_ATTEMPTS = 3;
-const LOCKOUT_DURATION = 60 * 60 * 1000; // 1 hour in milliseconds
+const LOCKOUT_DURATION = 5 * 60 * 1000; // 1 hour in milliseconds
 
 const CAPTCHA_SECRET   = process.env.CAPTCHA_SECRET;
 const CAPTCHA_SITE_KEY = process.env.CAPTCHA_SITE_KEY;
