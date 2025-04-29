@@ -1765,12 +1765,12 @@ exports.loginUser = async (req, res) => {
 	      //update the table
 	      try{
 	         const updateResult = await pool.query('UPDATE users_notification SET failed_attempts = 0, lockout_until = null WHERE username = $1', [username]);
+	        if(updateResult.rows == 0){ 
+	          return res.status(400).json({ error: 'Internal error' }); 
+	        }	
 	      }catch(error){
                  console.error('login : ', error.mesage);
 	      }
-	      if(updateResult.rows == 0){
-	        return res.status(400).json({ error: 'Internal error' });
-	      }	
 	   }
 	}
 	
