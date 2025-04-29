@@ -1807,8 +1807,8 @@ exports.loginUser = async (req, res) => {
 			}
 		}
 		
-		console.log('passwordMatch');
-        
+		console.log('passwordMatch : failedAttempts ', user.failed_attempts);
+             
 		//if (!passwordMatch) {
         	//    return res.status(400).json({ message: 'Invalid username or password' });
         	//}
@@ -1817,7 +1817,7 @@ exports.loginUser = async (req, res) => {
 		await pool.query('UPDATE users_notification SET failed_attempts = 0, lockout_until = NULL WHERE username = $1', [username]);
 
 	    //handle the creation and storing the JWT and REFRESH token.
-	const{jwt_token, refresh_token, refresh_expires_at} = await handleTokens(user);
+	    const{jwt_token, refresh_token, refresh_expires_at} = await handleTokens(user);
 
 	/*
 	//current date
@@ -1909,7 +1909,7 @@ exports.loginUser = async (req, res) => {
         console.error(error);
         res.status(500).json({
 		error: 'Network error. Please, try again later',
-	        failedAttempts: failedAttempts,
+	        failedAttempts: user.failed_attempts,
 		lockoutUntil:0,
 	});
     }
