@@ -1756,13 +1756,18 @@ exports.loginUser = async (req, res) => {
 	   lockout_until_ = Date.parse(user.lockout_until);
 	}
         */
-	console.log('(login : lockout_until_ : ', user.lockout_until);
+	    
+	console.log('(login : lockout_until : ', user.lockout_until, " current date : ', new Date(Date.now()));
 
 	//compare the current date long with 'lockout_until' long
 	if(user.lockout_until != null){
           if( new Date(Date.now()) >= user.lockout_until){
 	      //update the table
-	      const updateResult = await pool.query('UPDATE users_notification SET failed_attempts = 0, lockout_until = null WHERE username = $1', [username]);
+	      try{
+	         const updateResult = await pool.query('UPDATE users_notification SET failed_attempts = 0, lockout_until = null WHERE username = $1', [username]);
+	      }catch(error){
+                 console.error('login : ', error.mesage);
+	      }
 	      if(updateResult.rows == 0){
 	        return res.status(400).json({ error: 'Internal error' });
 	      }	
