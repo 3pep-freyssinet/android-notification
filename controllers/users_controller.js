@@ -1757,7 +1757,7 @@ exports.loginUser = async (req, res) => {
 	}
         */
 	    
-	console.log('(login : lockout_until : ', user.lockout_until, ' current date : ', new Date(Date.now()));
+	console.log('login : lockout_until : ', user.lockout_until, ' current date : ', new Date(Date.now()));
 
 	//compare the current date long with 'lockout_until' long
 	if(user.lockout_until != null){
@@ -1765,6 +1765,7 @@ exports.loginUser = async (req, res) => {
 	      //update the table
 	      try{
 	         const updateResult = await pool.query('UPDATE users_notification SET failed_attempts = 0, lockout_until = null WHERE username = $1', [username]);
+		 console.error('login : ', updateResult);     
 	        if(updateResult.rows == 0){ 
 	          return res.status(400).json({ error: 'Internal error' }); 
 	        }	
