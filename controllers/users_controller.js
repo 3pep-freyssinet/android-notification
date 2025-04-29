@@ -1741,15 +1741,25 @@ exports.loginUser = async (req, res) => {
         if (userResult.rows.length === 0) {
             return res.status(400).json({ message: 'Invalid username or password' });
         }
-
+        //Here the user exists
+	    
         const user = userResult.rows[0];
 	console.log('(login : user : ', user);
 
 	//reset 'lockout_until' field
-	//convert 'timestamp' to long
 
-	    
-	if( new Date(Date.now()) >= user.lockout_until) && (user.lockout_until > 0){
+	/*
+	//convert 'timestamp' to long
+	var lockout_until_ = null;
+	if(user.lockout_until != null){
+	   //convert date string to long date
+	   lockout_until_ = Date.parse(user.lockout_until);
+	}
+        */
+	console.log('(login : lockout_until_ : ', user.lockout_until);
+
+	//compare the current date long with 'lockout_until' long
+	if( new Date(Date.now()) >= user.lockout_until) && (lockout_until_ != null){
 	   //update the table
 	   const updateResult = await pool.query('UPDATE users_notification SET failed_attempts = 0, lockout_until = null WHERE username = $1', [username]);
 	   if(updateResult.rows == 0){
@@ -1757,7 +1767,7 @@ exports.loginUser = async (req, res) => {
 	   }	
 	}
 
-	//Here the the fields 'failed_attempts' and 'lockout_until' are updated
+	//Here the the fields 'failed_attempts' and 'lockout_until' are updated.
 	    
         // Compare the password with the hashed password stored in the database
         const passwordMatch = await bcrypt.compare(password, user.password);
