@@ -1763,15 +1763,10 @@ exports.loginUser = async (req, res) => {
 	if(user.lockout_until != null){
           if( new Date(Date.now()) >= user.lockout_until){
 	      //update the table
-	      try{
-	         const updateResult = await pool.query('UPDATE users_notification SET failed_attempts = 0, lockout_until = null WHERE username = $1', [username]);
-		 console.error('login : ', updateResult);     
-	        if(updateResult.rows == 0){ 
+	         const updateResult = await pool.query('UPDATE users_notification SET failed_attempts = 0, lockout_until = null WHERE username = $1', [username]);    
+	        if(updateResult.rowCount == 0){ 
 	          return res.status(400).json({ error: 'Internal error' }); 
 	        }	
-	      }catch(error){
-                 console.error('login : ', error.mesage);
-	      }
 	   }
 	}
 	
