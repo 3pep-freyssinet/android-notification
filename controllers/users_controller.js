@@ -1767,6 +1767,9 @@ exports.loginUser = async (req, res) => {
 	        if(updateResult.rowCount == 0){ 
 	          return res.status(400).json({ error: 'Internal error' }); 
 	        }	
+		//the table has been updated. Update the 'user'
+		user.failed_attempts = 0;
+		user.lockout_until   = null;
 	   }
 	}
 	
