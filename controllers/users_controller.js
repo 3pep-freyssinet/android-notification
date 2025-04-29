@@ -1757,7 +1757,7 @@ exports.loginUser = async (req, res) => {
 	}
         */
 	    
-	console.log('(login : lockout_until : ', user.lockout_until, " current date : ', new Date(Date.now()));
+	console.log('(login : lockout_until : ', user.lockout_until, ' current date : ', new Date(Date.now()));
 
 	//compare the current date long with 'lockout_until' long
 	if(user.lockout_until != null){
