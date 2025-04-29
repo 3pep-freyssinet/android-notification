@@ -1736,7 +1736,7 @@ exports.loginUser = async (req, res) => {
         // Check if the user exists
         const userResult = await pool.query('SELECT * FROM users_notification WHERE username = $1', [username]);
 
-	console.log('(userResult.rows.length === 0) : ', (userResult.rows.length === 0));
+	console.log('loginUser : (userResult.rows.length === 0) : ', (userResult.rows.length === 0));
 
         if (userResult.rows.length === 0) {
             return res.status(400).json({ message: 'Invalid username or password' });
@@ -1744,7 +1744,21 @@ exports.loginUser = async (req, res) => {
 
         const user = userResult.rows[0];
 	console.log('(login : user : ', user);
-		    
+
+	//reset 'lockout_until' field
+	//convert 'timestamp' to long
+
+	    
+	if( new Date(Date.now()) >= user.lockout_until) && (user.lockout_until > 0){
+	   //update the table
+	   const updateResult = await pool.query('UPDATE users_notification SET failed_attempts = 0, lockout_until = null WHERE username = $1', [username]);
+	   if(updateResult.rows == 0){
+	      return res.status(400).json({ error: 'Internal error' });
+	   }	
+	}
+
+	//Here the the fields 'failed_attempts' and 'lockout_until' are updated
+	    
         // Compare the password with the hashed password stored in the database
         const passwordMatch = await bcrypt.compare(password, user.password);
 		
