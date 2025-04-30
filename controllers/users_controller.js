@@ -1818,6 +1818,11 @@ exports.loginUser = async (req, res) => {
         	//    return res.status(400).json({ message: 'Invalid username or password' });
         	//}
 
+	        //if password is successfull, save sessionId only if session is required
+	        if(openSession != null){
+		   const sessionId = await createSession(userId);
+		}
+                
 		// If password is correct, reset failed attempts and lockout
 		await pool.query('UPDATE users_notification SET failed_attempts = 0, lockout_until = NULL WHERE username = $1', [username]);
 
