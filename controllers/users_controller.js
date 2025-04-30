@@ -1738,8 +1738,11 @@ exports.loginUser = async (req, res) => {
 
 	console.log('loginUser : (userResult.rows.length === 0) : ', (userResult.rows.length === 0));
 
+	//test
+        if(true) return res.status(400).json({ error: 'Invalid username or password' });
+	    
         if (userResult.rows.length === 0) {
-            return res.status(400).json({ message: 'Invalid username or password' });
+            return res.status(400).json({ error: 'Invalid username or password' });
         }
         //Here the user exists
 	    
