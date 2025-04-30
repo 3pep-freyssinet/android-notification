@@ -795,9 +795,12 @@ exports.registerUser = async (req, res) => {
 };
 
 //check credentials (username, password)
+//create session
 exports.checkCredentials = async (req, res) => {
    try{ 
-   console.log('checkCredentials\n');
+   console.log('checkCredentials : start\n');
+
+   //create session
    const { createSession } = require('../services/passwordChangeService');
     
    console.log('checkCredentials : createSession :', createSession,'\n');
