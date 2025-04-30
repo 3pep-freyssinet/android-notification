@@ -1755,9 +1755,7 @@ exports.loginUser = async (req, res) => {
 	   //convert date string to long date
 	   lockout_until_ = Date.parse(user.lockout_until);
 	}
-        */
-
-	 if(true)return res.status(401).json({ error: 'Internal error' });  
+        */ 
 	    
 	console.log('login : lockout_until : ', user.lockout_until, ' current date : ', new Date(Date.now()));
 
