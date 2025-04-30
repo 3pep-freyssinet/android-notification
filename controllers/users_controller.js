@@ -1162,8 +1162,8 @@ exports.matchPassword = async (req, res) => {
         FROM users_notification 
         WHERE id = $1
     `;
-    const userResult     = await pool.query(userQuery, [userId]);
-    const storedPassword = userResult.rows[0]?.password; //the current password.
+    const userResult_     = await pool.query(userQuery, [userId]);
+    const storedPassword = userResult_.rows[0]?.password; //the current password.
 
     /*
     //check the validity of the provided current password 'current password' against the stored password 'stored password'.
