@@ -1737,10 +1737,7 @@ exports.loginUser = async (req, res) => {
         const userResult = await pool.query('SELECT * FROM users_notification WHERE username = $1', [username]);
 
 	console.log('loginUser : (userResult.rows.length === 0) : ', (userResult.rows.length === 0));
-
-	//test
-        if(true) return res.status(400).json({ error: 'Invalid username or password' });
-	    
+    
         if (userResult.rows.length === 0) {
             return res.status(400).json({ error: 'Invalid username or password' });
         }
@@ -1759,6 +1756,8 @@ exports.loginUser = async (req, res) => {
 	   lockout_until_ = Date.parse(user.lockout_until);
 	}
         */
+
+	 if(true)return res.status(401).json({ error: 'Internal error' });  
 	    
 	console.log('login : lockout_until : ', user.lockout_until, ' current date : ', new Date(Date.now()));
 
@@ -1768,7 +1767,7 @@ exports.loginUser = async (req, res) => {
 	      //update the table
 	         const updateResult = await pool.query('UPDATE users_notification SET failed_attempts = 0, lockout_until = null WHERE username = $1', [username]);    
 	        if(updateResult.rowCount == 0){ 
-	          return res.status(400).json({ error: 'Internal error' }); 
+	          return res.status(401).json({ error: 'Internal error' }); 
 	        }	
 		//the table has been updated. Update the 'user'
 		user.failed_attempts = 0;
