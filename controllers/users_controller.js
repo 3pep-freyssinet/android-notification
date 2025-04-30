@@ -1748,6 +1748,7 @@ exports.loginUser = async (req, res) => {
             return res.status(400).json({ error: 'Invalid username or password' });
         }
         //Here the user exists
+	
 	    
         const user = userResult.rows[0];
 	console.log('(login : user : ', user);
@@ -1820,9 +1821,11 @@ exports.loginUser = async (req, res) => {
 
 	        //if password is successfull, save sessionId only if session is required
 	        if(openSession != null){
-		   const sessionId = await createSession(userId);
+		   const sessionId = await createSession(user.id);
 		}
-                
+
+	        //send 'sessionId' to frontend in response
+	    
 		// If password is correct, reset failed attempts and lockout
 		await pool.query('UPDATE users_notification SET failed_attempts = 0, lockout_until = NULL WHERE username = $1', [username]);
 
