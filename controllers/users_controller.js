@@ -1081,7 +1081,7 @@ exports.matchPassword = async (req, res) => {
 
     if (!sessionId || !password) {
 	    console.error('SessionId or password are required.');
-            return res.status(400).json({ message: 'SessionId or password are required.' });
+            return res.status(401).json({ message: 'SessionId or password are required.' });
      }
 	   
     console.log('matchPassword : sessionId : ', sessionId, ' password : ', password);
@@ -1101,9 +1101,47 @@ exports.matchPassword = async (req, res) => {
      if (new Date(session.expiration) < new Date()) {
             return res.status(401).json({ message: 'Session expired.' });
      }  
+     //get the userId
+     const userId = session.user_id;
+	   
+     // Check if the user exists
+        const userResult = await pool.query('SELECT * FROM users_notification WHERE user_id = $1', [userId]);
+
+	console.log('loginUser : (userResult.rows.length === 0) : ', (userResult.rows.length === 0));
+    
+        if (userResult.rows.length === 0) {
+            return res.status(401).json({ error: 'Invalid username or password' });
+        }
+	   
+        //Here the user exists
+        const user = userResult.rows[0];
+	   
+	console.log('(login : user : ', user)
+
+	//reset 'failedAttempts' and 'lockoutUntil'
+        console.log('login : lockout_until : ', user.lockout_until, ' current date : ', new Date(Date.now()));
+
+	//compare the current date long with 'lockout_until' long
+	if(user.lockout_until != null){
+          if( new Date(Date.now()) >= user.lockout_until){
+	      //update the table
+	         const updateResult = await pool.query('UPDATE users_notification SET failed_attempts = 0, lockout_until = null WHERE username = $1', [username]);    
+	        if(updateResult.rowCount == 0){ 
+	          return res.status(401).json({ error: 'Internal error' }); 
+	        }	
+		//the table has been updated. Update the 'user'
+		user.failed_attempts = 0;
+		user.lockout_until   = null;
+	   }
+	}
+	
+	//Here the the fields 'failed_attempts' and 'lockout_until' are updated
+
+
+	   
 	   
     /*
-    //hash the password
+    //hash the supplied password
     const passwordHash = await bcrypt.hash(password, 10);
 	   
     //Get the id knowing the 'username'
@@ -1115,19 +1153,20 @@ exports.matchPassword = async (req, res) => {
     console.log('matchPassword : req.user : ', req.user);
     
     */   
+	   
     //get the id from the req
     const userId = req.user.userId;
 	
     console.log('matchPassword : userId : ', userId);
     
-    // Fetch stored password hash and last changed date
+    // Get the current stored 'password' hash and its 'last_changed_date'
     const userQuery = `
         SELECT password, last_password_changed 
         FROM users_notification 
         WHERE id = $1
     `;
     const userResult     = await pool.query(userQuery, [userId]);
-    const storedPassword = userResult.rows[0]?.password;
+    const storedPassword = userResult.rows[0]?.password; //the current password.
 
     /*
     //check the validity of the provided current password 'current password' against the stored password 'stored password'.
@@ -1142,7 +1181,7 @@ exports.matchPassword = async (req, res) => {
         }
 	*/
 	   
-    // Get all password stored in 'password_history'. 
+    // Get all passwords stored in 'password_history'. 
     const historyQuery = `
         SELECT password 
         FROM password_history 
@@ -1150,7 +1189,17 @@ exports.matchPassword = async (req, res) => {
     `;
     const historyResult    = await pool.query(historyQuery, [userId]);
     const previousPassword = historyResult.rows.map(row => row.password);
-
+    
+    // Increase failed attempts count
+    let failedAttempts = user.failed_attempts + 1;
+	
+    if (failedAttempts >= MAX_ATTEMPTS) {
+	return res.status(202).json({ 
+	   message: 'Account locked due to too many failed attempts. \nPlease, try again in ' + (LOCKOUT_DURATION /(60 * 1000)) + ' minutes.',
+	   failedAttempts: failedAttempts
+	});
+    }
+    			
     for (const hash of [storedPassword, ...previousPassword]) { //'storedPassword' is the cuurent password
 	console.log('matchPassword : loop : hash : ', hash, ' password : ', password); 
 	 const test =  await bcrypt.compare(password, hash);//compare clear with hash
@@ -1158,9 +1207,13 @@ exports.matchPassword = async (req, res) => {
         if (await bcrypt.compare(password, hash)) {
             //throw new Error('New password cannot be the same as the current or previous passwords.');
 	    console.error('matchPassword : New password cannot be the same as the current or previous passwords.');
-	    return res.status(202).json({ message: 'New password cannot be the same as the current or previous passwords.' });
+	    return res.status(202).json({ 
+		    message: 'New password cannot be the same as the current or previous passwords.',
+	            failedAttempts: failedAttempts
+	     });
         }
     }
+	   
      console.log('matchPassword : Password is valid.');
 
      //store the new password
