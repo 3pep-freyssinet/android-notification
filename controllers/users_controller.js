@@ -1735,8 +1735,8 @@ exports.loginUser = async (req, res) => {
 	
     console.log('loginUser : username : ', username, ' password : ', password, ' openSession : ', openSession);
 
-    //check if open session is required
-    if(openSession != null)
+    //check if open session is required, then create session
+    if(openSession != null) const { createSession } = require('../services/passwordChangeService');
 	    
     try {
         // Check if the user exists
