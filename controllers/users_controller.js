@@ -1103,11 +1103,14 @@ exports.matchPassword = async (req, res) => {
      }  
      //get the userId
      const userId = session.user_id;
+
+     //we can get the id also from the req
+     //const userId = req.user.userId;
 	   
-     // Check if the user exists
+     // Check if the user exists so we can get 'failedAttempts' and 'lockoutUntil'
         const userResult = await pool.query('SELECT * FROM users_notification WHERE user_id = $1', [userId]);
 
-	console.log('loginUser : (userResult.rows.length === 0) : ', (userResult.rows.length === 0));
+	console.log('matchPassword : (userResult.rows.length === 0) : ', (userResult.rows.length === 0));
     
         if (userResult.rows.length === 0) {
             return res.status(401).json({ error: 'Invalid username or password' });
@@ -1116,10 +1119,10 @@ exports.matchPassword = async (req, res) => {
         //Here the user exists
         const user = userResult.rows[0];
 	   
-	console.log('(login : user : ', user)
+	console.log('(matchPassword : user : ', user)
 
-	//reset 'failedAttempts' and 'lockoutUntil'
-        console.log('login : lockout_until : ', user.lockout_until, ' current date : ', new Date(Date.now()));
+	//get 'failedAttempts' and 'lockoutUntil'
+        console.log('matchPassword : lockout_until : ', user.lockout_until, ' current date : ', new Date(Date.now()));
 
 	//compare the current date long with 'lockout_until' long
 	if(user.lockout_until != null){
@@ -1137,9 +1140,6 @@ exports.matchPassword = async (req, res) => {
 	
 	//Here the the fields 'failed_attempts' and 'lockout_until' are updated
 
-
-	   
-	   
     /*
     //hash the supplied password
     const passwordHash = await bcrypt.hash(password, 10);
@@ -1153,10 +1153,7 @@ exports.matchPassword = async (req, res) => {
     console.log('matchPassword : req.user : ', req.user);
     
     */   
-	   
-    //get the id from the req
-    const userId = req.user.userId;
-	
+	   	
     console.log('matchPassword : userId : ', userId);
     
     // Get the current stored 'password' hash and its 'last_changed_date'
