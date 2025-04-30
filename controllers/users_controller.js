@@ -1731,10 +1731,13 @@ exports.updateUser = async (req, res) => {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Login a user
 exports.loginUser = async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, openSession } = req.body;
 	
-    console.log('loginUser : username : ', username, ' password : ', password);
-	
+    console.log('loginUser : username : ', username, ' password : ', password, ' openSession : ', openSession);
+
+    //check if open session is required
+    if(openSession != null)
+	    
     try {
         // Check if the user exists
         const userResult = await pool.query('SELECT * FROM users_notification WHERE username = $1', [username]);
