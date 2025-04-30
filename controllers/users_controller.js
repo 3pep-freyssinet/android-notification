@@ -798,57 +798,98 @@ exports.registerUser = async (req, res) => {
 //create session
 exports.checkCredentials = async (req, res) => {
    try{ 
-   console.log('checkCredentials : start\n');
+   	console.log('checkCredentials : start\n');
 
-   //create session
-   const { createSession } = require('../services/passwordChangeService');
+  	 //create session
+   	const { createSession } = require('../services/passwordChangeService');
     
-   console.log('checkCredentials : createSession :', createSession,'\n');
+   	console.log('checkCredentials : createSession :', createSession,'\n');
 
-    const {username, password } = req.body;
-    console.log('checkCredentials : username : ', username, ' password : ', password);
+    	const {username, password } = req.body;
+    	console.log('checkCredentials : username : ', username, ' password : ', password);
 	 
-    //Get the id knowing the 'username'
-    const userId = await getUserId__(username);
-    if(userId == null){
-	   console.warn('User not found for username:', username);
-           return res.status(404).json({ message: 'User not found' });
-    }
-    console.log('checkCredentials : userId : ', userId);
-    
-    // Fetch stored password hash and last changed date
-    const userQuery = `
-        SELECT password, last_password_changed 
-        FROM users_notification 
-        WHERE id = $1
-    `;
-    const userResult     = await pool.query(userQuery, [userId]);
-    const storedPassword = userResult.rows[0]?.password;
-	   
-    //check the validity of the provided current password 'current password' against the stored password 'stored password'.
-    // Compare the provided clear current password with the hashed password stored in the database.
+    	// Check if the user exists
+        const userResult = await pool.query('SELECT * FROM users_notification WHERE username = $1', [username]);
 
-	const isPasswordValid = await bcrypt.compare(password, storedPassword);
-         
-	console.log('checkCredentials : isPasswordValid : ', isPasswordValid);
-		
-        if (!isPasswordValid) {
-            return res.status(400).json({ message: 'Invalid username or password' });
+	console.log('checkCredentials : (userResult.rows.length === 0) : ', (userResult.rows.length === 0));
+    
+        if (userResult.rows.length === 0) {
+            return res.status(400).json({ error: 'Invalid username or password' });
         }
-	  console.log('checkCredentials : Password is valid.');
+	//Here, the user is found
+       const user = userResult.rows[0];
+	console.log('(checkCredentials : user : ', user);
 
-	// Create a password change session
-        const sessionId = await createSession(userId);
+	//show some data for 'user'
+	console.log('checkCredentials : lockout_until : ', user.lockout_until, ' current date : ', new Date(Date.now()));
 
-        // Respond with the session ID
-        return res.status(200).json({ message: 'Credentials verified', sessionId:sessionId });
-    
-	 //return res.status(200).json({ success: true, message: 'Password is valid.' });  
-  }catch(error){
-	console.error('checkCredentials : ' + error);
-        res.status(500).json({ message: 'Server error' });
-  }   
+	//compare the current date long with 'lockout_until' long
+	if(user.lockout_until != null){
+          if( new Date(Date.now()) >= user.lockout_until){
+	      //update the table
+	         const updateResult = await pool.query('UPDATE users_notification SET failed_attempts = 0, lockout_until = null WHERE username = $1', [username]);    
+	        if(updateResult.rowCount == 0){ 
+	          return res.status(401).json({ error: 'Internal error' }); 
+	        }	
+		//the table has been updated. Update the 'user'
+		user.failed_attempts = 0;
+		user.lockout_until   = null;
+	   }
+	}
+	
+	//Here the the fields 'failed_attempts' and 'lockout_until' are updated.   
+
+	// Compare the password with the hashed password stored in the database
+        const passwordMatch = await bcrypt.compare(password, user.password);
+		
+	console.log('checkCredentials : ', passwordMatch);
+   
+        if (!passwordMatch) {
+		// Increase failed attempts count
+		let failedAttempts = user.failed_attempts + 1;
+	
+		if (failedAttempts >= MAX_ATTEMPTS) {
+			console.log('checkCredentials : failedAttempts : ', failedAttempts, ' MAX_ATTEMPTS : ', MAX_ATTEMPTS);
+			const lockoutUntil = new Date(Date.now() + LOCKOUT_DURATION);
+			await pool.query('UPDATE users_notification SET failed_attempts = $1, lockout_until = $2 WHERE username = $3', [failedAttempts, lockoutUntil, username]);
+			//return { error: "Account locked due to too many failed attempts. \nTry again in 1 hour." };
+			return res.status(400).json({ 
+				error: "Account locked due to too many failed attempts. \nTry again in " + (LOCKOUT_DURATION /(60 * 1000)) + " minutes.",
+			        failedAttempts: failedAttempts,
+				lockoutUntil:lockoutUntil,
+			});
+		} else {
+			console.log('checkCredentials : failedAttempts : ', failedAttempts, ' MAX_ATTEMPTS : ', MAX_ATTEMPTS);
+			await pool.query('UPDATE users_notification SET failed_attempts = $1 WHERE username = $2', [failedAttempts, username]);
+			//return { error: `Invalid credentials. You have ${MAX_ATTEMPTS - failedAttempts} attempts remaining.` };
+			return res.status(400).json({
+				error: `Invalid credentials. You have ${MAX_ATTEMPTS - failedAttempts} attempts remaining.`,
+			        failedAttempts: failedAttempts,
+				lockoutUntil:0,
+			});
+		}
+	   }
+
+	   //Here, the passwords match
+	   console.log('checkCredentials : failedAttempts ', user.failed_attempts);
+
+	   //create a 'sessionId'
+	   const sessionId = await createSession(user.id);
+	
+          return res.status(200).json({
+			message: 'Credentials successfull',
+			sessionId:sessionId,
+	  });
+        }catch(error){
+	   	console.error('checkCredentials : ' + error);
+           	res.status(500).json({
+			error: 'Network error. Please, try again later',
+	        	failedAttempts: user.failed_attempts,
+			lockoutUntil:0,
+		});
+  	}   
 }
+
 
 //get change password session progress
 exports.getChangePasswordSessionProgress = async (req, res) => {
@@ -1734,9 +1775,6 @@ exports.loginUser = async (req, res) => {
     const { username, password, openSession } = req.body;
 	
     console.log('loginUser : username : ', username, ' password : ', password, ' openSession : ', openSession);
-
-    //check if open session is required, then create session
-    if(openSession != null) const { createSession } = require('../services/passwordChangeService');
 	    
     try {
         // Check if the user exists
