@@ -1125,6 +1125,7 @@ exports.matchPassword = async (req, res) => {
 
      //get the username
      const username =req.username;
+     console.log('matchPassword : username : ', username);
 	   
      // Check if the user exists so we can get 'failedAttempts' and 'lockoutUntil'
         const userResult = await pool.query('SELECT * FROM users_notification WHERE username = $1', [username]);
