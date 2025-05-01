@@ -1081,7 +1081,10 @@ exports.matchPassword = async (req, res) => {
 
     if (!sessionId || !password) {
 	    console.error('SessionId or password are required.');
-            return res.status(401).json({ message: 'SessionId or password are required.' });
+            return res.status(401).json({
+		    message: 'SessionId or password are required.',
+	            remainingTries:MAX_ATTEMPTS, //to show 'Exit' button
+	    });
      }
 	   
     console.log('matchPassword : sessionId : ', sessionId, ' password : ', password);
@@ -1093,7 +1096,10 @@ exports.matchPassword = async (req, res) => {
      const sessionResult = await pool.query(sessionQuery, [sessionId]);
      if (sessionResult.rowCount === 0) {
 	     console.log('matchPassword : sessionResult.rowCount : ', sessionResult.rowCount);
-            return res.status(404).json({ message: 'Session not found.' });
+            return res.status(404).json({
+		    message: 'Session not found.',
+	            remainingTries:MAX_ATTEMPTS, //to show 'Exit' button
+	    });
      }
 
      const session = sessionResult.rows[0];
@@ -1102,8 +1108,12 @@ exports.matchPassword = async (req, res) => {
      // Check if session is expired
      if (new Date(session.expiration) < new Date()) {
 	    console.log('matchPassword : (new Date(session.expiration) < new Date()) : ', (new Date(session.expiration) < new Date()));
-            return res.status(401).json({ message: 'Session expired.' });
+            return res.status(401).json({
+		    message: 'Session expired.',
+	            remainingTries:MAX_ATTEMPTS, //to show 'Exit' button
+	    });
      }  
+	   
      //get the userId
      const userId = session.user_id;
      console.log('matchPassword : userId : ', userId);
