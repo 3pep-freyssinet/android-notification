@@ -1224,15 +1224,39 @@ exports.matchPassword = async (req, res) => {
         if (await bcrypt.compare(password, hash)) {
             //throw new Error('New password cannot be the same as the current or previous passwords.');
 	    console.error('matchPassword : New password cannot be the same as the current or previous passwords.');
-	    return res.status(202).json({ 
+
+	   //update 'failedAttempts'
+	   const updateUser = await pool.query('UPDATE users_notification SET failedAttempts = $1 WHERE username = $2', [failedAttempts, username]);
+	   if(updateUser.rowCount == 1){
+		return res.status(202).json({ 
 		    message: 'New password cannot be the same as the current or previous passwords.',
-	            failedAttempts: failedAttempts
-	     });
+	            failedAttempts: failedAttempts,
+	       });
+	   }else{
+		return res.status(500).json({ 
+		    message: 'Internal error.',
+	            failedAttempts: MAX_ATTEMPTS, //to show 'Exit' button only
+	       });
+	   }
         }
     }
 	   
      console.log('matchPassword : Password is valid.');
+    //update 'failedAttempts'
+	   const updateUser = await pool.query('UPDATE users_notification SET failedAttempts = $1 WHERE username = $2', [failedAttempts, username]);
+	   if(updateUser.rowCount == 1){
+		return res.status(202).json({ 
+		    message: 'New password cannot be the same as the current or previous passwords.',
+	            failedAttempts: failedAttempts,
+	       });
+	   }else{
+		return res.status(500).json({ 
+		    message: 'Internal error.',
+	            failedAttempts: MAX_ATTEMPTS, //to show 'Exit' button only
+	       });
+	   }
 
+	   
      //store the new password
      /*
      // Fetch stored password hash and last changed date
@@ -1269,7 +1293,10 @@ exports.matchPassword = async (req, res) => {
     //if(updateSession_)return res.status(403).json({ message: 'Password updated failure. Session cannot updated.' });
 	    
      console.log('matchPassword : session updated successfully. Password verified successfully ');
-     return res.status(200).json({ message: 'Password verified successfully.' });
+     return res.status(200).json({
+	     message: 'Password verified successfully.',
+             failedAttempts:0, //do nothing
+     });
      
    }catch(error){
 	console.error('matchPassword : ' + error);
