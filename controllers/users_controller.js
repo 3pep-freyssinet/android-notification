@@ -1236,7 +1236,7 @@ exports.matchPassword = async (req, res) => {
 	    console.error('matchPassword : New password cannot be the same as the current or previous passwords.');
 
 	   //update 'failedAttempts'
-	   const updateUser = await pool.query('UPDATE users_notification SET failedAttempts = $1 WHERE username = $2', [failedAttempts, username]);
+	   const updateUser = await pool.query('UPDATE users_notification SET failed_attempts = $1 WHERE username = $2', [failedAttempts, username]);
 	   if(updateUser.rowCount == 1){
 		return res.status(202).json({ 
 		    message: 'New password cannot be the same as the current or previous passwords.',
