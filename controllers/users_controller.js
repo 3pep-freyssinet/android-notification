@@ -1122,9 +1122,12 @@ exports.matchPassword = async (req, res) => {
      
      //we can get the id also from the req
      //const userId = req.user.userId;
+
+     //get the username
+     const username =req.
 	   
      // Check if the user exists so we can get 'failedAttempts' and 'lockoutUntil'
-        const userResult = await pool.query('SELECT * FROM users_notification WHERE user_id = $1', [userId]);
+        const userResult = await pool.query('SELECT * FROM users_notification WHERE username = $1', [userId]);
 
 	console.log('matchPassword : userResult.rows.length : ', userResult.rows.length);
     
@@ -1138,7 +1141,7 @@ exports.matchPassword = async (req, res) => {
 	console.log('(matchPassword : user : ', user)
 
 	//get 'failedAttempts' and 'lockoutUntil'
-        console.log('matchPassword : lockout_until : ', user.lockout_until, ' current date : ', new Date(Date.now()));
+        console.log('matchPassword : failedAttempts : ', failedAttempts, ' lockout_until : ', user.lockout_until, ' current date : ', new Date(Date.now()));
 
 	//compare the current date long with 'lockout_until' long
 	if(user.lockout_until != null){
