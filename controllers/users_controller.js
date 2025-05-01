@@ -1097,10 +1097,11 @@ exports.matchPassword = async (req, res) => {
      }
 
      const session = sessionResult.rows[0];
-    console.log('matchPassword : session : ', session, ' userId : ', userId);
+    console.log('matchPassword : session : ', session, ' userId : ', session.user_id, ' expiration : ', new Date(session.expiration));
 	   
      // Check if session is expired
      if (new Date(session.expiration) < new Date()) {
+	    console.log('matchPassword : (new Date(session.expiration) < new Date()) : ', (new Date(session.expiration) < new Date()));
             return res.status(401).json({ message: 'Session expired.' });
      }  
      //get the userId
