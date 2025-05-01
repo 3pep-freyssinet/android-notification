@@ -803,7 +803,7 @@ exports.checkCredentials = async (req, res) => {
   	 //create session
    	const { createSession } = require('../services/passwordChangeService');
     
-   	console.log('checkCredentials : createSession :', createSession,'\n');
+   	console.log('checkCredentials : createSession :', createSession,' expiration : ', createSession.expiration);
 
     	const {username, password } = req.body;
     	console.log('checkCredentials : username : ', username, ' password : ', password);
