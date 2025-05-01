@@ -1071,12 +1071,12 @@ exports.matchPassword = async (req, res) => {
     const { updateSession  } = require('../services/passwordChangeService'); //needed below
 
      //for test
-     if(true)return res.status(400).json({ message: 'SessionId or password are required.' });   
+     //if(true)return res.status(400).json({ message: 'SessionId or password are required.' });   
      //if(true)return res.status(404).json({ message: 'Session not found.' });
      //if(true)return res.status(401).json({ message: 'Session expired.' });
      //if(true)return res.status(202).json({ message: 'New password cannot be the same as the current or previous passwords.' });
      //if(true)return res.status(200).json({ message: 'Password verified successfully.' });
-     //if(true)res.status(500).json({ message: 'Server error. Please, try again later.' });
+     if(true)res.status(500).json({ message: 'Server error. Please, try again later.' });
 
 	   
     const { sessionId, password } = req.body;
