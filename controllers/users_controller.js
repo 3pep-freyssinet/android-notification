@@ -1227,7 +1227,8 @@ exports.matchPassword = async (req, res) => {
 	       });
 	}
     }
-    			
+
+    //the try continue
     for (const hash of [storedPassword, ...previousPassword]) { //'storedPassword' is the cuurent password
 	console.log('matchPassword : loop : hash : ', hash, ' password : ', password); 
 	 const test =  await bcrypt.compare(password, hash);//compare clear with hash
@@ -1236,12 +1237,12 @@ exports.matchPassword = async (req, res) => {
             //throw new Error('New password cannot be the same as the current or previous passwords.');
 	    console.error('matchPassword : New password cannot be the same as the current or previous passwords.');
 
-	   //update 'failedAttempts'
+	   //password exists, update 'failedAttempts' field
 	   const updateUser = await pool.query('UPDATE users_notification SET failed_attempts = $1 WHERE username = $2', [failedAttempts, username]);
 	   if(updateUser.rowCount == 1){
 		return res.status(202).json({ 
 		    message: 'New password cannot be the same as the current or previous passwords.',
-	            failedAttempts: failedAttempts,
+	            failedAttempts: failedAttempts, //usefull in frontend to show remaining tries, 'Exit' and 'Retry' buttons.
 	       });
 	   }else{
 		return res.status(500).json({ 
