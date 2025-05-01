@@ -1155,7 +1155,10 @@ exports.matchPassword = async (req, res) => {
 		//the table has been updated. Update the 'user'
 		user.failed_attempts = 0;
 		user.lockout_until   = null;
-	   }
+	   }else{
+             //the lockout is not ended
+		  return res.status(401).json({ error: 'Internal error : the lockout is not ended' });
+	  }
 	}
 	
 	//Here the the fields 'failed_attempts' and 'lockout_until' are updated
