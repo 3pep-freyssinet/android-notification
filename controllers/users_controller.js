@@ -1213,7 +1213,7 @@ exports.matchPassword = async (req, res) => {
     // Increase failed attempts count
     let failedAttempts = user.failed_attempts + 1;
 	
-    if (failedAttempts >= MAX_ATTEMPTS) {
+    if (failedAttempts > MAX_ATTEMPTS) {
     	//update 'failedAttempts' 
     	//const lockoutUntil_ = new Date(Date.now() + LOCKOUT_DURATION);
     	//const updateUser_   = await pool.query('UPDATE users_notification SET failed_attempts = $1, lockout_until = $2  WHERE username = $3', [failedAttempts, lockoutUntil_, username]);
