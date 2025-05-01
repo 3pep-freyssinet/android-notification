@@ -1112,7 +1112,7 @@ exports.matchPassword = async (req, res) => {
 	    console.log('matchPassword : (new Date(session.expiration) < new Date()) : ', (new Date(session.expiration) < new Date()));
             return res.status(401).json({
 		    message: 'Session expired.',
-	            remainingTries:MAX_ATTEMPTS, //to show 'Exit' button
+	            remainingTries:MAX_ATTEMPTS, //to show 'Exit' button 
 	    });
      }  
 	   
@@ -1142,7 +1142,7 @@ exports.matchPassword = async (req, res) => {
 	console.log('(matchPassword : user : ', user)
 
 	//get 'failedAttempts' and 'lockoutUntil'
-        console.log('matchPassword : failedAttempts : ', user.failedAttempts, ' lockout_until : ', user.lockout_until, ' current date : ', new Date(Date.now()));
+        console.log('matchPassword : failedAttempts : ', user.failed_attempts, ' lockout_until : ', user.lockout_until, ' current date : ', new Date(Date.now()));
 
 	//compare the current date long with 'lockout_until' long
 	if(user.lockout_until != null){
