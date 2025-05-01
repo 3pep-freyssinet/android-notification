@@ -1092,11 +1092,13 @@ exports.matchPassword = async (req, res) => {
         `;
      const sessionResult = await pool.query(sessionQuery, [sessionId]);
      if (sessionResult.rowCount === 0) {
+	     console.log('matchPassword : sessionResult.rowCount : ', sessionResult.rowCount);
             return res.status(404).json({ message: 'Session not found.' });
      }
 
      const session = sessionResult.rows[0];
-
+    console.log('matchPassword : session : ', session, ' userId : ', userId);
+	   
      // Check if session is expired
      if (new Date(session.expiration) < new Date()) {
             return res.status(401).json({ message: 'Session expired.' });
