@@ -1218,6 +1218,7 @@ exports.matchPassword = async (req, res) => {
 		return res.status(202).json({ 
 	   		message: 'Account locked due to too many failed attempts. \nPlease, try again in ' + (LOCKOUT_DURATION /(60 * 1000)) + ' minutes.',
 	   		failedAttempts: failedAttempts, //= MAX_ATTEMPTS
+			lockoutUntil:lockoutUntil_,
 		});
      	}else{
 		return res.status(500).json({ 
