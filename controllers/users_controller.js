@@ -1211,21 +1211,21 @@ exports.matchPassword = async (req, res) => {
     let failedAttempts = user.failed_attempts + 1;
 	
     if (failedAttempts >= MAX_ATTEMPTS) {
-    	//update 'failedAttempts'
-    	const lockoutUntil_ = new Date(Date.now() + LOCKOUT_DURATION);
-    	const updateUser_   = await pool.query('UPDATE users_notification SET failed_attempts = $1, lockout_until = $2  WHERE username = $3', [failedAttempts, lockoutUntil_, username]);
-    	if(updateUser_.rowCount == 1){
-		return res.status(202).json({ 
-	   		message: 'Account locked due to too many failed attempts. \nPlease, try again in ' + (LOCKOUT_DURATION /(60 * 1000)) + ' minutes.',
-	   		failedAttempts: failedAttempts, //= MAX_ATTEMPTS
-			lockoutUntil:lockoutUntil_,
-		});
-     	}else{
+    	//update 'failedAttempts' 
+    	//const lockoutUntil_ = new Date(Date.now() + LOCKOUT_DURATION);
+    	//const updateUser_   = await pool.query('UPDATE users_notification SET failed_attempts = $1, lockout_until = $2  WHERE username = $3', [failedAttempts, lockoutUntil_, username]);
+    	//if(updateUser_.rowCount == 1){
+	//	return res.status(202).json({ 
+	//   		message: 'Account locked due to too many failed attempts. \nPlease, try again in ' + (LOCKOUT_DURATION /(60 * 1000)) + ' minutes.',
+	//   		failedAttempts: failedAttempts, //= MAX_ATTEMPTS
+	//		lockoutUntil:lockoutUntil_,
+	//	});
+     	//}else{
 		return res.status(500).json({ 
-		    message: 'Internal error.',
+		    message: 'Account locked due to too many failed attempts. \nPlease, try again in ' + (LOCKOUT_DURATION /(60 * 1000)) + ' minutes.',
 	            failedAttempts: MAX_ATTEMPTS, //to show 'Exit' button only
 	       });
-	}
+	//}
     }
 
     //the try continue
