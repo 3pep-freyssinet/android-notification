@@ -1065,7 +1065,7 @@ exports.updatePassword = async (req, res) => {
 //store new password.
 exports.matchPassword = async (req, res) => {
    try{ 
-    console.log('matchPassword\n');
+    console.log('matchPassword');
     const { updateSession  } = require('../services/passwordChangeService'); //needed below
 
      //for test
@@ -1103,14 +1103,15 @@ exports.matchPassword = async (req, res) => {
      }  
      //get the userId
      const userId = session.user_id;
-
+     console.log('matchPassword : userId : ', userId);
+     
      //we can get the id also from the req
      //const userId = req.user.userId;
 	   
      // Check if the user exists so we can get 'failedAttempts' and 'lockoutUntil'
         const userResult = await pool.query('SELECT * FROM users_notification WHERE user_id = $1', [userId]);
 
-	console.log('matchPassword : (userResult.rows.length === 0) : ', (userResult.rows.length === 0));
+	console.log('matchPassword : userResult.rows.length : ', userResult.rows.length);
     
         if (userResult.rows.length === 0) {
             return res.status(401).json({ error: 'Invalid username or password' });
