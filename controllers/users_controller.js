@@ -1243,18 +1243,14 @@ exports.matchPassword = async (req, res) => {
 	   
      console.log('matchPassword : Password is valid.');
     //update 'failedAttempts'
-	   const updateUser = await pool.query('UPDATE users_notification SET failedAttempts = $1 WHERE username = $2', [failedAttempts, username]);
-	   if(updateUser.rowCount == 1){
-		return res.status(202).json({ 
-		    message: 'New password cannot be the same as the current or previous passwords.',
-	            failedAttempts: failedAttempts,
-	       });
-	   }else{
-		return res.status(500).json({ 
-		    message: 'Internal error.',
-	            failedAttempts: MAX_ATTEMPTS, //to show 'Exit' button only
-	       });
-	   }
+    
+    const updateUser_ = await pool.query('UPDATE users_notification SET failed_attempts = $1, lockout_until = $2  WHERE username = $3', [failedAttempts, lockoutUntil, username]);
+    if(updateUser_.rowCount != 1){
+	return res.status(500).json({ 
+	 message: 'Internal error.',
+	 failedAttempts: MAX_ATTEMPTS, //to show 'Exit' button only
+	});
+     }
 
 	   
      //store the new password
