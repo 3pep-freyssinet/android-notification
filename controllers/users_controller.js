@@ -1142,7 +1142,7 @@ exports.matchPassword = async (req, res) => {
 	console.log('(matchPassword : user : ', user)
 
 	//get 'failedAttempts' and 'lockoutUntil'
-        console.log('matchPassword : failedAttempts : ', failedAttempts, ' lockout_until : ', user.lockout_until, ' current date : ', new Date(Date.now()));
+        console.log('matchPassword : failedAttempts : ', user.failedAttempts, ' lockout_until : ', user.lockout_until, ' current date : ', new Date(Date.now()));
 
 	//compare the current date long with 'lockout_until' long
 	if(user.lockout_until != null){
