@@ -1214,12 +1214,12 @@ exports.matchPassword = async (req, res) => {
     let failedAttempts = user.failed_attempts + 1;
 	
     if (failedAttempts > MAX_ATTEMPTS) {
-    	//update 'failedAttempts' 
+    	//update 'lockoutUntil_' 
     	//const lockoutUntil_ = new Date(Date.now() + LOCKOUT_DURATION);
-    	//const updateUser_   = await pool.query('UPDATE users_notification SET failed_attempts = $1, lockout_until = $2  WHERE username = $3', [failedAttempts, lockoutUntil_, username]);
+    	//const updateUser_   = await pool.query('UPDATE users_notification SET lockout_until = $1  WHERE username = $2', [lockoutUntil_, username]);
     	//if(updateUser_.rowCount == 1){
 	//	return res.status(202).json({ 
-	//   		message: 'Account locked due to too many failed attempts. \nPlease, try again in ' + (LOCKOUT_DURATION /(60 * 1000)) + ' minutes.',
+	 //  		message: 'Account locked due to too many failed attempts. \nPlease, try again in ' + (LOCKOUT_DURATION /(60 * 1000)) + ' minutes.',
 	//   		failedAttempts: failedAttempts, //= MAX_ATTEMPTS
 	//		lockoutUntil:lockoutUntil_,
 	//	});
@@ -1231,7 +1231,7 @@ exports.matchPassword = async (req, res) => {
 	//}
     }
 
-    //the try continue
+    //the try continue, it is not ended.
     for (const hash of [storedPassword, ...previousPassword]) { //'storedPassword' is the cuurent password
 	console.log('matchPassword : loop : hash : ', hash, ' password : ', password); 
 	 const test =  await bcrypt.compare(password, hash);//compare clear with hash
@@ -1241,20 +1241,37 @@ exports.matchPassword = async (req, res) => {
 	    console.error('matchPassword : New password cannot be the same as the current or previous passwords.');
 
 	   //password exists, update 'failedAttempts' field
-	   const updateUser = await pool.query('UPDATE users_notification SET failed_attempts = $1 WHERE username = $2', [failedAttempts, username]);
-	   if(updateUser.rowCount == 1){
-		return res.status(202).json({ 
+	   let updateUser;
+	   if(failedAttempts != 3){
+		updateUser = await pool.query('UPDATE users_notification SET failed_attempts = $1 WHERE username = $2', [failedAttempts, username]);
+	        if(updateUser.rowCount == 1){
+		   return res.status(202).json({ 
 		    message: 'New password cannot be the same as the current or previous passwords.',
 	            failedAttempts: failedAttempts, //usefull in frontend to show remaining tries, 'Exit' and 'Retry' buttons.
-	       });
+	           });
+		}else{
+		    return res.status(500).json({ 
+		    	message: 'Internal error.',
+	            	failedAttempts: MAX_ATTEMPTS, //to show 'Exit' button only
+	            });
+		}
 	   }else{
-		return res.status(500).json({ 
-		    message: 'Internal error.',
-	            failedAttempts: MAX_ATTEMPTS, //to show 'Exit' button only
-	       });
+		const lockoutUntil = new Date(Date.now() + LOCKOUT_DURATION);
+		updateUser = await pool.query('UPDATE users_notification SET failed_attempts = $1, lockout_until = $2 WHERE username = $3', [failedAttempts, lockoutUntil, username]);
+	        if(updateUser.rowCount == 1){
+		   return res.status(202).json({ 
+		    message: 'Account locked due to too many failed attempts. \nPlease, try again in ' + (LOCKOUT_DURATION /(60 * 1000)) + ' minutes.',
+	            failedAttempts: failedAttempts, //usefull in frontend to show remaining tries, 'Exit' and 'Retry' buttons.
+	           });
+		}else{
+		    return res.status(500).json({ 
+		    	message: 'Internal error.',
+	            	failedAttempts: MAX_ATTEMPTS, //to show 'Exit' button only
+	            });
+		}
 	   }
-        }
-    }
+        }//end compare
+    }//end loop for
 	   
      console.log('matchPassword : Password is valid.');
 	   
