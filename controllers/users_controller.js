@@ -1224,8 +1224,8 @@ exports.matchPassword = async (req, res) => {
 	//		lockoutUntil:lockoutUntil_,
 	//	});
      	//}else{
-		return res.status(500).json({ 
-		    message: 'Account locked due to too many failed attempts. \nPlease, try again in ' + (LOCKOUT_DURATION /(60 * 1000)) + ' minutes.',
+		return res.status(403).json({ 
+		    message: 'Internal error',
 	            failedAttempts: MAX_ATTEMPTS, //to show 'Exit' button only
 	       });
 	//}
@@ -1240,7 +1240,7 @@ exports.matchPassword = async (req, res) => {
             //throw new Error('New password cannot be the same as the current or previous passwords.');
 	    console.error('matchPassword : New password cannot be the same as the current or previous passwords.');
 
-	   //password exists, update 'failedAttempts' field
+	   //the suplied password already exists, update 'failedAttempts' field
 	   let updateUser;
 	   if(failedAttempts != 3){
 		updateUser = await pool.query('UPDATE users_notification SET failed_attempts = $1 WHERE username = $2', [failedAttempts, username]);
