@@ -11,7 +11,7 @@ console.log(' routes users ');
 
 // Define routes
 router.post('/register', usersController.registerUser);                              // POST /users/register
-router.post('/login',    usersController.loginUser);                                 // POST /users/loginchangePassword
+router.post('/login',             authMiddleware, usersController.loginUser);        // POST /users/login
 router.post('/change-password',   authMiddleware, usersController.changePassword);   // POST /users/change-password
 router.post('/check-credentials', authMiddleware, usersController.checkCredentials); // POST /users/check-credentials
 router.post('/match-password',    authMiddleware, usersController.matchPassword);    // POST /users/match-password
