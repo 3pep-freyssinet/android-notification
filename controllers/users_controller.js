@@ -1341,7 +1341,7 @@ exports.matchPassword = async (req, res) => {
   }   
 }
 
-async function updateSession(sessionId, updates) => {
+async function updateSession(sessionId, updates) {
     const { isNewPasswordVerified } = updates;
 
     await pool.query(`
