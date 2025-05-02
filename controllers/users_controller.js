@@ -1068,7 +1068,7 @@ exports.updatePassword = async (req, res) => {
 exports.matchPassword = async (req, res) => {
    try{ 
     console.log('matchPassword');
-    const { updateSession  } = require('../services/passwordChangeService'); //needed below
+    const { updateSession_  } = require('../services/passwordChangeService'); //needed below
 
      //for test
      //if(true)return res.status(400).json({ message: 'SessionId or password are required.' });   
