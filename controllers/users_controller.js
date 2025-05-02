@@ -1122,9 +1122,12 @@ exports.matchPassword = async (req, res) => {
      
      //we can get the id also from the req
      //const userId = req.user.userId;
-
+     //console.log('matchPassword : req.user.userId : ', req.user.userId);
+	   
      //get the username   
-     const username =req.user.username;
+     const username = req.user.username;
+     console.log('matchPassword :  req.user : ',  req.user);   
+	   
      console.log('matchPassword : username : ', username);
 	   
      // Check if the user exists so we can get 'failedAttempts' and 'lockoutUntil'
