@@ -1341,6 +1341,17 @@ exports.matchPassword = async (req, res) => {
   }   
 }
 
+const updateSession = async (sessionId, updates) => {
+    const { isNewPasswordVerified } = updates;
+
+    await pool.query(`
+        UPDATE password_change_sessions
+        SET is_new_password_verified = $1, timestamp = NOW()
+        WHERE session_id = $2
+    `, [isNewPasswordVerified, sessionId]);
+};
+
+
 //change pwd : replace the current password by the new password.
 exports.changePassword = async (req, res) => {
    try{ 
