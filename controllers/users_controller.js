@@ -1126,8 +1126,7 @@ exports.matchPassword = async (req, res) => {
 	   
      //get the username   
      const username = req.user.username;
-     console.log('matchPassword :  req.user : ',  req.user);   
-	   
+     //console.log('matchPassword :  req.user : ',  req.user);      
      console.log('matchPassword : username : ', username);
 	   
      // Check if the user exists so we can get 'failedAttempts' and 'lockoutUntil'
@@ -1283,12 +1282,14 @@ exports.matchPassword = async (req, res) => {
     const lockoutUntil_ = new Date(Date.now() + LOCKOUT_DURATION);
     const updateUser_   = await pool.query('UPDATE users_notification SET failed_attempts = $1, lockout_until = $2  WHERE username = $3', [failedAttempts, lockoutUntil_, username]);
     if(updateUser_.rowCount != 1){
+	console.log('matchPassword : update failed_attempts and lockout_until not done ');    
 	return res.status(500).json({ 
 	 message: 'Internal error.',
 	 failedAttempts: MAX_ATTEMPTS, //to show 'Exit' button only
 	});
      }
 
+     console.log('matchPassword : update failed_attempts and lockout_until is done successfully '); 
 	   
      //store the new password
      /*
@@ -1311,6 +1312,8 @@ exports.matchPassword = async (req, res) => {
     `;
     await pool.query(updateQuery, [newHash, userId]);
 
+    console.log('matchPassword : update password and record history is done successfully '); 
+	   
     // Insert old password into history
     const insertHistoryQuery = `
         INSERT INTO password_history (user_id, password) 
@@ -1318,7 +1321,7 @@ exports.matchPassword = async (req, res) => {
     `;
     await pool.query(insertHistoryQuery, [userId, storedPassword]);
 	   
-    console.log('matchPassword : Password updated successfully.');
+    console.log('matchPassword : Insert old password into history is done successfully '); 
 	   
    // Update the session to reflect that the new password has been applied
     await updateSession(sessionId, { is_new_password_applied: true });
@@ -1326,14 +1329,15 @@ exports.matchPassword = async (req, res) => {
     //if(updateSession_)return res.status(403).json({ message: 'Password updated failure. Session cannot updated.' });
 	    
      console.log('matchPassword : session updated successfully. Password verified successfully ');
+	   
      return res.status(200).json({
 	     message: 'Password verified successfully.',
              failedAttempts:0, //do nothing
      });
      
    }catch(error){
-	console.error('matchPassword : ' + error);
-        res.status(500).json({ message: 'Server error' });
+	console.error('matchPassword : ' + error.message);
+        res.status(500).json({ message: error.message });
   }   
 }
 
