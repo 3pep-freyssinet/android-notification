@@ -1277,7 +1277,7 @@ exports.matchPassword = async (req, res) => {
     }//end loop for
 	   
     //update 'user'
-    
+    /*
     const lockoutUntil_ = new Date(Date.now() + LOCKOUT_DURATION);
     const newHash       = await bcrypt.hash(password, 10)
     const updateUser_   = await pool.query('UPDATE users_notification SET '  + 
@@ -1294,7 +1294,7 @@ exports.matchPassword = async (req, res) => {
 	 failedAttempts: MAX_ATTEMPTS, //to show 'Exit' button only
 	});
      }
-     
+     */
      console.log('matchPassword : updating user is done successfully '); 
         
 // Then update the session (if dependent on the above)
