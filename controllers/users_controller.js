@@ -1203,12 +1203,15 @@ exports.matchPassword = async (req, res) => {
         }
 	*/
 	   
-    // Get all passwords stored in 'password_history'. 
+    // Get all passwords stored in 'password_history'. limit to 10 recent
     const historyQuery = `
         SELECT password 
         FROM password_history 
         WHERE user_id = $1
+	ORDER BY created_at DESC 
+        LIMIT 10
     `;
+	   
     const historyResult     = await pool.query(historyQuery, [userId]);
     const previousPasswords = historyResult.rows.map(row => row.password);
     
