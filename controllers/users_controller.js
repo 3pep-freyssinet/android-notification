@@ -1248,7 +1248,7 @@ exports.matchPassword = async (req, res) => {
 const isMatch = await Promise.race([
   comparisonPromise,
   new Promise((_, reject) => 
-    setTimeout(() => reject(new Error('Comparison timeout')), timeoutMs)
+    setTimeout(() => reject(new Error('Comparison timeout')), timeoutMs))
 ]).catch(() => []); // Return empty array on timeout
 
    if (isMatch.some(Boolean)) { // If any comparison returns true
