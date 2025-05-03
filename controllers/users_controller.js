@@ -1242,7 +1242,7 @@ exports.matchPassword = async (req, res) => {
   const comparisonPromise = Promise.all(
     [storedPassword, ...previousPasswords].map(hash => 
     bcrypt.compare(password, hash)
-);
+  ));
 
 // Race between comparisons and timeout
 const isMatch = await Promise.race([
