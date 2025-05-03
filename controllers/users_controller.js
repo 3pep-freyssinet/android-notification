@@ -1276,22 +1276,27 @@ exports.matchPassword = async (req, res) => {
         }//end compare
     }//end loop for
 	   
-    // Execute all independent queries concurrently
-const [updateNotification, updatePassword, insertHistory] = await Promise.all([
-  pool.query(
-    'UPDATE users_notification SET failed_attempts = $1, lockout_until = $2 WHERE username = $3',
-    [failedAttempts, lockoutUntil_, username]
-  ),
-  pool.query(
-    'UPDATE users SET password_hash = $1 WHERE user_id = $2',
-    [newHash, userId]
-  ),
-  pool.query(
-    'INSERT INTO password_history (user_id, old_password) VALUES ($1, $2)',
-    [userId, storedPassword]
-  ),
-]);
-
+    //update 'failedAttempts'
+    
+    const lockoutUntil_ = new Date(Date.now() + LOCKOUT_DURATION);
+    const newHash = await bcrypt.hash(password, 10)
+    const updateUser_   = await pool.query('UPDATE users_notification SET ' + 
+					   ' failed_attempts = $1, '        + 
+					   ' lockout_until = $2, '          +
+					   ' password = $3, '               +
+	                                   ' last_password_changed = NOW() ' +  
+					   ' WHERE username = $4', 
+	                                   [failedAttempts, lockoutUntil_, newHash,  username]);
+    if(updateUser_.rowCount != 1){
+	console.log('matchPassword : update failed updating user ');    
+	return res.status(500).json({ 
+	 message: 'Internal error.',
+	 failedAttempts: MAX_ATTEMPTS, //to show 'Exit' button only
+	});
+     }
+     
+     console.log('matchPassword : updating user is done successfully '); 
+        
 // Then update the session (if dependent on the above)
 //await updateSession(sessionId, { is_new_password_applied: true });	    
 
