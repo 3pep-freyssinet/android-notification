@@ -1244,7 +1244,11 @@ exports.matchPassword = async (req, res) => {
     [storedPassword, ...previousPasswords].map(hash => 
     bcrypt.compare(password, hash)
   ));
-
+	   
+// Wait for comparisons to finish, THEN log time
+const results = await comparisonPromise;
+console.timeEnd('passwordComparison'); // Correct: logs actual duration
+	   
 // Race between comparisons and timeout
 const isMatch = await Promise.race([
   comparisonPromise,
@@ -1262,7 +1266,7 @@ const isMatch = await Promise.race([
       ? [failedAttempts, username] 
       : [failedAttempts, new Date(Date.now() + LOCKOUT_DURATION), username]
   );
-console.timeEnd('passwordComparison'); // Log time if no match
+
 	   
   return res.status(202).json({
     message: failedAttempts !== 3
