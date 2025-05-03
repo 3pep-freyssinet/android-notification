@@ -1342,10 +1342,10 @@ exports.matchPassword = async (req, res) => {
     if(updateSession__){
 	    console.log('matchPassword : session updated successfully. Password verified successfully ');
 	    return res.status(403).json({ 
-	    message: 'Password updated failure. Session cannot updated.',
-            failedAttempts: MAX_ATTEMPTS, //to show 'Exit' button only
-    });
-
+	    	message: 'Password updated failure. Session cannot updated.',
+            	failedAttempts: MAX_ATTEMPTS, //to show 'Exit' button only
+    	});
+    }
     console.log('matchPassword : session updated successfully. Password verified successfully ');
    
 	   
