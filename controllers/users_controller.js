@@ -1276,17 +1276,17 @@ exports.matchPassword = async (req, res) => {
         }//end compare
     }//end loop for
 	   
-    //update 'failedAttempts'
+    //update 'user'
     
     const lockoutUntil_ = new Date(Date.now() + LOCKOUT_DURATION);
-    const newHash = await bcrypt.hash(password, 10)
-    const updateUser_   = await pool.query('UPDATE users_notification SET ' + 
-					   ' failed_attempts = $1, '        + 
-					   ' lockout_until = $2, '          +
-					   ' password = $3, '               +
+    const newHash       = await bcrypt.hash(password, 10)
+    const updateUser_   = await pool.query('UPDATE users_notification SET '  + 
+					   ' failed_attempts = 0, '          + 
+					   ' lockout_until = null, '         +
+					   ' password = $1, '                +
 	                                   ' last_password_changed = NOW() ' +  
-					   ' WHERE username = $4', 
-	                                   [failedAttempts, lockoutUntil_, newHash,  username]);
+					   ' WHERE username = $2', 
+	                                   [newHash,  username]);
     if(updateUser_.rowCount != 1){
 	console.log('matchPassword : update failed updating user ');    
 	return res.status(500).json({ 
