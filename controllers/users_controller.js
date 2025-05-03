@@ -1238,10 +1238,18 @@ exports.matchPassword = async (req, res) => {
     //////////////////////////////////
 
    
-   const isMatch = await Promise.all(
-  	[storedPassword, ...previousPasswords].map(hash => 
-    		bcrypt.compare(password, hash)
-   ));
+   const timeoutMs = 5000; // 5 seconds max for comparisons
+  const comparisonPromise = Promise.all(
+    [storedPassword, ...previousPasswords].map(hash => 
+    bcrypt.compare(password, hash)
+);
+
+// Race between comparisons and timeout
+const isMatch = await Promise.race([
+  comparisonPromise,
+  new Promise((_, reject) => 
+    setTimeout(() => reject(new Error('Comparison timeout')), timeoutMs)
+]).catch(() => []); // Return empty array on timeout
 
    if (isMatch.some(Boolean)) { // If any comparison returns true
    // Handle password reuse error
