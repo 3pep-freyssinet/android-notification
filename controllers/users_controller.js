@@ -1313,10 +1313,12 @@ exports.matchPassword = async (req, res) => {
     const updateUser__ = await pool.query(updateQuery, [newHash, userId]);
     if(updateUser__ == null){
 	console.log('matchPassword : update password and record history error ');
-    }else{
-	console.log('matchPassword : update password and record history is done successfully '); 
+	    return res.status(403).json({ 
+	    	message: 'Password updated failure. History cannot updated.',
+            	failedAttempts: MAX_ATTEMPTS, //to show 'Exit' button only
+    	    });
     }
-
+    console.log('matchPassword : update password and record history is done successfully '); 
     
     // Insert old password into history
     const insertHistoryQuery = `
@@ -1326,18 +1328,26 @@ exports.matchPassword = async (req, res) => {
     const insertHistoryQuery_ = await pool.query(insertHistoryQuery, [userId, storedPassword]);
     if(	insertHistoryQuery_ == null){
 	console.log('matchPassword : Insert old password into history error ');
-    }else{
-	console.log('matchPassword : Insert old password into history is done successfully ');
+	    return res.status(403).json({ 
+	    	message: 'Password updated failure. History cannot updated.',
+            	failedAttempts: MAX_ATTEMPTS, //to show 'Exit' button only
+    	    });
     }
+    console.log('matchPassword : Insert old password into history is done successfully ');
+    
 	   
 
    // Update the session to reflect that the new password has been applied
     const updateSession__ = await updateSession_(sessionId, { is_new_password_applied: true });
-    if(updateSession__ == null){
-	console.log('matchPassword : session updated error');
-    }else{
-	console.log('matchPassword : session updated successfully. Password verified successfully ');
-    }
+    if(updateSession__){
+	    console.log('matchPassword : session updated successfully. Password verified successfully ');
+	    return res.status(403).json({ 
+	    message: 'Password updated failure. Session cannot updated.',
+            failedAttempts: MAX_ATTEMPTS, //to show 'Exit' button only
+    });
+
+    console.log('matchPassword : session updated successfully. Password verified successfully ');
+   
 	   
     //if(updateSession_)return res.status(403).json({ message: 'Password updated failure. Session cannot updated.' });
 	    
