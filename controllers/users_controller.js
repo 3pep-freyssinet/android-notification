@@ -1215,8 +1215,6 @@ exports.matchPassword = async (req, res) => {
     // Increase failed attempts count
     let failedAttempts = user.failed_attempts + 1;
 
-    if(true)return res.status(200).json({ message: 'Password verified successfully.' });
-	   
     if (failedAttempts > MAX_ATTEMPTS) {
     	//update 'lockoutUntil_' 
     	//const lockoutUntil_ = new Date(Date.now() + LOCKOUT_DURATION);
@@ -1277,7 +1275,9 @@ exports.matchPassword = async (req, res) => {
 	   }
         }//end compare
     }//end loop for
-	   
+   
+    if(true)return res.status(200).json({ message: 'Password verified successfully.' });
+    
     //update 'user'
     /*
     const lockoutUntil_ = new Date(Date.now() + LOCKOUT_DURATION);
