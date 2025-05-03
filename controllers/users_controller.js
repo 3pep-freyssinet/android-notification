@@ -1209,8 +1209,8 @@ exports.matchPassword = async (req, res) => {
         FROM password_history 
         WHERE user_id = $1
     `;
-    const historyResult    = await pool.query(historyQuery, [userId]);
-    const previousPassword = historyResult.rows.map(row => row.password);
+    const historyResult     = await pool.query(historyQuery, [userId]);
+    const previousPasswords = historyResult.rows.map(row => row.password);
     
     // Increase failed attempts count
     let failedAttempts = user.failed_attempts + 1;
@@ -1236,6 +1236,8 @@ exports.matchPassword = async (req, res) => {
     //the try continue, it is not ended.
 
     //////////////////////////////////
+
+   
    const isMatch = await Promise.all(
   	[storedPassword, ...previousPasswords].map(hash => 
     		bcrypt.compare(password, hash)
