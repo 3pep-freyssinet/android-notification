@@ -1239,7 +1239,7 @@ exports.matchPassword = async (req, res) => {
    const isMatch = await Promise.all(
   	[storedPassword, ...previousPasswords].map(hash => 
     		bcrypt.compare(password, hash)
-	);
+   ));
 
    if (isMatch.some(Boolean)) { // If any comparison returns true
    // Handle password reuse error
