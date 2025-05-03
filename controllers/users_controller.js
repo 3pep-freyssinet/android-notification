@@ -1276,81 +1276,24 @@ exports.matchPassword = async (req, res) => {
         }//end compare
     }//end loop for
 	   
-     console.log('matchPassword : Password is valid.');
-	   
-    //update 'failedAttempts'
-    const lockoutUntil_ = new Date(Date.now() + LOCKOUT_DURATION);
-    const updateUser_   = await pool.query('UPDATE users_notification SET failed_attempts = $1, lockout_until = $2  WHERE username = $3', [failedAttempts, lockoutUntil_, username]);
-    if(updateUser_.rowCount != 1){
-	console.log('matchPassword : update failed_attempts and lockout_until not done ');    
-	return res.status(500).json({ 
-	 message: 'Internal error.',
-	 failedAttempts: MAX_ATTEMPTS, //to show 'Exit' button only
-	});
-     }
+    // Execute all independent queries concurrently
+const [updateNotification, updatePassword, insertHistory] = await Promise.all([
+  pool.query(
+    'UPDATE users_notification SET failed_attempts = $1, lockout_until = $2 WHERE username = $3',
+    [failedAttempts, lockoutUntil_, username]
+  ),
+  pool.query(
+    'UPDATE users SET password_hash = $1 WHERE user_id = $2',
+    [newHash, userId]
+  ),
+  pool.query(
+    'INSERT INTO password_history (user_id, old_password) VALUES ($1, $2)',
+    [userId, storedPassword]
+  ),
+]);
 
-     console.log('matchPassword : update failed_attempts and lockout_until is done successfully '); 
-	   
-     //store the new password
-     /*
-     // Fetch stored password hash and last changed date
-    const userQuery = `
-        SELECT password, last_password_changed 
-        FROM users_notification 
-        WHERE id = $1
-    `;
-    const userResult     = await pool.query(userQuery, [userId]);
-    const storedPassword = userResult.rows[0]?.password;
-    */
-	   
-    // Update password and record history
-    const newHash = await bcrypt.hash(password, 10);
-    const updateQuery = `
-        UPDATE users_notification 
-        SET password = $1, last_password_changed = NOW() 
-        WHERE id = $2
-    `;
-    const updateUser__ = await pool.query(updateQuery, [newHash, userId]);
-    if(updateUser__ == null){
-	console.log('matchPassword : update password and record history error ');
-	    return res.status(403).json({ 
-	    	message: 'Password updated failure. History cannot updated.',
-            	failedAttempts: MAX_ATTEMPTS, //to show 'Exit' button only
-    	    });
-    }
-    console.log('matchPassword : update password and record history is done successfully '); 
-    
-    // Insert old password into history
-    const insertHistoryQuery = `
-        INSERT INTO password_history (user_id, password) 
-        VALUES ($1, $2)
-    `;
-    const insertHistoryQuery_ = await pool.query(insertHistoryQuery, [userId, storedPassword]);
-    if(	insertHistoryQuery_ == null){
-	console.log('matchPassword : Insert old password into history error ');
-	    return res.status(403).json({ 
-	    	message: 'Password updated failure. History cannot updated.',
-            	failedAttempts: MAX_ATTEMPTS, //to show 'Exit' button only
-    	    });
-    }
-    console.log('matchPassword : Insert old password into history is done successfully ');
-    
-	   
-
-   // Update the session to reflect that the new password has been applied
-    const updateSession__ = await updateSession_(sessionId, { is_new_password_applied: true });
-    if(updateSession__){
-	    console.log('matchPassword : session updated successfully. Password verified successfully ');
-	    return res.status(403).json({ 
-	    	message: 'Password updated failure. Session cannot updated.',
-            	failedAttempts: MAX_ATTEMPTS, //to show 'Exit' button only
-    	});
-    }
-    console.log('matchPassword : session updated successfully. Password verified successfully ');
-   
-	   
-    //if(updateSession_)return res.status(403).json({ message: 'Password updated failure. Session cannot updated.' });
-	    
+// Then update the session (if dependent on the above)
+await updateSession(sessionId, { is_new_password_applied: true });	    
      return res.status(200).json({
 	     message: 'Password verified successfully.',
              failedAttempts:0, //do nothing
