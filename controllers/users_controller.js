@@ -1297,9 +1297,11 @@ exports.matchPassword = async (req, res) => {
      */
      console.log('matchPassword : updating user is done successfully '); 
         
-// Then update the session (if dependent on the above)
-//await updateSession(sessionId, { is_new_password_applied: true });	    
-
+    // Then update the session (if dependent on the above)
+    //await updateSession(sessionId, { is_new_password_applied: true });	    
+    
+    res.status(200).json({ 
+	   message: error.message,});
      
    }catch(error){
 	console.error('matchPassword : ' + error.message);
