@@ -1075,7 +1075,7 @@ exports.matchPassword = async (req, res) => {
      //if(true)return res.status(404).json({ message: 'Session not found.' });
      //if(true)return res.status(401).json({ message: 'Session expired.' });
      //if(true)return res.status(202).json({ message: 'New password cannot be the same as the current or previous passwords.' });
-     //if(true)return res.status(200).json({ message: 'Password verified successfully.' });
+     if(true)return res.status(200).json({ message: 'Password verified successfully.' });
      //if(true)res.status(500).json({ message: 'Server error. Please, try again later.' });
 
 	   
@@ -1301,7 +1301,8 @@ exports.matchPassword = async (req, res) => {
     //await updateSession(sessionId, { is_new_password_applied: true });	    
     
     res.status(200).json({ 
-	   message: error.message,});
+    	   message: 'Password successfully changed'
+    });
      
    }catch(error){
 	console.error('matchPassword : ' + error.message);
