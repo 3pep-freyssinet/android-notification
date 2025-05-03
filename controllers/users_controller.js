@@ -1310,26 +1310,37 @@ exports.matchPassword = async (req, res) => {
         SET password = $1, last_password_changed = NOW() 
         WHERE id = $2
     `;
-    await pool.query(updateQuery, [newHash, userId]);
+    const updateUser_ = await pool.query(updateQuery, [newHash, userId]);
+    if(updateUser_ == null){
+	console.log('matchPassword : update password and record history error ');
+    }else{
+	console.log('matchPassword : update password and record history is done successfully '); 
+    }
 
-    console.log('matchPassword : update password and record history is done successfully '); 
-	   
+    
     // Insert old password into history
     const insertHistoryQuery = `
         INSERT INTO password_history (user_id, password) 
         VALUES ($1, $2)
     `;
-    await pool.query(insertHistoryQuery, [userId, storedPassword]);
+    const insertHistoryQuery_ = await pool.query(insertHistoryQuery, [userId, storedPassword]);
+    if(	insertHistoryQuery_ == null){
+	console.log('matchPassword : Insert old password into history error ');
+    }else{
+	console.log('matchPassword : Insert old password into history is done successfully ');
+    }
 	   
-    console.log('matchPassword : Insert old password into history is done successfully '); 
-	   
+
    // Update the session to reflect that the new password has been applied
-    await updateSession_(sessionId, { is_new_password_applied: true });
-    
+    const updateSession__ = await updateSession_(sessionId, { is_new_password_applied: true });
+    if(updateSession__ == null){
+	console.log('matchPassword : session updated error');
+    }else{
+	console.log('matchPassword : session updated successfully. Password verified successfully ');
+    }
+	   
     //if(updateSession_)return res.status(403).json({ message: 'Password updated failure. Session cannot updated.' });
 	    
-     console.log('matchPassword : session updated successfully. Password verified successfully ');
-	   
      return res.status(200).json({
 	     message: 'Password verified successfully.',
              failedAttempts:0, //do nothing
