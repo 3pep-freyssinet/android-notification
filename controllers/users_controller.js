@@ -1364,12 +1364,16 @@ exports.matchPassword = async (req, res) => {
 
 async function updateSession_(sessionId, updates) {
     const { isNewPasswordVerified } = updates;
-
-    await pool.query(`
-        UPDATE password_change_sessions
-        SET is_new_password_verified = $1, timestamp = NOW()
-        WHERE session_id = $2
-    `, [isNewPasswordVerified, sessionId]);
+    try{
+    	await pool.query(`
+        	UPDATE password_change_sessions
+        	SET is_new_password_verified = $1, timestamp = NOW()
+        	WHERE session_id = $2 `,
+		[isNewPasswordVerified, sessionId]
+	);
+    }catch(error){
+	console.error('updateSession_ : ' + error.message);
+    }
 };
 
 
