@@ -1237,7 +1237,8 @@ exports.matchPassword = async (req, res) => {
 
     //////////////////////////////////
 
-   
+   console.time('passwordComparison'); // Start timer
+	   
    const timeoutMs = 5000; // 5 seconds max for comparisons
   const comparisonPromise = Promise.all(
     [storedPassword, ...previousPasswords].map(hash => 
@@ -1261,7 +1262,8 @@ const isMatch = await Promise.race([
       ? [failedAttempts, username] 
       : [failedAttempts, new Date(Date.now() + LOCKOUT_DURATION), username]
   );
-
+console.timeEnd('passwordComparison'); // Log time if no match
+	   
   return res.status(202).json({
     message: failedAttempts !== 3
       ? 'New password cannot match current/previous passwords.'
