@@ -1310,8 +1310,8 @@ exports.matchPassword = async (req, res) => {
         SET password = $1, last_password_changed = NOW() 
         WHERE id = $2
     `;
-    const updateUser_ = await pool.query(updateQuery, [newHash, userId]);
-    if(updateUser_ == null){
+    const updateUser__ = await pool.query(updateQuery, [newHash, userId]);
+    if(updateUser__ == null){
 	console.log('matchPassword : update password and record history error ');
     }else{
 	console.log('matchPassword : update password and record history is done successfully '); 
