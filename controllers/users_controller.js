@@ -1293,11 +1293,8 @@ const [updateNotification, updatePassword, insertHistory] = await Promise.all([
 ]);
 
 // Then update the session (if dependent on the above)
-await updateSession(sessionId, { is_new_password_applied: true });	    
-     return res.status(200).json({
-	     message: 'Password verified successfully.',
-             failedAttempts:0, //do nothing
-     });
+//await updateSession(sessionId, { is_new_password_applied: true });	    
+
      
    }catch(error){
 	console.error('matchPassword : ' + error.message);
