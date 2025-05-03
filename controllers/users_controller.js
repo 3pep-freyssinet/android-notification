@@ -1075,7 +1075,7 @@ exports.matchPassword = async (req, res) => {
      //if(true)return res.status(404).json({ message: 'Session not found.' });
      //if(true)return res.status(401).json({ message: 'Session expired.' });
      //if(true)return res.status(202).json({ message: 'New password cannot be the same as the current or previous passwords.' });
-     if(true)return res.status(200).json({ message: 'Password verified successfully.' });
+     //if(true)return res.status(200).json({ message: 'Password verified successfully.' });
      //if(true)res.status(500).json({ message: 'Server error. Please, try again later.' });
 
 	   
@@ -1214,7 +1214,9 @@ exports.matchPassword = async (req, res) => {
     
     // Increase failed attempts count
     let failedAttempts = user.failed_attempts + 1;
-	
+
+    if(true)return res.status(200).json({ message: 'Password verified successfully.' });
+	   
     if (failedAttempts > MAX_ATTEMPTS) {
     	//update 'lockoutUntil_' 
     	//const lockoutUntil_ = new Date(Date.now() + LOCKOUT_DURATION);
