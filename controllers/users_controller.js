@@ -1234,6 +1234,37 @@ exports.matchPassword = async (req, res) => {
     }
 
     //the try continue, it is not ended.
+
+    //////////////////////////////////
+   const isMatch = await Promise.all(
+  	[storedPassword, ...previousPasswords].map(hash => 
+    		bcrypt.compare(password, hash)
+	);
+
+   if (isMatch.some(Boolean)) { // If any comparison returns true
+   // Handle password reuse error
+   const updateUser = await pool.query(
+    failedAttempts !== 3
+      ? `UPDATE users_notification SET failed_attempts = $1 WHERE username = $2`
+      : `UPDATE users_notification SET failed_attempts = $1, lockout_until = $2 WHERE username = $3`,
+    failedAttempts !== 3 
+      ? [failedAttempts, username] 
+      : [failedAttempts, new Date(Date.now() + LOCKOUT_DURATION), username]
+  );
+
+  return res.status(202).json({
+    message: failedAttempts !== 3
+      ? 'New password cannot match current/previous passwords.'
+      : `Account locked. Try again in ${LOCKOUT_DURATION / (60 * 1000)} minutes.`,
+    failedAttempts,
+    ...(failedAttempts === 3 && { lockoutUntil: new Date(Date.now() + LOCKOUT_DURATION) })
+  });
+}
+
+ ///////////////////////////////////
+
+	   
+    /*  
     for (const hash of [storedPassword, ...previousPassword]) { //'storedPassword' is the cuurent password
 	console.log('matchPassword : loop : hash : ', hash, ' password : ', password); 
 	 const test =  await bcrypt.compare(password, hash);//compare clear with hash
@@ -1275,7 +1306,8 @@ exports.matchPassword = async (req, res) => {
 	   }
         }//end compare
     }//end loop for
-   
+   */
+	   
     if(true)return res.status(200).json({ message: 'Password verified successfully.' });
     
     //update 'user'
