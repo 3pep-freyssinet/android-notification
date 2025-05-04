@@ -1237,7 +1237,8 @@ exports.matchPassword = async (req, res) => {
     }
 
     //the try continue, it is not ended.
-
+	   
+  console.log('matchPassword : passwordComparison : start');
    console.time('passwordComparison'); // Start timer
 	   
    const timeoutMs = 5000; // 5 seconds max for comparisons
@@ -1248,7 +1249,6 @@ exports.matchPassword = async (req, res) => {
 	   
 // Wait for comparisons to finish, THEN log time
 const results = await comparisonPromise;
-console.timeEnd('passwordComparison'); // Correct: logs actual duration
 	   
 // Race between comparisons and timeout
 const isMatch = await Promise.race([
@@ -1352,6 +1352,9 @@ const isMatch = await Promise.race([
     await updateSession_(sessionId, { is_new_password_applied: true });	
 	   
     console.log('matchPassword : Password successfully changed');
+	   
+    console.log('matchPassword : passwordComparison : end');
+    console.timeEnd('passwordComparison'); // Correct: logs actual duration
 	   
     res.status(200).json({ 
     	   message: 'Password successfully changed'
