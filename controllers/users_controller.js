@@ -1067,7 +1067,11 @@ exports.updatePassword = async (req, res) => {
 //store new password.
 exports.matchPassword = async (req, res) => {
    try{ 
-    console.log('matchPassword');
+    console.log('matchPassword : start');
+
+   console.log('matchPassword : passwordComparison : start');
+   console.time('passwordComparison'); // Start timer
+	   
     const { updateSession  } = require('../services/passwordChangeService'); //needed below
 
      //for test
@@ -1237,10 +1241,7 @@ exports.matchPassword = async (req, res) => {
     }
 
     //the try continue, it is not ended.
-	   
-  console.log('matchPassword : passwordComparison : start');
-   console.time('passwordComparison'); // Start timer
-	   
+	      
    const timeoutMs = 5000; // 5 seconds max for comparisons
   const comparisonPromise = Promise.all(
     [storedPassword, ...previousPasswords].map(hash => 
