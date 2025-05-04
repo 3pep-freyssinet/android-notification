@@ -1132,6 +1132,7 @@ exports.matchPassword = async (req, res) => {
      const username = req.user.username;
      //console.log('matchPassword :  req.user : ',  req.user);      
      console.log('matchPassword : username : ', username);
+     if(username == null)return res.status(401).json({ error: 'Invalid username or password' });
 	   
      // Check if the user exists so we can get 'failedAttempts' and 'lockoutUntil'
         const userResult = await pool.query('SELECT * FROM users_notification WHERE username = $1', [username]);
