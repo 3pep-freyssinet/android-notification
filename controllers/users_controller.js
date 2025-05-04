@@ -1209,7 +1209,7 @@ exports.matchPassword = async (req, res) => {
         FROM password_history 
         WHERE user_id = $1
 	ORDER BY created_at DESC 
-        LIMIT 10
+        LIMIT 5
     `;
 	   
     const historyResult     = await pool.query(historyQuery, [userId]);
