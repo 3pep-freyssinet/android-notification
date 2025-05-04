@@ -1345,7 +1345,7 @@ const isMatch = await Promise.race([
     
    //Then update the histoty
    const insertHistoryQuery = `
-        INSERT INTO password_history (user_id, password_hash) 
+        INSERT INTO password_history (user_id, password) 
         VALUES ($1, $2)
     `;				  
     const insertHistoryQuery_ = await pool.query(insertHistoryQuery, [userId, storedPassword]);
