@@ -1269,8 +1269,7 @@ const isMatch = await Promise.race([
       ? [failedAttempts, username] 
       : [failedAttempts, new Date(Date.now() + LOCKOUT_DURATION), username]
   );
-
-	   
+  
   return res.status(202).json({
     message: failedAttempts !== 3
       ? 'New password cannot match current/previous passwords.'
@@ -1327,8 +1326,6 @@ const isMatch = await Promise.race([
     }//end loop for
    */
 	   
-    if(true)return res.status(200).json({ message: 'Password verified successfully.' });
-    
     //update 'user'
     /*
     const lockoutUntil_ = new Date(Date.now() + LOCKOUT_DURATION);
@@ -1348,11 +1345,21 @@ const isMatch = await Promise.race([
 	});
      }
      */
+	   
      console.log('matchPassword : updating user is done successfully '); 
-        
-    // Then update the session (if dependent on the above)
-    //await updateSession(sessionId, { is_new_password_applied: true });	    
     
+   //Then update the histoty
+   const insertHistoryQuery = `
+        INSERT INTO password_history (user_id, password_hash) 
+        VALUES ($1, $2)
+    `;				  
+    const insertHistoryQuery_ = await pool.query(insertHistoryQuery, [userId, storedPassword]);
+    
+    // Then update the session.
+    await updateSession_(sessionId, { is_new_password_applied: true });	
+	   
+    console.log('matchPassword : Password successfully changed');
+	   
     res.status(200).json({ 
     	   message: 'Password successfully changed'
     });
