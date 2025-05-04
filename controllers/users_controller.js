@@ -1255,12 +1255,13 @@ const isMatch = await Promise.race([
   comparisonPromise,
   new Promise((_, reject) => 
     setTimeout(() => reject(new Error('Comparison timeout')), timeoutMs))
-]).catch(() => []); // Return empty array on timeout
+])
+.catch(() => []); // Return empty array on timeout
 
    if (isMatch.some(Boolean)) { // If any comparison returns true
    // Handle password reuse error
    const updateUser = await pool.query(
-    failedAttempts !== 3
+    (failedAttempts !== 3)
       ? `UPDATE users_notification SET failed_attempts = $1 WHERE username = $2`
       : `UPDATE users_notification SET failed_attempts = $1, lockout_until = $2 WHERE username = $3`,
     failedAttempts !== 3 
@@ -1269,7 +1270,7 @@ const isMatch = await Promise.race([
   );
   
   return res.status(202).json({
-    message: failedAttempts !== 3
+    message: (failedAttempts !== 3
       ? 'New password cannot match current/previous passwords.'
       : `Account locked. Try again in ${LOCKOUT_DURATION / (60 * 1000)} minutes.`,
     failedAttempts,
@@ -1278,7 +1279,7 @@ const isMatch = await Promise.race([
 }
 	   
     /*  
-    for (const hash of [storedPassword, ...previousPassword]) { //'storedPassword' is the cuurent password
+    for (const hash of [storedPassword, ...previousPassword]) { //'storedPassword' is the current password
 	console.log('matchPassword : loop : hash : ', hash, ' password : ', password); 
 	 const test =  await bcrypt.compare(password, hash);//compare clear with hash
 	 console.log('matchPassword : loop : test : ', test);    
@@ -1320,10 +1321,8 @@ const isMatch = await Promise.race([
         }//end compare
     }//end loop for
    */
-	   
+    //here the new password is unique it doesn't exist 
     //update 'user'
-    /*
-    const lockoutUntil_ = new Date(Date.now() + LOCKOUT_DURATION);
     const newHash       = await bcrypt.hash(password, 10)
     const updateUser_   = await pool.query('UPDATE users_notification SET '  + 
 					   ' failed_attempts = 0, '          + 
@@ -1339,12 +1338,11 @@ const isMatch = await Promise.race([
 	 failedAttempts: MAX_ATTEMPTS, //to show 'Exit' button only
 	});
      }
-     */
-	   
+       
      console.log('matchPassword : updating user is done successfully '); 
     
-   //Then update the histoty
-   const insertHistoryQuery = `
+     //Then update the histoty
+     const insertHistoryQuery = `
         INSERT INTO password_history (user_id, password) 
         VALUES ($1, $2)
     `;				  
