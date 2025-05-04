@@ -1238,8 +1238,6 @@ exports.matchPassword = async (req, res) => {
 
     //the try continue, it is not ended.
 
-    //////////////////////////////////
-
    console.time('passwordComparison'); // Start timer
 	   
    const timeoutMs = 5000; // 5 seconds max for comparisons
@@ -1278,9 +1276,6 @@ const isMatch = await Promise.race([
     ...(failedAttempts === 3 && { lockoutUntil: new Date(Date.now() + LOCKOUT_DURATION) })
   });
 }
-
- ///////////////////////////////////
-
 	   
     /*  
     for (const hash of [storedPassword, ...previousPassword]) { //'storedPassword' is the cuurent password
