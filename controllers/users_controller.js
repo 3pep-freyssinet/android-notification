@@ -1274,7 +1274,7 @@ const isMatch = await Promise.race([
       ? 'New password cannot match current/previous passwords.'
       : `Account locked. Try again in ${LOCKOUT_DURATION / (60 * 1000)} minutes.`,
     failedAttempts,
-    ...(failedAttempts === 3 && { lockoutUntil: new Date(Date.now() + LOCKOUT_DURATION) })
+    ...failedAttempts === 3 && { lockoutUntil: new Date(Date.now() + LOCKOUT_DURATION) })
   });
 }
 	   
