@@ -204,22 +204,30 @@ const options = {
     }),
 };
 
+const forge = require('node-forge');
+	    
 const request = https.request(options, (response) => {
     const cert = response.socket.getPeerCertificate(true);
     
-    if (!cert || !cert.pubkey) {
-        console.warn('No certificate available, using cached pin');
-        return resolve(getCachedPin(userId));
+    if (!cert || !cert.pem) {
+        console.warn('No certificate available');
+        return resolve(getCachedPin());
     }
 
-    // Hash ONLY the public key (DER format) → matches OpenSSL
-    const publicKeyDer = cert.pubkey;
+    // Parse PEM and extract DER public key (matches OpenSSL)
+    const pem = cert.pem.replace(/^\-+BEGIN CERTIFICATE\-+\r?\n|\-+END CERTIFICATE\-+\r?\n?/g, '');
+    const der = Buffer.from(pem, 'base64');
+    const asn1 = forge.asn1.fromDer(forge.util.createBuffer(der.toString('binary')));
+    const x509 = forge.pki.certificateFromAsn1(asn1);
+    const publicKeyDer = forge.pki.publicKeyToAsn1(x509.publicKey).getBytes();
+    
+    // Hash the DER key
     const hash = crypto.createHash('sha256')
-        .update(publicKeyDer)
+        .update(Buffer.from(publicKeyDer, 'binary'))
         .digest('base64');
     
     const okHttpPin = `sha256/${hash}`;
-    console.log('Correct Pin:', okHttpPin); // Now matches OpenSSL
+    console.log('DER Public Key Pin:', okHttpPin); // Now matches OpenSSL
     resolve(okHttpPin);
 });
 	
