@@ -162,7 +162,9 @@ const fetchLatestPin = async (userId) => {
         console.log('fetchLatestPin, start ...');
 	const domain = 'android-notification.onrender.com';
 	//const options = { hostname: domain, port: 443, method: 'GET' };
-        const options = {
+	    
+        /*
+	const options = {
     		hostname: domain,
     		port: 443,
     		method: 'GET',
@@ -172,7 +174,7 @@ const fetchLatestPin = async (userId) => {
         		requestCert: true,
     		}),
 	};
-	    
+	*/  
 	/*
         const request = https.request(options, (response) => {
             const cert = response.socket.getPeerCertificate();
@@ -191,7 +193,7 @@ const fetchLatestPin = async (userId) => {
         });
 	*/
 	    
-const https = require('https');
+//const https = require('https');
 const options = {
     hostname: 'android-notification.onrender.com',
     servername: 'android-notification.onrender.com', // Force SNI
