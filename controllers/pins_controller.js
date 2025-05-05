@@ -191,26 +191,24 @@ const fetchLatestPin = async (userId) => {
         });
 	*/
 	    
-        const request = https.request(options, (response) => {
-        const cert = response.socket.getPeerCertificate();
-    	
-	console.log('subject : ', cert.subject, '\nissuer : ', cert.issuer);
-		
-       if (!cert || Object.keys(cert).length === 0) {
-         console.warn('fetchLatestPin: No certificate available, using last known valid pin');
-         resolve(getCachedPin(userId)); // Fallback to cached pin
-      } else {
-        // Extract public key in DER format and compute SHA-256 hash (OkHttp-compatible)
-        const publicKeyDer = cert.pubkey; // DER-encoded public key
-        const sha256Pin = crypto
-            .createHash('sha256')
-            .update(publicKeyDer)
-            .digest('base64');
-        
-        const okHttpPin = `sha256/${sha256Pin}`;
-        resolve(okHttpPin); // Now matches OkHttp's expected format
-     }
-    });
+const request = https.request(options, (response) => {
+    const cert = response.socket.getPeerCertificate(true);
+    
+    if (!cert || !cert.pubkey) {
+        console.warn('No certificate available, using cached pin');
+        return resolve(getCachedPin(userId));
+    }
+
+    // Get public key in DER format and hash it properly
+    const publicKeyDer = cert.pubkey;
+    const hash = crypto.createHash('sha256')
+        .update(publicKeyDer)
+        .digest('base64');
+    
+    const okHttpPin = `sha256/${hash}`;
+    console.log('Generated Pin:', okHttpPin);
+    resolve(okHttpPin);
+});
 	
         //console.log('fetchLatestPin, request : ', request);
         request.on('error', (error) => {
