@@ -160,9 +160,20 @@ exports.renewSHA256Certificate = async (req, res) => {
 const fetchLatestPin = async (userId) => {
     return new Promise((resolve, reject) => {
         console.log('fetchLatestPin, start ...');
-		const domain = 'android-notification.onrender.com';
-		const options = { hostname: domain, port: 443, method: 'GET' };
-        /*
+	const domain = 'android-notification.onrender.com';
+	//const options = { hostname: domain, port: 443, method: 'GET' };
+        const options = {
+    		hostname: domain,
+    		port: 443,
+    		method: 'GET',
+    		agent: new https.Agent({  
+        		// Force Node.js to fetch the leaf cert
+        		rejectUnauthorized: false, // Only for debugging! Remove in prod.
+        		requestCert: true,
+    		}),
+	};
+	    
+	/*
         const request = https.request(options, (response) => {
             const cert = response.socket.getPeerCertificate();
 	   //console.log('fetchLatestPin, cert : ', cert);
