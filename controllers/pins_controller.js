@@ -191,22 +191,30 @@ const fetchLatestPin = async (userId) => {
         });
 	*/
 	    
+const https = require('https');
+const options = {
+    hostname: 'android-notification.onrender.com',
+    servername: 'android-notification.onrender.com', // Force SNI
+    port: 443,
+    method: 'GET',
+    agent: new https.Agent({  
+        rejectUnauthorized: false, // For testing only
+    }),
+};
+
 const request = https.request(options, (response) => {
     const cert = response.socket.getPeerCertificate(true);
-    
     if (!cert || !cert.pubkey) {
-        console.warn('No certificate available, using cached pin');
+        console.warn('No certificate available');
         return resolve(getCachedPin(userId));
     }
 
-    // Get public key in DER format and hash it properly
-    const publicKeyDer = cert.pubkey;
-    const hash = crypto.createHash('sha256')
-        .update(publicKeyDer)
-        .digest('base64');
+    // Hash ONLY the public key (DER format)
+    const okHttpPin = `sha256/${crypto.createHash('sha256')
+        .update(cert.pubkey)
+        .digest('base64')}`;
     
-    const okHttpPin = `sha256/${hash}`;
-    console.log('Generated Pin:', okHttpPin);
+    console.log('Final Pin:', okHttpPin); // Should match OpenSSL
     resolve(okHttpPin);
 });
 	
