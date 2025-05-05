@@ -193,7 +193,9 @@ const fetchLatestPin = async (userId) => {
 	    
         const request = https.request(options, (response) => {
         const cert = response.socket.getPeerCertificate();
-    
+    	
+	console.log('subject : ', cert.subject, '\nissuer : ', cert.issuer);
+		
        if (!cert || Object.keys(cert).length === 0) {
          console.warn('fetchLatestPin: No certificate available, using last known valid pin');
          resolve(getCachedPin(userId)); // Fallback to cached pin
