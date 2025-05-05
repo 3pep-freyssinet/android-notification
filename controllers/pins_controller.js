@@ -206,17 +206,20 @@ const options = {
 
 const request = https.request(options, (response) => {
     const cert = response.socket.getPeerCertificate(true);
+    
     if (!cert || !cert.pubkey) {
-        console.warn('No certificate available');
+        console.warn('No certificate available, using cached pin');
         return resolve(getCachedPin(userId));
     }
 
-    // Hash ONLY the public key (DER format)
-    const okHttpPin = `sha256/${crypto.createHash('sha256')
-        .update(cert.pubkey)
-        .digest('base64')}`;
+    // Hash ONLY the public key (DER format) → matches OpenSSL
+    const publicKeyDer = cert.pubkey;
+    const hash = crypto.createHash('sha256')
+        .update(publicKeyDer)
+        .digest('base64');
     
-    console.log('Final Pin:', okHttpPin); // Should match OpenSSL
+    const okHttpPin = `sha256/${hash}`;
+    console.log('Correct Pin:', okHttpPin); // Now matches OpenSSL
     resolve(okHttpPin);
 });
 	
