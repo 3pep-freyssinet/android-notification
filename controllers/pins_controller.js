@@ -162,10 +162,10 @@ const fetchLatestPin = async (userId) => {
         console.log('fetchLatestPin, start ...');
 		const domain = 'android-notification.onrender.com';
 		const options = { hostname: domain, port: 443, method: 'GET' };
-
+        /*
         const request = https.request(options, (response) => {
             const cert = response.socket.getPeerCertificate();
-	//console.log('fetchLatestPin, cert : ', cert);
+	   //console.log('fetchLatestPin, cert : ', cert);
             if (!cert || Object.keys(cert).length === 0) {
                 //reject(new Error('No certificate available'));
 		console.warn('fetchLatestPin: No certificate available, using last known valid pin');
@@ -178,6 +178,27 @@ const fetchLatestPin = async (userId) => {
                 //resolve(sha256Fingerprint);
             }
         });
+	*/
+	    
+        const request = https.request(options, (response) => {
+        const cert = response.socket.getPeerCertificate();
+    
+       if (!cert || Object.keys(cert).length === 0) {
+         console.warn('fetchLatestPin: No certificate available, using last known valid pin');
+         resolve(getCachedPin(userId)); // Fallback to cached pin
+      } else {
+        // Extract public key in DER format and compute SHA-256 hash (OkHttp-compatible)
+        const publicKeyDer = cert.pubkey; // DER-encoded public key
+        const sha256Pin = crypto
+            .createHash('sha256')
+            .update(publicKeyDer)
+            .digest('base64');
+        
+        const okHttpPin = `sha256/${sha256Pin}`;
+        resolve(okHttpPin); // Now matches OkHttp's expected format
+     }
+    });
+	
         //console.log('fetchLatestPin, request : ', request);
         request.on('error', (error) => {
             console.error('fetchLatestPin Error:', error);
