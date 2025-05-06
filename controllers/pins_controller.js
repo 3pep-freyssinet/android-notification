@@ -185,8 +185,48 @@ const fetchLatestPin = (userId) => {
             }
 
             const cert = response.socket.getPeerCertificate(true);
+	    /////////////////////////////////
+	    if (!cert) {
+  		console.error('No certificate received');
+  		return;
+	    }
+
+		// 1. List all available fields
+		console.log('Certificate keys:', Object.keys(cert));
+		
+		// 2. Check raw formats
+		console.log('RAW cert length:', cert.raw?.length || 'Not available');
+		console.log('PEM cert:', cert.pem ? 'Exists' : 'Missing');
+		console.log('Public key type:', cert.pubkey ? `Buffer (${cert.pubkey.length} bytes)` : 'Missing');
+		
+		// 3. Verify public key encoding
+		if (cert.pubkey) {
+		  const header = cert.pubkey.slice(0, 5).toString('hex');
+		  console.log('Public key header (hex):', header);
+		  
+		  // Common DER headers:
+		  // - EC keys: 3059... (ASN.1 sequence)
+		  // - RSA keys: 3082... 
+		}
+
+		// 4. Test PEM generation
+		if (cert.raw) {
+		  const manualPem = [
+		    '-----BEGIN CERTIFICATE-----',
+		    Buffer.from(cert.raw).toString('base64'),
+		    '-----END CERTIFICATE-----'
+		  ].join('\n');
+		  console.log('Generated PEM (first 50 chars):', manualPem.substring(0, 50));
+		}
+	    ////////////////////////////////
+
+		
             console.log('5. Certificate obtained:', cert ? 'YES' : 'NO');
             console.log('5. Certificate obtained:', cert )
+	    if (!cert?.pubkey) {
+              console.warn('No public key available');
+              return resolve(getCachedPin());
+            }
 		
 	    if (!cert?.pem) {
               console.warn('No PEM available');
