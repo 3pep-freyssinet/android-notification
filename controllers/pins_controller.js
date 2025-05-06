@@ -173,7 +173,7 @@ const fetchLatestPin = (userId) => {
 	    rejectUnauthorized: false // Only for debugging!
 	  })
 	};
-
+     try{
         console.log('2. Creating request...');
         const request = https.request(options, (response) => {
             console.log('4. Received response, status:', response.statusCode);
@@ -185,10 +185,9 @@ const fetchLatestPin = (userId) => {
             }
 
             const cert = response.socket.getPeerCertificate(true);
-	    
+            //console.log('5. Certificate obtained:', cert ? 'YES' : 'NO');
+            //console.log('5. Certificate obtained:', cert );
 		
-            console.log('5. Certificate obtained:', cert ? 'YES' : 'NO');
-            //console.log('5. Certificate obtained:', cert )
 	    if (!cert?.pubkey) {
               console.warn('No public key available');
               return resolve(getCachedPin());
@@ -203,33 +202,12 @@ const fetchLatestPin = (userId) => {
              console.log('Correct Pin:', okHttpPin);
         
               resolve(okHttpPin);
+        request.end();
+    }//end request
             } catch (error) {
                 console.error('12. Processing error:', error);
                 resolve(getCachedPin(userId));
             }
-        });
-
-        // Add all possible event handlers
-        request.on('socket', (socket) => {
-            console.log('3. Socket assigned');
-            socket.on('connect', () => console.log('3a. Socket connected'));
-            socket.on('error', (e) => console.error('3b. Socket error:', e));
-        });
-
-        request.on('error', (error) => {
-            console.error('13. Request failed:', error);
-            resolve(getCachedPin(userId));
-        });
-
-        request.on('timeout', () => {
-            console.error('14. Request timed out');
-            request.destroy();
-            resolve(getCachedPin(userId));
-        });
-
-        console.log('2a. Writing request...');
-        request.end();
-    });
 };
 
 /////////////////////////////////////////////////////////
