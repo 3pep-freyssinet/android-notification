@@ -159,7 +159,7 @@ exports.renewSHA256Certificate = async (req, res) => {
 // Fetch the latest SHA-256 pin
 const fetchLatestPin = (userId) => {
     return new Promise((resolve, reject) => {
-        console.log('fetchLatestPin, start ...');
+        console.log('1. Starting fetchLatestPin...');
         const forge = require('node-forge');
         
         const options = {
@@ -167,32 +167,40 @@ const fetchLatestPin = (userId) => {
             servername: 'android-notification.onrender.com',
             port: 443,
             method: 'GET',
+            timeout: 5000, // Add timeout
             agent: new https.Agent({
                 rejectUnauthorized: false,
+                keepAlive: false
             }),
         };
 
-        console.log('Creating HTTPS request...');
+        console.log('2. Creating request...');
         const request = https.request(options, (response) => {
-            console.log('HTTPS response received. Status:', response.statusCode);
+            console.log('4. Received response, status:', response.statusCode);
             
+            // Verify we actually got a TLS connection
+            if (!response.socket || !response.socket.getPeerCertificate) {
+                console.error('No TLS socket available');
+                return resolve(getCachedPin(userId));
+            }
+
             const cert = response.socket.getPeerCertificate(true);
-            console.log('Certificate obtained:', !!cert);
+            console.log('5. Certificate obtained:', cert ? 'YES' : 'NO');
             
             if (!cert || !cert.pem) {
-                console.warn('No certificate available');
+                console.error('6. No certificate available');
                 return resolve(getCachedPin(userId));
             }
 
             // Debug certificate
-            console.log('Certificate Subject:', cert.subject);
-            console.log('Certificate Issuer:', cert.issuer);
-            console.log('Full Certificate PEM:\n', cert.pem);
-
-            const pem = cert.pem.replace(/^\-+BEGIN CERTIFICATE\-+\r?\n|\-+END CERTIFICATE\-+\r?\n?/g, '');
-            console.log('Cleaned PEM (base64):', pem.length > 50 ? pem.substring(0, 50) + '...' : pem);
+            console.log('7. Certificate Subject:', cert.subject?.CN);
+            console.log('8. Certificate Issuer:', cert.issuer?.CN);
+            console.log('9. PEM Head:', cert.pem.substring(0, 50) + '...');
 
             try {
+                const pem = cert.pem.replace(/^\-+BEGIN CERTIFICATE\-+\r?\n|\-+END CERTIFICATE\-+\r?\n?/g, '');
+                console.log('10. PEM cleaned, length:', pem.length);
+                
                 const der = Buffer.from(pem, 'base64');
                 const asn1 = forge.asn1.fromDer(forge.util.createBuffer(der.toString('binary')));
                 const x509 = forge.pki.certificateFromAsn1(asn1);
@@ -203,24 +211,38 @@ const fetchLatestPin = (userId) => {
                     .digest('base64');
                 
                 const okHttpPin = `sha256/${hash}`;
-                console.log('DER Public Key Pin:', okHttpPin);
+                console.log('11. Derived Pin:', okHttpPin);
                 resolve(okHttpPin);
             } catch (error) {
-                console.error('Certificate processing error:', error);
+                console.error('12. Processing error:', error);
                 resolve(getCachedPin(userId));
             }
         });
 
+        // Add all possible event handlers
+        request.on('socket', (socket) => {
+            console.log('3. Socket assigned');
+            socket.on('connect', () => console.log('3a. Socket connected'));
+            socket.on('error', (e) => console.error('3b. Socket error:', e));
+        });
+
         request.on('error', (error) => {
-            console.error('Request error:', error);
+            console.error('13. Request failed:', error);
             resolve(getCachedPin(userId));
         });
 
-        console.log('Ending request...');
+        request.on('timeout', () => {
+            console.error('14. Request timed out');
+            request.destroy();
+            resolve(getCachedPin(userId));
+        });
+
+        console.log('2a. Writing request...');
         request.end();
     });
 };
 
+/////////////////////////////////////////////////////////
 // Store last known valid pin
 //let cachedPin = null;
 //const cachePin = (pin) => {
