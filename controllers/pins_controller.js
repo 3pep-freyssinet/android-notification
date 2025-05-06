@@ -163,7 +163,7 @@ const fetchLatestPin = (userId) => {
         const forge = require('node-forge');
         
         const options = {
-	  hostname: '216.24.57.4',
+	  hostname: 'android-notification.onrender.com', //'216.24.57.4',
 	  servername: 'android-notification.onrender.com', // Critical for SNI
 	  path: '/pins/fetch-store-certificate',
 	  headers: { 
