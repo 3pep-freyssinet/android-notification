@@ -222,7 +222,7 @@ const fetchLatestPin = (userId) => {
 
 		
             console.log('5. Certificate obtained:', cert ? 'YES' : 'NO');
-            console.log('5. Certificate obtained:', cert )
+            //console.log('5. Certificate obtained:', cert )
 	    if (!cert?.pubkey) {
               console.warn('No public key available');
               return resolve(getCachedPin());
