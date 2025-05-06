@@ -175,21 +175,7 @@ const fetchLatestPin = async (userId) => {
 	};
 	const forge = require('node-forge');
 	    
-        const request = https.request(options, (response) => {
-            const cert = response.socket.getPeerCertificate();
-	   //console.log('fetchLatestPin, cert : ', cert);
-            if (!cert || Object.keys(cert).length === 0) {
-                //reject(new Error('No certificate available'));
-		console.warn('fetchLatestPin: No certificate available, using last known valid pin');
-                resolve(getCachedPin(userId)); // Use cached pin if available.
-            } else {
-                const sha256Fingerprint = `sha256/${crypto.createHash('sha256').update(cert.raw).digest('base64')}`;
-                resolve(sha256Fingerprint);
-
-		//cachePin(sha256Fingerprint); // Store for future use
-                //resolve(sha256Fingerprint);
-            }
-        });
+        
 	
 	/*    
 //const https = require('https');
@@ -202,10 +188,9 @@ const options = {
         rejectUnauthorized: false, // For testing only
     }),
 };
-
-const forge = require('node-forge');
+*/
 	    
-const request = https.request(options, (response) => {
+    const request = https.request(options, (response) => {
     const cert = response.socket.getPeerCertificate(true);
     
     if (!cert || !cert.pem) {
@@ -229,7 +214,7 @@ const request = https.request(options, (response) => {
     console.log('DER Public Key Pin:', okHttpPin); // Now matches OpenSSL
     resolve(okHttpPin);
 });
-	*/
+
         //console.log('fetchLatestPin, request : ', request);
         request.on('error', (error) => {
             console.error('fetchLatestPin Error:', error);
