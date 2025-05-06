@@ -161,6 +161,17 @@ const fetchLatestPin = async (userId) => {
     console.log('fetchLatestPin, start ...');
     const forge = require('node-forge');
     try{
+
+	const options = {
+    		hostname: 'android-notification.onrender.com',
+    		servername: 'android-notification.onrender.com', // Critical for SNI
+    		port: 443,
+    		method: 'GET',
+    		agent: new https.Agent({
+        		rejectUnauthorized: false, // Bypass proxy cert (for testing only)
+    		}),
+	};
+	
     	const request = https.request(options, (response) => {
     	const cert = response.socket.getPeerCertificate(true);
     
