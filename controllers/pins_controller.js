@@ -177,7 +177,18 @@ const fetchLatestPin = (userId) => {
         console.log('2. Creating request...');
         const request = https.request(options, (response) => {
             console.log('4. Received response, status:', response.statusCode);
-            
+	   // Handle response errors FIRST
+  	   response.on('error', (err) => {
+    		console.error('Response error:', err);
+    		resolve(getCachedPin());
+  	  });
+
+	  // Set timeout (critical!)
+	  request.setTimeout(10000, () => {
+  		request.destroy();
+  		console.error('Request timed out');
+  		resolve(getCachedPin());
+	});
             // Verify we actually got a TLS connection
             if (!response.socket || !response.socket.getPeerCertificate) {
                 console.error('No TLS socket available');
