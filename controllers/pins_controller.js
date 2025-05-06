@@ -157,66 +157,69 @@ exports.renewSHA256Certificate = async (req, res) => {
 ///////////////////////////////////////
 /////////////////////////// get latest sha-256 pin /////////////////////////////////
 // Fetch the latest SHA-256 pin
-const fetchLatestPin = async (userId) => {
-    console.log('fetchLatestPin, start ...');
-    const forge = require('node-forge');
-    try{
+const fetchLatestPin = (userId) => {
+    return new Promise((resolve, reject) => {
+        console.log('fetchLatestPin, start ...');
+        const forge = require('node-forge');
+        
+        const options = {
+            hostname: 'android-notification.onrender.com',
+            servername: 'android-notification.onrender.com',
+            port: 443,
+            method: 'GET',
+            agent: new https.Agent({
+                rejectUnauthorized: false,
+            }),
+        };
 
-	const options = {
-    		hostname: 'android-notification.onrender.com',
-    		servername: 'android-notification.onrender.com', // Critical for SNI
-    		port: 443,
-    		method: 'GET',
-    		agent: new https.Agent({
-        		rejectUnauthorized: false, // Bypass proxy cert (for testing only)
-    		}),
-	};
-	
-    	const request = https.request(options, (response) => {
-    	const cert = response.socket.getPeerCertificate(true);
-    
-	// Log the full certificate object (for debugging)
-        console.log('Raw Certificate Object:', JSON.stringify(cert, null, 2));
-	    
-    	if (!cert || !cert.pem) {
-        	console.warn('No certificate available');
-        	return resolve(getCachedPin());
-   	 }
-	    
-	// Log the original PEM
-        console.log('Original PEM:\n', cert.pem);
-	    
-    	// Parse PEM and extract DER public key (matches OpenSSL)
-    	const pem = cert.pem.replace(/^\-+BEGIN CERTIFICATE\-+\r?\n|\-+END CERTIFICATE\-+\r?\n?/g, '');
+        console.log('Creating HTTPS request...');
+        const request = https.request(options, (response) => {
+            console.log('HTTPS response received. Status:', response.statusCode);
+            
+            const cert = response.socket.getPeerCertificate(true);
+            console.log('Certificate obtained:', !!cert);
+            
+            if (!cert || !cert.pem) {
+                console.warn('No certificate available');
+                return resolve(getCachedPin(userId));
+            }
 
-        // Log the cleaned PEM (base64 content only)
-        console.log('Cleaned PEM (base64):', pem);
-	    
-    	const der = Buffer.from(pem, 'base64');
-    	const asn1 = forge.asn1.fromDer(forge.util.createBuffer(der.toString('binary')));
-    	const x509 = forge.pki.certificateFromAsn1(asn1);
-    	const publicKeyDer = forge.pki.publicKeyToAsn1(x509.publicKey).getBytes();
-    
-    	// Hash the DER key
-    	const hash = crypto.createHash('sha256')
-        .update(Buffer.from(publicKeyDer, 'binary'))
-        .digest('base64');
-    
-    	const okHttpPin = `sha256/${hash}`;
-    	console.log('DER Public Key Pin:', okHttpPin); // Now matches OpenSSL
-    	resolve(okHttpPin);
+            // Debug certificate
+            console.log('Certificate Subject:', cert.subject);
+            console.log('Certificate Issuer:', cert.issuer);
+            console.log('Full Certificate PEM:\n', cert.pem);
 
-        //console.log('fetchLatestPin, request : ', request);
-        request.on('error', (error) => {
-            console.error('fetchLatestPin Error:', error);
-            resolve(getCachedPin(userId)); // Use cached pin if fetch fails
+            const pem = cert.pem.replace(/^\-+BEGIN CERTIFICATE\-+\r?\n|\-+END CERTIFICATE\-+\r?\n?/g, '');
+            console.log('Cleaned PEM (base64):', pem.length > 50 ? pem.substring(0, 50) + '...' : pem);
+
+            try {
+                const der = Buffer.from(pem, 'base64');
+                const asn1 = forge.asn1.fromDer(forge.util.createBuffer(der.toString('binary')));
+                const x509 = forge.pki.certificateFromAsn1(asn1);
+                const publicKeyDer = forge.pki.publicKeyToAsn1(x509.publicKey).getBytes();
+                
+                const hash = crypto.createHash('sha256')
+                    .update(Buffer.from(publicKeyDer, 'binary'))
+                    .digest('base64');
+                
+                const okHttpPin = `sha256/${hash}`;
+                console.log('DER Public Key Pin:', okHttpPin);
+                resolve(okHttpPin);
+            } catch (error) {
+                console.error('Certificate processing error:', error);
+                resolve(getCachedPin(userId));
+            }
         });
+
+        request.on('error', (error) => {
+            console.error('Request error:', error);
+            resolve(getCachedPin(userId));
+        });
+
+        console.log('Ending request...');
         request.end();
-    });//end request
-}catch(error){
-	console.error('fetchLatestPin catch Error:', error);
-}
-};//fetchLatestPin
+    });
+};
 
 // Store last known valid pin
 //let cachedPin = null;
