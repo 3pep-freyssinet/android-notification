@@ -203,7 +203,7 @@ const fetchLatestPin = (userId) => {
         
               resolve(okHttpPin);
         request.end();
-    }//end request
+    });//end request
             } catch (error) {
                 console.error('12. Processing error:', error);
                 resolve(getCachedPin(userId));
