@@ -626,8 +626,8 @@ try {
 	let userId;
 	if(!req.user){
 	    const androidId = req.body.androidId;
-	    console.log('fetchStoreCertificate : req.body : ', JSON.stringify(req.body));
-	    console.log('fetchStoreCertificate : req.body keys : ', Object.keys(req.body));
+	    //console.log('fetchStoreCertificate : req.body : ', JSON.stringify(req.body));
+	    //console.log('fetchStoreCertificate : req.body keys : ', Object.keys(req.body));
 		
 	    if(androidId == null){
 	       console.warn('fetchStoreCertificate : androidId not found.');
