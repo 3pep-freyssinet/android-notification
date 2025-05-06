@@ -202,12 +202,17 @@ const fetchLatestPin = (userId) => {
              console.log('Correct Pin:', okHttpPin);
         
               resolve(okHttpPin);
+	      
+	    request.on('error', (error) => {
+            	console.error('fetchLatestPin Error:', error);
+            	resolve(getCachedPin(userId)); // Use cached pin if fetch fails
+        });
         request.end();
     });//end request
-            } catch (error) {
-                console.error('12. Processing error:', error);
-                resolve(getCachedPin(userId));
-            }
+    } catch (error) {
+	console.error('12. Processing error:', error);
+	resolve(getCachedPin(userId));
+    }
 });//end promise
 }//end function
 
