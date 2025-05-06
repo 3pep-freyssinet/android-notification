@@ -173,7 +173,8 @@ const fetchLatestPin = async (userId) => {
         		requestCert: true,
     		}),
 	};
-	
+	const forge = require('node-forge');
+	    
         const request = https.request(options, (response) => {
             const cert = response.socket.getPeerCertificate();
 	   //console.log('fetchLatestPin, cert : ', cert);
