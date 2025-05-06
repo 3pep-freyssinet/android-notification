@@ -163,26 +163,36 @@ const fetchLatestPin = async (userId) => {
     const request = https.request(options, (response) => {
     	const cert = response.socket.getPeerCertificate(true);
     
+	// Log the full certificate object (for debugging)
+        console.log('Raw Certificate Object:', JSON.stringify(cert, null, 2));
+	    
     	if (!cert || !cert.pem) {
         	console.warn('No certificate available');
         	return resolve(getCachedPin());
-    	}
+   	 }
+	    
+	// Log the original PEM
+        console.log('Original PEM:\n', cert.pem);
+	    
+    	// Parse PEM and extract DER public key (matches OpenSSL)
+    	const pem = cert.pem.replace(/^\-+BEGIN CERTIFICATE\-+\r?\n|\-+END CERTIFICATE\-+\r?\n?/g, '');
 
-    // Parse PEM and extract DER public key (matches OpenSSL)
-    const pem = cert.pem.replace(/^\-+BEGIN CERTIFICATE\-+\r?\n|\-+END CERTIFICATE\-+\r?\n?/g, '');
-    const der = Buffer.from(pem, 'base64');
-    const asn1 = forge.asn1.fromDer(forge.util.createBuffer(der.toString('binary')));
-    const x509 = forge.pki.certificateFromAsn1(asn1);
-    const publicKeyDer = forge.pki.publicKeyToAsn1(x509.publicKey).getBytes();
+        // Log the cleaned PEM (base64 content only)
+        console.log('Cleaned PEM (base64):', pem);
+	    
+    	const der = Buffer.from(pem, 'base64');
+    	const asn1 = forge.asn1.fromDer(forge.util.createBuffer(der.toString('binary')));
+    	const x509 = forge.pki.certificateFromAsn1(asn1);
+    	const publicKeyDer = forge.pki.publicKeyToAsn1(x509.publicKey).getBytes();
     
-    // Hash the DER key
-    const hash = crypto.createHash('sha256')
+    	// Hash the DER key
+    	const hash = crypto.createHash('sha256')
         .update(Buffer.from(publicKeyDer, 'binary'))
         .digest('base64');
     
-    const okHttpPin = `sha256/${hash}`;
-    console.log('DER Public Key Pin:', okHttpPin); // Now matches OpenSSL
-    resolve(okHttpPin);
+    	const okHttpPin = `sha256/${hash}`;
+    	console.log('DER Public Key Pin:', okHttpPin); // Now matches OpenSSL
+    	resolve(okHttpPin);
 
         //console.log('fetchLatestPin, request : ', request);
         request.on('error', (error) => {
@@ -191,7 +201,7 @@ const fetchLatestPin = async (userId) => {
         });
         request.end();
     });//end request
-};
+};//fetchLatestPin
 
 // Store last known valid pin
 //let cachedPin = null;
