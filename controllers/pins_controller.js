@@ -163,16 +163,16 @@ const fetchLatestPin = (userId) => {
         const forge = require('node-forge');
         
         const options = {
-            hostname: 'android-notification.onrender.com',
-            servername: 'android-notification.onrender.com',
-            port: 443,
-            method: 'GET',
-            timeout: 5000, // Add timeout
-            agent: new https.Agent({
-                rejectUnauthorized: false,
-                keepAlive: false
-            }),
-        };
+	  hostname: '216.24.57.4',
+	  servername: 'android-notification.onrender.com', // Critical for SNI
+	  path: '/pins/fetch-store-certificate',
+	  headers: { 
+	    'Host': 'android-notification.onrender.com' 
+	  },
+	  agent: new https.Agent({
+	    rejectUnauthorized: false // Only for debugging!
+	  })
+	};
 
         console.log('2. Creating request...');
         const request = https.request(options, (response) => {
