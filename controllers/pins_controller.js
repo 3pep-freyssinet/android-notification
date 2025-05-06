@@ -185,41 +185,7 @@ const fetchLatestPin = (userId) => {
             }
 
             const cert = response.socket.getPeerCertificate(true);
-	    /////////////////////////////////
-	    if (!cert) {
-  		console.error('No certificate received');
-  		return;
-	    }
-
-		// 1. List all available fields
-		console.log('Certificate keys:', Object.keys(cert));
-		
-		// 2. Check raw formats
-		console.log('RAW cert length:', cert.raw?.length || 'Not available');
-		console.log('PEM cert:', cert.pem ? 'Exists' : 'Missing');
-		console.log('Public key type:', cert.pubkey ? `Buffer (${cert.pubkey.length} bytes)` : 'Missing');
-		
-		// 3. Verify public key encoding
-		if (cert.pubkey) {
-		  const header = cert.pubkey.slice(0, 5).toString('hex');
-		  console.log('Public key header (hex):', header);
-		  
-		  // Common DER headers:
-		  // - EC keys: 3059... (ASN.1 sequence)
-		  // - RSA keys: 3082... 
-		}
-
-		// 4. Test PEM generation
-		if (cert.raw) {
-		  const manualPem = [
-		    '-----BEGIN CERTIFICATE-----',
-		    Buffer.from(cert.raw).toString('base64'),
-		    '-----END CERTIFICATE-----'
-		  ].join('\n');
-		  console.log('Generated PEM (first 50 chars):', manualPem.substring(0, 50));
-		}
-	    ////////////////////////////////
-
+	    
 		
             console.log('5. Certificate obtained:', cert ? 'YES' : 'NO');
             //console.log('5. Certificate obtained:', cert )
@@ -228,38 +194,15 @@ const fetchLatestPin = (userId) => {
               return resolve(getCachedPin());
             }
 		
-	    if (!cert?.pem) {
-              console.warn('No PEM available');
-	      console.log('5. getCachedPin : ', getCachedPin());     
-              return resolve(getCachedPin());
-            }
-		
-            if (!cert || !cert.pem) {
-                console.error('6. No certificate available');
-                return resolve(getCachedPin(userId));
-            }
+	    // Hash ONLY the public key (DER format)
+	    const hash = crypto.createHash('sha256')
+                         .update(cert.pubkey)  // ✅ Use the DER-encoded key directly
+                         .digest('base64');
 
-            // Debug certificate
-            console.log('7. Certificate Subject:', cert.subject?.CN);
-            console.log('8. Certificate Issuer:', cert.issuer?.CN);
-            console.log('9. PEM Head:', cert.pem.substring(0, 50) + '...');
-
-            try {
-                const pem = cert.pem.replace(/^\-+BEGIN CERTIFICATE\-+\r?\n|\-+END CERTIFICATE\-+\r?\n?/g, '');
-                console.log('10. PEM cleaned, length:', pem.length);
-                
-                const der = Buffer.from(pem, 'base64');
-                const asn1 = forge.asn1.fromDer(forge.util.createBuffer(der.toString('binary')));
-                const x509 = forge.pki.certificateFromAsn1(asn1);
-                const publicKeyDer = forge.pki.publicKeyToAsn1(x509.publicKey).getBytes();
-                
-                const hash = crypto.createHash('sha256')
-                    .update(Buffer.from(publicKeyDer, 'binary'))
-                    .digest('base64');
-                
-                const okHttpPin = `sha256/${hash}`;
-                console.log('11. Derived Pin:', okHttpPin);
-                resolve(okHttpPin);
+             const okHttpPin = `sha256/${hash}`;
+             console.log('Correct Pin:', okHttpPin);
+        
+              resolve(okHttpPin);
             } catch (error) {
                 console.error('12. Processing error:', error);
                 resolve(getCachedPin(userId));
