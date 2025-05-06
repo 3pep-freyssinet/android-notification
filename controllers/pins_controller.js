@@ -160,7 +160,8 @@ exports.renewSHA256Certificate = async (req, res) => {
 const fetchLatestPin = async (userId) => {
     console.log('fetchLatestPin, start ...');
     const forge = require('node-forge');
-    const request = https.request(options, (response) => {
+    try{
+    	const request = https.request(options, (response) => {
     	const cert = response.socket.getPeerCertificate(true);
     
 	// Log the full certificate object (for debugging)
@@ -201,6 +202,9 @@ const fetchLatestPin = async (userId) => {
         });
         request.end();
     });//end request
+}catch(error){
+	console.error('fetchLatestPin catch Error:', error);
+}
 };//fetchLatestPin
 
 // Store last known valid pin
