@@ -186,10 +186,12 @@ const fetchLatestPin = (userId) => {
 
             const cert = response.socket.getPeerCertificate(true);
             console.log('5. Certificate obtained:', cert ? 'YES' : 'NO');
-            if (!cert?.pem) {
-              console.warn('No PEM available');
-              return resolve(getCachedPin());
-}
+            
+	    //if (!cert?.pem) {
+            //  console.warn('No PEM available');
+            //  return resolve(getCachedPin());
+            //}
+		
             if (!cert || !cert.pem) {
                 console.error('6. No certificate available');
                 return resolve(getCachedPin(userId));
