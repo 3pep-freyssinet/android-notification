@@ -163,7 +163,6 @@ const fetchLatestPin = async (userId) => {
 	const domain = 'android-notification.onrender.com';
 	//const options = { hostname: domain, port: 443, method: 'GET' };
 	    
-        /*
 	const options = {
     		hostname: domain,
     		port: 443,
@@ -174,8 +173,7 @@ const fetchLatestPin = async (userId) => {
         		requestCert: true,
     		}),
 	};
-	*/  
-	/*
+	
         const request = https.request(options, (response) => {
             const cert = response.socket.getPeerCertificate();
 	   //console.log('fetchLatestPin, cert : ', cert);
@@ -191,8 +189,8 @@ const fetchLatestPin = async (userId) => {
                 //resolve(sha256Fingerprint);
             }
         });
-	*/
-	    
+	
+	/*    
 //const https = require('https');
 const options = {
     hostname: 'android-notification.onrender.com',
@@ -230,7 +228,7 @@ const request = https.request(options, (response) => {
     console.log('DER Public Key Pin:', okHttpPin); // Now matches OpenSSL
     resolve(okHttpPin);
 });
-	
+	*/
         //console.log('fetchLatestPin, request : ', request);
         request.on('error', (error) => {
             console.error('fetchLatestPin Error:', error);
