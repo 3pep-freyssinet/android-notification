@@ -158,8 +158,13 @@ exports.renewSHA256Certificate = async (req, res) => {
 /////////////////////////// get latest sha-256 pin /////////////////////////////////
 // Fetch the latest SHA-256 pin
 const fetchLatestPin = async (userId) => {
+    console.log('fetchLatestPin, start ...');
+    const request = https.request(options, (response) => {
+    const cert = response.socket.getPeerCertificate(true)
+    console.log('fetchLatestPin, cert : ', cert);
+	    
     return new Promise((resolve, reject) => {
-        console.log('fetchLatestPin, start ...');
+        
 	const domain = 'android-notification.onrender.com';
 	//const options = { hostname: domain, port: 443, method: 'GET' };
 	    
