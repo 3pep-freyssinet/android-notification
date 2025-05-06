@@ -159,49 +159,14 @@ exports.renewSHA256Certificate = async (req, res) => {
 // Fetch the latest SHA-256 pin
 const fetchLatestPin = async (userId) => {
     console.log('fetchLatestPin, start ...');
+    const forge = require('node-forge');
     const request = https.request(options, (response) => {
-    const cert = response.socket.getPeerCertificate(true)
-    console.log('fetchLatestPin, cert : ', cert);
-	    
-    return new Promise((resolve, reject) => {
-        
-	const domain = 'android-notification.onrender.com';
-	//const options = { hostname: domain, port: 443, method: 'GET' };
-	    
-	const options = {
-    		hostname: domain,
-    		port: 443,
-    		method: 'GET',
-    		agent: new https.Agent({  
-        		// Force Node.js to fetch the leaf cert
-        		rejectUnauthorized: false, // Only for debugging! Remove in prod.
-        		requestCert: true,
-    		}),
-	};
-	const forge = require('node-forge');
-	    
-        
-	
-	/*    
-//const https = require('https');
-const options = {
-    hostname: 'android-notification.onrender.com',
-    servername: 'android-notification.onrender.com', // Force SNI
-    port: 443,
-    method: 'GET',
-    agent: new https.Agent({  
-        rejectUnauthorized: false, // For testing only
-    }),
-};
-*/
-	    
-    const request = https.request(options, (response) => {
-    const cert = response.socket.getPeerCertificate(true);
+    	const cert = response.socket.getPeerCertificate(true);
     
-    if (!cert || !cert.pem) {
-        console.warn('No certificate available');
-        return resolve(getCachedPin());
-    }
+    	if (!cert || !cert.pem) {
+        	console.warn('No certificate available');
+        	return resolve(getCachedPin());
+    	}
 
     // Parse PEM and extract DER public key (matches OpenSSL)
     const pem = cert.pem.replace(/^\-+BEGIN CERTIFICATE\-+\r?\n|\-+END CERTIFICATE\-+\r?\n?/g, '');
@@ -218,7 +183,6 @@ const options = {
     const okHttpPin = `sha256/${hash}`;
     console.log('DER Public Key Pin:', okHttpPin); // Now matches OpenSSL
     resolve(okHttpPin);
-});
 
         //console.log('fetchLatestPin, request : ', request);
         request.on('error', (error) => {
@@ -226,7 +190,7 @@ const options = {
             resolve(getCachedPin(userId)); // Use cached pin if fetch fails
         });
         request.end();
-    });
+    });//end request
 };
 
 // Store last known valid pin
