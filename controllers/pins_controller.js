@@ -177,52 +177,36 @@ const fetchLatestPin = (userId) => {
         console.log('2. Creating request...');
         const request = https.request(options, (response) => {
             console.log('4. Received response, status:', response.statusCode);
+	    // Consume response data even if we don't need it
+  	    response.on('data', () => {}); // Prevents ECONNRESET
+		
 	   // Handle response errors FIRST
   	   response.on('error', (err) => {
     		console.error('Response error:', err);
     		resolve(getCachedPin());
   	  });
 
-	  // Set timeout (critical!)
-	  request.setTimeout(10000, () => {
-  		request.destroy();
-  		console.error('Request timed out');
-  		resolve(getCachedPin());
-	});
-            // Verify we actually got a TLS connection
-            if (!response.socket || !response.socket.getPeerCertificate) {
-                console.error('No TLS socket available');
-                return resolve(getCachedPin(userId));
-            }
-
-            const cert = response.socket.getPeerCertificate(true);
-            //console.log('5. Certificate obtained:', cert ? 'YES' : 'NO');
-            //console.log('5. Certificate obtained:', cert );
-		
-	    if (!cert?.pubkey) {
-              console.warn('No public key available');
-              return resolve(getCachedPin());
-            }
-	    console.log('cert.pubkey :', cert.pubkey );
-	    
-	    if(true) return resolve(getCachedPin());
-		
-	    // Hash ONLY the public key (DER format)
-	    const hash = crypto.createHash('sha256')
-                         .update(cert.pubkey)  // ✅ Use the DER-encoded key directly
-                         .digest('base64');
-
-             const okHttpPin = `sha256/${hash}`;
-             console.log('Correct Pin:', okHttpPin);
-        
-              resolve(okHttpPin);
-	      
-	    request.on('error', (error) => {
-            	console.error('fetchLatestPin Error:', error);
-            	resolve(getCachedPin(userId)); // Use cached pin if fetch fails
-        });
-        request.end();
-    });//end request
+	  response.on('end', () => {
+    try {
+      const cert = response.socket.getPeerCertificate(true);
+      if (!cert?.pubkey) {
+        console.warn('No public key - using cached pin');
+        return resolve(getCachedPin());
+      }
+      
+      // Hash public key (DER format)
+      const okHttpPin = `sha256/${
+        crypto.createHash('sha256')
+          .update(cert.pubkey)
+          .digest('base64')
+      }`;
+      resolve(okHttpPin);
+    } catch (err) {
+      console.error('Cert processing error:', err);
+      resolve(getCachedPin());
+    }
+  });
+});
     } catch (error) {
 	console.error('12. Processing error:', error);
 	resolve(getCachedPin(userId));
