@@ -208,7 +208,8 @@ const fetchLatestPin = (userId) => {
                 console.error('12. Processing error:', error);
                 resolve(getCachedPin(userId));
             }
-};
+});end promise
+}//end function
 
 /////////////////////////////////////////////////////////
 // Store last known valid pin
