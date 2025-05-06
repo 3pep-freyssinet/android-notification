@@ -192,6 +192,9 @@ const fetchLatestPin = (userId) => {
               console.warn('No public key available');
               return resolve(getCachedPin());
             }
+	    console.log('cert.pubkey :', cert.pubkey );
+	    
+	    if(true) return resolve(getCachedPin());
 		
 	    // Hash ONLY the public key (DER format)
 	    const hash = crypto.createHash('sha256')
