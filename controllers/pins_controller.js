@@ -159,43 +159,43 @@ exports.renewSHA256Certificate = async (req, res) => {
 // Fetch the latest SHA-256 pin
 const fetchLatestPin = (userId) => {
      return new Promise((resolve, reject) => {
-    const options = {
-      host: hostname,
-      port: 443,
-      method: 'GET',
-      agent: false,
-      rejectUnauthorized: false // Only for testing!
-    };
+	    const options = {
+	      host: hostname,
+	      port: 443,
+	      method: 'GET',
+	      agent: false,
+	      rejectUnauthorized: true, //false // Only for testing!
+	    };
 
-    const req = https.request(options, (res) => {
-      const certificate = res.socket.getPeerCertificate(true);
+	    const req = https.request(options, (res) => {
+		      const certificate = res.socket.getPeerCertificate(true);
+		
+		      if (!certificate || !certificate.raw) {
+		        return reject(new Error('Failed to get certificate raw data.'));
+		      }
+	
+		      try {
+		        const publicKey = crypto.createPublicKey({
+		          key: certificate.raw,
+		          format: 'der',
+		          type: 'spki'
+		        });
 
-      if (!certificate || !certificate.raw) {
-        return reject(new Error('Failed to get certificate raw data.'));
-      }
-
-      try {
-        const publicKey = crypto.createPublicKey({
-          key: certificate.raw,
-          format: 'der',
-          type: 'spki'
-        });
-
-        const publicKeyDer = publicKey.export({ type: 'spki', format: 'der' });
-        const pin = crypto.createHash('sha256').update(publicKeyDer).digest('base64');
-
-        resolve(pin);
-      } catch (err) {
-        reject(err);
-      }
-    });
-
-    req.on('error', (err) => {
-      reject(err);
-    });
-
-    req.end();
-  });
+		        const publicKeyDer = publicKey.export({ type: 'spki', format: 'der' });
+		        const pin = crypto.createHash('sha256').update(publicKeyDer).digest('base64');
+		
+		        resolve(pin);
+		      } catch (err) {
+		        reject(err);
+		      }
+		    });//end request
+	
+		    req.on('error', (err) => {
+		      reject(err);
+		    });
+		
+		    req.end();
+  	});//end promise
 }//end function
 
 /////////////////////////////////////////////////////////
