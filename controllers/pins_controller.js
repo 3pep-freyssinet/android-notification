@@ -158,6 +158,7 @@ exports.renewSHA256Certificate = async (req, res) => {
 /////////////////////////// get latest sha-256 pin /////////////////////////////////
 // Fetch the latest SHA-256 pin
 const fetchLatestPin = (userId) => {
+     console.log('fetchLatestPin : start...');
      return new Promise((resolve, reject) => {
 	    const options = {
 	      host: hostname,
