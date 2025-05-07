@@ -166,38 +166,44 @@ const fetchLatestPin = (userId) => {
 	      port: 443,
 	      method: 'GET',
 	      agent: false,
-	      rejectUnauthorized: true, //false // Only for testing!
+	      rejectUnauthorized: true // ✅ Final value for production
 	    };
 
 	    const req = https.request(options, (res) => {
 		      const certificate = res.socket.getPeerCertificate(true);
 		
 		      if (!certificate || !certificate.raw) {
-		        return reject(new Error('Failed to get certificate raw data.'));
+		        return reject(new Error('No certificate retrieved'));
 		      }
-	
+		
 		      try {
-		        const publicKey = crypto.createPublicKey({
-		          key: certificate.raw,
-		          format: 'der',
-		          type: 'spki'
-		        });
-
-		        const publicKeyDer = publicKey.export({ type: 'spki', format: 'der' });
-		        const pin = crypto.createHash('sha256').update(publicKeyDer).digest('base64');
-		
-		        resolve(pin);
-		      } catch (err) {
-		        reject(err);
-		      }
-		    });//end request
+		        // Convert raw certificate to PEM format
+		        const pemCertificate = `-----BEGIN CERTIFICATE-----\n${certificate.raw
+		          .toString('base64')
+		          .match(/.{0,64}/g)
+		          .join('\n')}\n-----END CERTIFICATE-----`;
 	
-		    req.on('error', (err) => {
-		      reject(err);
-		    });
+		        // Extract public key from PEM certificate
+		        const publicKey = crypto.createPublicKey(pemCertificate);
+	
+		        // Export public key in DER format (SPKI)
+		        const spkiDer = publicKey.export({ format: 'der', type: 'spki' });
 		
-		    req.end();
-  	});//end promise
+		        // Compute SHA-256 and base64 encode
+		        const sha256Pin = crypto.createHash('sha256').update(spkiDer).digest('base64');
+		
+		        resolve(sha256Pin);
+		      } catch (err) {
+		        reject(new Error('Failed to parse public key: ' + err.message));
+		      }
+    		});//end request
+
+	        req.on('error', (err) => {
+	          reject(new Error('HTTPS request failed: ' + err.message));
+	       });
+	
+	       req.end();
+	  });//end promise
 }//end function
 
 /////////////////////////////////////////////////////////
