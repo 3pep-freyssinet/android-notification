@@ -169,9 +169,10 @@ const fetchLatestPin = (userId) => {
 		        if (!cert || Object.keys(cert).length === 0) {
 		            reject(new Error('No certificate available'));
 		        } else {
-			   const sha256 = crypto.createHash('sha256').update(cert.raw).digest('base64')
-		            const sha256Fingerprint = `sha256/${sha256}`;
-		            resolve(sha256Fingerprint);
+			   //const sha256 = crypto.createHash('sha256').update(cert.raw).digest('base64')
+		            //const sha256Fingerprint = `sha256/${sha256}`;
+		            //resolve(sha256Fingerprint);
+			    resolve(null);
 		        }
 		        request.on('error', (error) => reject(error));
 		        request.end();
