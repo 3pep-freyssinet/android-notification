@@ -233,8 +233,8 @@ exports.fetchCertificate =  async (userId, req, res) => {
 	return { sha256Pin: pin }; 
     } catch (error) {
         //res.status(500).json({ error: 'Failed to fetch certificate' });
-	console.error('fetchCertificate :  Failed to fetch certificate ');     
-	return { error: 'Failed to fetch certificate' };
+	console.error('fetchCertificate :  Failed to fetch certificate : ', error);     
+	return { error: 'Failed to fetch certificate : ' + error };
     }
 }
 //////////////////////////////////////
