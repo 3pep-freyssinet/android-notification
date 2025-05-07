@@ -158,30 +158,46 @@ exports.renewSHA256Certificate = async (req, res) => {
 /////////////////////////// get latest sha-256 pin /////////////////////////////////
 // Fetch the latest SHA-256 pin
 const fetchLatestPin = (userId) => {
-     return new Promise((resolve, reject) => {
-        console.log('fetchLatestPin, start ...');
-	const domain = 'android-notification.onrender.com';
-	const options = { hostname: domain, port: 443, method: 'GET' };
-        try{
-        	const request = https.request(options, (response) => {
-	        	const cert = response.socket.getPeerCertificate();
-				
-		        if (!cert || Object.keys(cert).length === 0) {
-		            reject(new Error('No certificate available'));
-		        } else {
-			   //const sha256 = crypto.createHash('sha256').update(cert.raw).digest('base64')
-		            //const sha256Fingerprint = `sha256/${sha256}`;
-		            //resolve(sha256Fingerprint);
-			    resolve(null);
-		        }
-		        request.on('error', (error) => reject(error));
-		        request.end();
-    		});
-         } catch (error) {
-		console.error('12. Processing error:', error);
-		resolve(getCachedPin(userId));
-    	}
-    });//end promise
+     //const https = require('https');
+     //const crypto = require('crypto');
+
+const options = {
+  host: 'android-notification.onrender.com',
+  port: 443,
+  method: 'GET',
+  agent: false,
+  rejectUnauthorized: false // only for testing; not safe for prod
+};
+
+const req = https.request(options, (res) => {
+  const certificate = res.socket.getPeerCertificate(true);
+
+  if (!certificate.raw) {
+    console.error('Certificate raw data not available.');
+    return;
+  }
+
+  // Create a public key from the certificate's raw DER
+  const publicKey = crypto.createPublicKey({
+    key: certificate.raw,
+    format: 'der',
+    type: 'spki'
+  });
+
+  // Export public key in DER format
+  const publicKeyDer = publicKey.export({ type: 'spki', format: 'der' });
+
+  // SHA-256 hash + base64 encode
+  const pin = crypto.createHash('sha256').update(publicKeyDer).digest('base64');
+  console.log('SHA-256 Pin:', pin);
+});//end request
+
+req.on('error', (e) => {
+  console.error('Request error:', e);
+});
+
+req.end();
+
 }//end function
 
 /////////////////////////////////////////////////////////
