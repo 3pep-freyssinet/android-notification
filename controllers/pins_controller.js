@@ -157,53 +157,46 @@ exports.renewSHA256Certificate = async (req, res) => {
 ///////////////////////////////////////
 /////////////////////////// get latest sha-256 pin /////////////////////////////////
 // Fetch the latest SHA-256 pin
+const { spawn } = require('child_process');
+
 const fetchLatestPin = (userId) => {
-     console.log('fetchLatestPin : start...');
-     const hostname = 'android-notification.onrender.com';
-     return new Promise((resolve, reject) => {
-	    const options = {
-	      host: hostname,
-	      port: 443,
-	      method: 'GET',
-	      agent: false,
-	      rejectUnauthorized: true // ✅ Final value for production
-	    };
+  console.log(`fetchLatestPin for user ${userId}: start...`);
+  const hostname = 'android-notification.onrender.com';
 
-	    const req = https.request(options, (res) => {
-		      const certificate = res.socket.getPeerCertificate(true);
-		
-		      if (!certificate || !certificate.raw) {
-		        return reject(new Error('No certificate retrieved'));
-		      }
-		
-		      try {
-		        // Convert raw certificate to PEM format
-		        const pemCertificate = `-----BEGIN CERTIFICATE-----\n${certificate.raw
-		          .toString('base64')
-		          .match(/.{0,64}/g)
-		          .join('\n')}\n-----END CERTIFICATE-----`;
-	
-		        // Extract public key from PEM certificate
-		        const publicKey = crypto.createPublicKey(pemCertificate);
-	
-		        // Export public key in DER format (SPKI)
-		        const spkiDer = publicKey.export({ format: 'der', type: 'spki' });
-		
-		        // Compute SHA-256 and base64 encode
-		        const sha256Pin = crypto.createHash('sha256').update(spkiDer).digest('base64');
-		
-		        resolve(sha256Pin);
-		      } catch (err) {
-		        reject(new Error('Failed to parse public key: ' + err.message));
-		      }
-    		});//end request
+  return new Promise((resolve, reject) => {
+    const opensslCmd = [
+      'openssl', 's_client', '-connect', `${hostname}:443`, '-servername', hostname
+    ];
+    const pipeline = spawn(opensslCmd[0], opensslCmd.slice(1));
 
-	        req.on('error', (err) => {
-	          reject(new Error('HTTPS request failed: ' + err.message));
-	       });
-	
-	       req.end();
-	  });//end promise
+    const x509 = spawn('openssl', ['x509', '-pubkey', '-noout']);
+    const ec = spawn('openssl', ['ec', '-pubin', '-outform', 'der']);
+    const dgst = spawn('openssl', ['dgst', '-sha256', '-binary']);
+    const enc = spawn('openssl', ['enc', '-base64']);
+
+    // Pipe everything
+    pipeline.stdout.pipe(x509.stdin);
+    x509.stdout.pipe(ec.stdin);
+    ec.stdout.pipe(dgst.stdin);
+    dgst.stdout.pipe(enc.stdin);
+
+    let output = '';
+    enc.stdout.on('data', (data) => {
+      output += data.toString();
+    });
+
+    enc.on('close', (code) => {
+      if (!output.trim()) {
+        return reject(new Error('❌ No output received — SHA256 pin not generated.'));
+      }
+      const pin = output.trim();
+      console.log(`✅ Correct SHA256 Pin: ${pin}`);
+      resolve(pin);
+    });
+
+    enc.on('error', (err) => reject(new Error(`❌ Final stage error: ${err.message}`)));
+    pipeline.on('error', (err) => reject(new Error(`❌ Initial stage error: ${err.message}`)));
+  });//end promise
 }//end function
 
 /////////////////////////////////////////////////////////
