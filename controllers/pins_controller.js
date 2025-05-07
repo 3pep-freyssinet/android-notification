@@ -158,60 +158,28 @@ exports.renewSHA256Certificate = async (req, res) => {
 /////////////////////////// get latest sha-256 pin /////////////////////////////////
 // Fetch the latest SHA-256 pin
 const fetchLatestPin = (userId) => {
-    return new Promise((resolve, reject) => {
-        console.log('1. Starting fetchLatestPin...');
-        const forge = require('node-forge');
-        
-        const options = {
-	  hostname: 'android-notification.onrender.com', //'216.24.57.4',
-	  servername: 'android-notification.onrender.com', // Critical for SNI
-	  path: '/pins/fetch-store-certificate',
-	  headers: { 
-	    'Host': 'android-notification.onrender.com' 
-	  },
-	  agent: new https.Agent({
-	    rejectUnauthorized: false // Only for debugging!
-	  })
-	};
-     try{
-        console.log('2. Creating request...');
-        const request = https.request(options, (response) => {
-            console.log('4. Received response, status:', response.statusCode);
-	    // Consume response data even if we don't need it
-  	    response.on('data', () => {}); // Prevents ECONNRESET
-		
-	   // Handle response errors FIRST
-  	   response.on('error', (err) => {
-    		console.error('Response error:', err);
-    		resolve(getCachedPin());
-  	  });
-
-	  response.on('end', () => {
-    try {
-      const cert = response.socket.getPeerCertificate(true);
-      if (!cert?.pubkey) {
-        console.warn('No public key - using cached pin');
-        return resolve(getCachedPin());
-      }
-      
-      // Hash public key (DER format)
-      const okHttpPin = `sha256/${
-        crypto.createHash('sha256')
-          .update(cert.pubkey)
-          .digest('base64')
-      }`;
-      resolve(okHttpPin);
-    } catch (err) {
-      console.error('Cert processing error:', err);
-      resolve(getCachedPin());
-    }
-  });
-});
-    } catch (error) {
-	console.error('12. Processing error:', error);
-	resolve(getCachedPin(userId));
-    }
-});//end promise
+     return new Promise((resolve, reject) => {
+        console.log('fetchLatestPin, start ...');
+	const domain = 'android-notification.onrender.com';
+	const options = { hostname: domain, port: 443, method: 'GET' };
+        try{
+        	const request = https.request(options, (response) => {
+	        	const cert = response.socket.getPeerCertificate();
+				
+		        if (!cert || Object.keys(cert).length === 0) {
+		            reject(new Error('No certificate available'));
+		        } else {
+		            const sha256Fingerprint = sha256/${crypto.createHash('sha256').update(cert.raw).digest('base64')};
+		            resolve(sha256Fingerprint);
+		        }
+		        request.on('error', (error) => reject(error));
+		        request.end();
+    		});
+         } catch (error) {
+		console.error('12. Processing error:', error);
+		resolve(getCachedPin(userId));
+    	}
+    });//end promise
 }//end function
 
 /////////////////////////////////////////////////////////
