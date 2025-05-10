@@ -1963,7 +1963,6 @@ exports.loginUser = async (req, res) => {
         }
         //Here the user exists
 	
-	    
         const user = userResult.rows[0];
 	console.log('(login : user : ', user);
 
@@ -1980,10 +1979,11 @@ exports.loginUser = async (req, res) => {
 	    
 	console.log('login : lockout_until : ', user.lockout_until, ' current date : ', new Date(Date.now()));
 
+	// Check if the user is still lockout
 	//compare the current date long with 'lockout_until' long
 	if(user.lockout_until != null){
           if( new Date(Date.now()) >= user.lockout_until){
-	      //update the table
+	      //update the table, the user is no longer lockout.
 	         const updateResult = await pool.query('UPDATE users_notification SET failed_attempts = 0, lockout_until = null WHERE username = $1', [username]);    
 	        if(updateResult.rowCount == 0){ 
 	          return res.status(401).json({ error: 'Internal error' }); 
@@ -1991,7 +1991,10 @@ exports.loginUser = async (req, res) => {
 		//the table has been updated. Update the 'user'
 		user.failed_attempts = 0;
 		user.lockout_until   = null;
-	   }
+	   }else{
+		//the user is till lockout. The frontend doesn't allow to come here.
+		return res.status(401).json({ error: 'Internal error' }); 
+	  }
 	}
 	
 	//Here the the fields 'failed_attempts' and 'lockout_until' are updated.
