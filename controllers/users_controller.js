@@ -2022,7 +2022,7 @@ exports.loginUser = async (req, res) => {
 			console.log('!passwordMatch : failedAttempts : ', failedAttempts, ' MAX_ATTEMPTS : ', MAX_ATTEMPTS);
 			await pool.query('UPDATE users_notification SET failed_attempts = $1 WHERE username = $2', [failedAttempts, username]);
 			//return { error: `Invalid credentials. You have ${MAX_ATTEMPTS - failedAttempts} attempts remaining.` };
-			return res.status(400).json({
+			return res.status(202).json({
 				error: `Invalid credentials. You have ${MAX_ATTEMPTS - failedAttempts} attempts remaining.`,
 			        failedAttempts: failedAttempts,
 				lockoutUntil:0,
