@@ -114,28 +114,28 @@ if (decoded && decoded.exp) {
 	 
  const userId = req.resolvedUserId;
  console.log('updateFirebaseId : userId : ', userId);
-	 
-const updatedAt = new Date(); // Get current timestamp from server
-const result = await pool.query(
-  `UPDATE users_notification 
-   SET firebase_id = $1,
-       firebase_id_last_synced = $3
-   WHERE id = $2 
-     AND (firebase_id IS NULL OR firebase_id <> $1)`,
-  [firebaseId, userId, updatedAt]
-);
+try {	 
+	const updatedAt = new Date(); // Get current timestamp from server
+	const result = await pool.query(
+	  `UPDATE users_notification 
+	   SET firebase_id = $1,
+	       firebase_id_last_synced = $3
+	   WHERE id = $2 
+	     AND (firebase_id IS NULL OR firebase_id <> $1)`,
+	  [firebaseId, userId, updatedAt]
+	);
 
-if (result.rowCount === 0) {
-  return res.status(400).json({
-    code: "FIREBASE_ID_ALREADY_SET",
-    message: "Firebase ID already exists for this user"
-  });
-}
-
-return res.status(200).json({
-  success: true,
-  updatedAt: updatedAt.toISOString()  // ISO format for consistency
-});
+	if (result.rowCount === 0) {
+	  return res.status(400).json({
+	    code: "FIREBASE_ID_ALREADY_SET",
+	    message: "Firebase ID already exists for this user"
+	  });
+	}
+	
+	return res.status(200).json({
+	  success: true,
+	  updatedAt: updatedAt.toISOString()  // ISO format for consistency
+	});
 
 
 /*
@@ -156,10 +156,11 @@ cons firebaseIdLastSynced = new Date();
         message: "Firebase ID already exists for this user" 
       });
     }
-    */
-	 
+     
     console.log('updateFirebaseId : Firebase ID updated successfully'); 
     res.status(200).json({ success: true });
+    */
+	 
   } catch (error) {
     console.error('updateFirebaseId : Database error:', error);
     res.status(500).json({ 
@@ -167,7 +168,7 @@ cons firebaseIdLastSynced = new Date();
       message: "Temporary server issue. Please retry." 
     });	 
  }
- }
+}
 
 //delete resset password token 
  exports.deleteRessetPasswordToken = async (req, res) => {	
