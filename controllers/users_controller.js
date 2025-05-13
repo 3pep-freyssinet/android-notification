@@ -119,7 +119,7 @@ const updatedAt = new Date(); // Get current timestamp from server
 const result = await pool.query(
   `UPDATE users_notification 
    SET firebase_id = $1,
-       firebase_id_updated_at = $3
+       firebase_id_last_synced = $3
    WHERE id = $2 
      AND (firebase_id IS NULL OR firebase_id <> $1)`,
   [firebaseId, userId, updatedAt]
