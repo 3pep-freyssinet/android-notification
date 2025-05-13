@@ -114,7 +114,32 @@ if (decoded && decoded.exp) {
 	 
  const userId = req.resolvedUserId;
  console.log('updateFirebaseId : userId : ', userId);
- cons firebaseIdLastSynced = new Date();
+	 
+const updatedAt = new Date(); // Get current timestamp from server
+const result = await pool.query(
+  `UPDATE users_notification 
+   SET firebase_id = $1,
+       firebase_id_updated_at = $3
+   WHERE id = $2 
+     AND (firebase_id IS NULL OR firebase_id <> $1)`,
+  [firebaseId, userId, updatedAt]
+);
+
+if (result.rowCount === 0) {
+  return res.status(400).json({
+    code: "FIREBASE_ID_ALREADY_SET",
+    message: "Firebase ID already exists for this user"
+  });
+}
+
+return res.status(200).json({
+  success: true,
+  updatedAt: updatedAt.toISOString()  // ISO format for consistency
+});
+
+
+/*
+cons firebaseIdLastSynced = new Date();
  try {	 	 
     // Update only if firebase_id is NULL
     const result = await pool.query(
@@ -123,7 +148,7 @@ if (decoded && decoded.exp) {
        WHERE id = $2 AND firebase_id IS NULL`,
       [firebaseId, userId]
     );
-
+    
     if (result.rowCount === 0) {
       console.log('updateFirebaseId : Firebase ID already set');   
       return res.status(400).json({ 
@@ -131,7 +156,8 @@ if (decoded && decoded.exp) {
         message: "Firebase ID already exists for this user" 
       });
     }
-    
+    */
+	 
     console.log('updateFirebaseId : Firebase ID updated successfully'); 
     res.status(200).json({ success: true });
   } catch (error) {
