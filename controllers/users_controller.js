@@ -111,7 +111,7 @@ if (decoded && decoded.exp) {
 
   const { androidId, firebaseId } = req.body 
   if((androidId == null) || (firebaseId == null)){
-	console.log('Firebase ID or Android ID are missing'); 
+	console.log('updateFirebaseId : Firebase ID or Android ID are missing'); 
 	return res.status(401).json({ 
         	code: 'FIREBASE_ID_ANDROID_ID_REQUIRED',
         	message: 'Firebase ID or Android ID are required' 
@@ -135,6 +135,7 @@ try {
 	);
 
 	if (result.rowCount === 0) {
+	  console.log('updateFirebaseId : Firebase ID already exists for this user');	
 	  return res.status(400).json({
 	    code: "FIREBASE_ID_ALREADY_SET",
 	    message: "Firebase ID already exists for this user"
