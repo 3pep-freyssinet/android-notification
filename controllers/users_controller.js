@@ -114,7 +114,7 @@ if (decoded && decoded.exp) {
 	 
  const userId = req.resolvedUserId;
  console.log('updateFirebaseId : userId : ', userId);
-	 
+ cons firebaseIdLastSynced = new Date();
  try {	 	 
     // Update only if firebase_id is NULL
     const result = await pool.query(
