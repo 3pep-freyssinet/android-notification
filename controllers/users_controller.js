@@ -110,16 +110,25 @@ if (decoded && decoded.exp) {
   console.log('updateFirebaseId : start');
 
   const { androidId, firebaseId } = req.body 
+  if((androidId == null) || (firebaseId == null)){
+	console.log('Firebase ID or Android ID are missing'); 
+	return res.status(401).json({ 
+        	code: 'FIREBASE_ID_ANDROID_ID_REQUIRED',
+        	message: 'Firebase ID or Android ID are required' 
+      });  
+  }
+	
   console.log('updateFirebaseId : androidId : ', androidId, ' firebaseId : ', firebaseId);
 	 
  const userId = req.resolvedUserId;
  console.log('updateFirebaseId : userId : ', userId);
+	 
 try {	 
 	const updatedAt = new Date(); // Get current timestamp from server
 	const result = await pool.query(
 	  `UPDATE users_notification 
 	   SET firebase_id = $1,
-	       firebase_id_last_synced = $3
+	       firebase_id_updated_at = $3
 	   WHERE id = $2 
 	     AND (firebase_id IS NULL OR firebase_id <> $1)`,
 	  [firebaseId, userId, updatedAt]
