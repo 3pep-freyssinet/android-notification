@@ -80,13 +80,17 @@ const { androidId, firebaseId } = req.body;
 
   try {
     const result = await pool.query(
-      `SELECT id FROM users_notification WHERE android_id = $1 OR firebase_id = $2`,
+      `SELECT id, lockout_until FROM users_notification WHERE android_id = $1 OR firebase_id = $2`,
       [androidId, firebaseId || null]
     );
 
     if (result.rows.length > 0) {
-      console.log('lookupById : the user is found');   
-      return res.status(200).json({ success: true });
+	console.log('lookupById : the user is found'); 
+  	const user = result.rows[0];
+  	return res.status(200).json({
+    	   success: true,
+           lockoutUntil: user.lockout_until || null // assuming your column is named like that
+        });
     } else {
       console.log('lookupById : the user is not found');    
       return res.status(404).json({
