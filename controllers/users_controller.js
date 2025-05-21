@@ -65,6 +65,45 @@ if (decoded && decoded.exp) {
 
 */
 
+//lookup by id
+exports.lookupById = async (req, res) => {
+console.log('lookupById : start');
+const { androidId, firebaseId } = req.body;
+	
+  if (!androidId) {
+    console.log('lookupById : android Id is required');  
+    return res.status(400).json({
+      code: 'ANDROID_ID_REQUIRED',
+      message: 'Android ID is required',
+    });
+  }
+
+  try {
+    const result = await pool.query(
+      `SELECT id FROM users_notification WHERE android_id = $1 OR firebase_id = $2`,
+      [androidId, firebaseId || null]
+    );
+
+    if (result.rows.length > 0) {
+      console.log('lookupById : the user is found');   
+      return res.status(200).json({ success: true });
+    } else {
+      console.log('lookupById : the user is not found');    
+      return res.status(404).json({
+        code: 'DEVICE_NOT_FOUND',
+        message: 'Device not registered',
+      });
+    }
+  } catch (error) {
+    console.error('Device lookup failed:', error);
+    res.status(500).json({
+      code: 'SERVER_ERROR',
+      message: 'Server error during lookup',
+    });
+  }
+};	
+
+
 //remove ban
  exports.removeBan = async (req, res) => {	
   console.log('removeBan : start');
