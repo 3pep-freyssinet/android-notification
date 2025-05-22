@@ -69,18 +69,20 @@ exports.lookupById = async (req, res) => {
    console.log('lookupById : start');
    const { androidId, firebaseId } = req.body;
 
-	//new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days in the future
+   //new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days in the future
    //test
    //if(true)return res.status(404).json({
    //     code: 'DEVICE_NOT_FOUND',
    //     message: 'Device not registered',
    //   });
-	
+
+  /*
     if(true)return res.status(200).json({
     	   success: true,
            lockoutUntil: new Date(Date.now() + 1 * 60 * 60 * 1000),
 	   failedAttempts: 2,
-        });
+    });
+  */
 	
   if (!androidId) {
     console.log('lookupById : android Id is required');  
