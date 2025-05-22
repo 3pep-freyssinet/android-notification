@@ -63,8 +63,8 @@ if (decoded && decoded.exp) {
   console.log('Could not retrieve expiration date from token');
 }
 */
-
-//lookup by id
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//lookup by id. Search user by android id or firebase id
 exports.lookupById = async (req, res) => {
    console.log('lookupById : start');
    const { androidId, firebaseId } = req.body;
@@ -95,7 +95,7 @@ exports.lookupById = async (req, res) => {
   	const user = result.rows[0];
   	return res.status(200).json({
     	   success: true,
-           lockoutUntil: user.lockout_until || null // assuming your column is named like that
+           lockoutUntil: user.lockout_until || null // assuming your column is named like that.
         });
     } else {
       console.log('lookupById : the user is not found');    
