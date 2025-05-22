@@ -62,13 +62,19 @@ if (decoded && decoded.exp) {
 } else {
   console.log('Could not retrieve expiration date from token');
 }
-
 */
 
 //lookup by id
 exports.lookupById = async (req, res) => {
-console.log('lookupById : start');
-const { androidId, firebaseId } = req.body;
+   console.log('lookupById : start');
+   const { androidId, firebaseId } = req.body;
+
+   //test
+   if(true)return res.status(404).json({
+        code: 'DEVICE_NOT_FOUND',
+        message: 'Device not registered',
+      });
+	
 	
   if (!androidId) {
     console.log('lookupById : android Id is required');  
