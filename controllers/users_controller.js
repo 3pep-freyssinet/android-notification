@@ -76,7 +76,7 @@ exports.lookupById = async (req, res) => {
    //     message: 'Device not registered',
    //   });
 
-  
+    //test
     if(true)return res.status(200).json({
     	   success: true,
            lockoutUntil: new Date(Date.now() + 1 * 60 * 60 * 1000),
