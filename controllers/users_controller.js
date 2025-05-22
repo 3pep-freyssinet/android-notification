@@ -69,12 +69,18 @@ exports.lookupById = async (req, res) => {
    console.log('lookupById : start');
    const { androidId, firebaseId } = req.body;
 
+	//new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days in the future
    //test
-   if(true)return res.status(404).json({
-        code: 'DEVICE_NOT_FOUND',
-        message: 'Device not registered',
-      });
+   //if(true)return res.status(404).json({
+   //     code: 'DEVICE_NOT_FOUND',
+   //     message: 'Device not registered',
+   //   });
 	
+    if(true)return res.status(200).json({
+    	   success: true,
+           lockoutUntil: new Date(Date.now() + 1 * 60 * 60 * 1000),
+	   failedAttempts: 2,
+        });
 	
   if (!androidId) {
     console.log('lookupById : android Id is required');  
@@ -86,7 +92,7 @@ exports.lookupById = async (req, res) => {
 
   try {
     const result = await pool.query(
-      `SELECT id, lockout_until FROM users_notification WHERE android_id = $1 OR firebase_id = $2`,
+      `SELECT id, lockout_until, failed_attempts FROM users_notification WHERE android_id = $1 OR firebase_id = $2`,
       [androidId, firebaseId || null]
     );
 
@@ -95,7 +101,8 @@ exports.lookupById = async (req, res) => {
   	const user = result.rows[0];
   	return res.status(200).json({
     	   success: true,
-           lockoutUntil: user.lockout_until || null // assuming your column is named like that.
+           lockoutUntil: user.lockout_until || null, // assuming your column is named like that.
+	   failedAttempts: user.failed_attempts || 0,//the default is 0.
         });
     } else {
       console.log('lookupById : the user is not found');    
