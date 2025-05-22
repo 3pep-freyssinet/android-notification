@@ -77,11 +77,11 @@ exports.lookupById = async (req, res) => {
    //   });
 
     //test
-    if(true)return res.status(200).json({
-    	   success: true,
-           lockoutUntil: new Date(Date.now() + 1 * 60 * 60 * 1000),
-	   failedAttempts: 2,
-    });
+    //if(true)return res.status(200).json({
+    //	   success: true,
+    //       lockoutUntil: new Date(Date.now() + 1 * 60 * 60 * 1000),
+    //	   failedAttempts: 2,
+    //});
   
 	
   if (!androidId) {
