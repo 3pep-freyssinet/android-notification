@@ -23,7 +23,7 @@ router.post('/remove-ban',        authMiddleware, usersController.removeBan);   
 
 router.delete('/delete-resset-password-token',    usersController.deleteRessetPasswordToken);   // POST /users/delete-resset-password-token
 
-router.post('/users/lookup-by-id', usersController.lookupById);                      // POST /users/lookup-by-id
+router.post('/lookup-by-id', usersController.lookupById);                      // POST /users/lookup-by-id
 router.get('/user_id',                                usersController.getUserId);                     // GET /users/user_id?user_id=
 router.get('/get-stored-shared-preferences',          usersController.getStoredSharedPreferences);    // GET /users/get-stored-shared-preferences?android-id=
 router.post('/set-lockout-status', authMiddleware,    usersController.setLockoutStatus);              // POST /users/set-lockout-status
