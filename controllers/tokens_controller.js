@@ -50,9 +50,11 @@ console.log('revokeJWT : jwt token = ' + token);
 
 // Refresh the jwt token.
 exports.refreshJWTToken = async (req, res) => {
+    console.log('refreshJWTToken : Start...');
     try {
         const refreshToken = req.body.refreshToken;
         if (!refreshToken) {
+	    console.log('refreshJWTToken : Refresh token is required.');
             return res.status(400).json({ message: 'Refresh token is required' });
         }
 
@@ -63,6 +65,7 @@ exports.refreshJWTToken = async (req, res) => {
         );
 
         if (result.rows.length === 0) {
+	    console.log('refreshJWTToken : Invalid refresh token.');
             return res.status(401).json({ message: 'Invalid refresh token' });
         }
 
@@ -71,6 +74,7 @@ exports.refreshJWTToken = async (req, res) => {
         // Check if the refresh token is expired
         const currentTime = new Date();
         if (new Date(expires_at) < currentTime) {
+	    console.log('refreshJWTToken : Refresh token has expired.');
             return res.status(401).json({ message: 'Refresh token has expired' });
         }
 
@@ -106,6 +110,7 @@ exports.refreshJWTToken = async (req, res) => {
 	*/
 		
         // Send the new tokens back to the client
+	console.log('refreshJWTToken : Refresh token success.');
         res.status(200).json({
             accessToken: newAccessToken
         });
