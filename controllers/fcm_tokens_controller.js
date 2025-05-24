@@ -161,7 +161,14 @@ exports.getAllFCMTokens = async (req, res) => {
 console.log('getAllFCMTokens\n');
 	
   try {
-    const result = await pool.query('SELECT id, user_id, fcm_token FROM fcm_tokens');
+    //const result = await pool.query('SELECT id, user_id, fcm_token FROM fcm_tokens');
+    const result = await pool.query(
+       `SELECT u.id, u.username, f.fcm_token AS fcm_token
+        FROM users_notification u
+        JOIN fcm_tokens f ON u.id = f.user_id
+        WHERE u.is_session_closed = false AND f.fcm_token IS NOT NULL;`
+    );
+	  
     const tokens = result.rows;
 	
     console.log('getAllFCMTokens / : tokens : ', JSON.stringify(tokens));
