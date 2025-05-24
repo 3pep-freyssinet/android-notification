@@ -53,14 +53,14 @@ const authHeader = req.headers['authorization'];
     console.log('auth : decoded : ', decoded, ' id = ', req.user.userId);
 
     // Check session status
-    const result = await pool.query(
+    const result_ = await pool.query(
       `SELECT session_status FROM users_notification WHERE id = $1`,
       [userId]
     );
-    if (result.rows.length === 0) {
+    if (result_.rows.length === 0) {
       return res.status(404).json({ error: 'User not found' });
     }
-    const { session_status } = result.rows[0];
+    const { session_status } = result_.rows[0];
     if (!session_status) {
       return res.status(401).json({ error: 'Session inactive. Please log in again.' });
     }
