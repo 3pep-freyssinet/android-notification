@@ -183,6 +183,45 @@ exports.lookupById = async (req, res) => {
 	 
 try {	 
 	const updatedAt = new Date(); // Get current timestamp from server
+         const selectResult = await pool.query(
+  		`SELECT firebase_id, firebase_id_updated_at, android_id_updated_at
+   		FROM users_notification
+   		WHERE id = $1`,
+  		[userId]
+	);
+	
+	if (selectResult.rowCount === 0) {
+  		throw new Error("User not found");
+	}
+
+	const current = selectResult.rows[0];
+	if (!current.firebase_id || current.firebase_id !== firebaseId) {
+  		const updatedAt = new Date().toISOString();
+
+  		const updateResult = await pool.query(
+		    `UPDATE users_notification
+		     SET firebase_id = $1,
+		         firebase_id_updated_at = $2
+		     WHERE id = $3`,
+		    [firebaseId, updatedAt, userId]
+		  );
+
+  		console.log("updateFirebaseId : Firebase ID updated successfully");
+		return res.status(200).json({
+	  		success: true,
+	  		updatedAt: updatedAt, // ISO format for consistency
+		});
+	} else {
+  		console.log("updateFirebaseId : Firebase ID already exists for this user");
+		return res.status(400).json({
+	    		code: "FIREBASE_ID_ALREADY_SET",
+	    		message: "Firebase ID already exists for this user",
+			updatedAt: current.firebase_id_updated_at,
+	  	});
+	}
+
+        /*
+	//////////////////////////////////////////////////////////
 	const result = await pool.query(
 	  `UPDATE users_notification 
 	   SET firebase_id = $1,
@@ -206,7 +245,7 @@ try {
 	});
 
 
-/*
+
 cons firebaseIdLastSynced = new Date();
  try {	 	 
     // Update only if firebase_id is NULL
