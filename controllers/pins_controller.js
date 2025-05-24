@@ -575,7 +575,7 @@ try {
     }
 };
 
-// Fetch and Store Certificate
+// Fetch and Store sha256 pin Certificate
 exports.fetchStoreCertificate = async (req, res) => {
 	console.log('fetchStoreCertificate : start');
 try {
