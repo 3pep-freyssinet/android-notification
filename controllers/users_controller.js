@@ -182,7 +182,7 @@ exports.lookupById = async (req, res) => {
  console.log('updateFirebaseId : userId : ', userId);
 	 
 try {	 
-	const updatedAt = new Date(); // Get current timestamp from server
+	//const updatedAt = new Date(); // Get current timestamp from server
          const selectResult = await pool.query(
   		`SELECT firebase_id, firebase_id_updated_at, android_id_updated_at
    		FROM users_notification
@@ -191,7 +191,12 @@ try {
 	);
 	
 	if (selectResult.rowCount === 0) {
-  		throw new Error("User not found");
+  		//throw new Error("User not found");
+		console.log('updateFirebaseId : User not found'); 
+		return res.status(401).json({ 
+        		code: 'FIREBASE_ID_NO_USER_FOUND',
+        		message: 'Firebase ID no user found' 
+      		});  
 	}
 
 	const current = selectResult.rows[0];
