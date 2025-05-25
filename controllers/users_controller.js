@@ -2038,15 +2038,15 @@ exports.resetLockoutStatus = async (req, res) => {
 //get session status
 exports.getSessionStatus = async (req, res) => {
 	console.log('getSessionStatus : start ...'); 
-	const { firebase_id, android_id } = req.body;
+	const { firebaseId, androidId } = req.body;
 
-  	if (!firebase_id && !android_id) {
-		console.log('getSessionStatus : firebase_id or android_id required'); 
-    		return res.status(400).json({ error: 'firebase_id or android_id required' });
+  	if (!firebaseId && !androidId) {
+		console.log('getSessionStatus : firebaseId or androidId required'); 
+    		return res.status(400).json({ error: 'firebaseId or androidId required' });
   	}
 	//Here, the firebase_id, android_id are available.
-	firebase_id, android_id
-  	
+	console.log('getSessionStatus : firebaseId : ', firebaseId, ' androidId : ', androidId); 
+	
 	try {
     		const result = await pool.query(
                `
@@ -2058,7 +2058,7 @@ exports.getSessionStatus = async (req, res) => {
   		($2 IS NOT NULL AND android_id = $2)
 		LIMIT 1;
 	      `,
-	      [firebase_id, android_id]
+	      [firebaseId, androidId]
 	    );
 
     	if (result.rows.length === 0) {
