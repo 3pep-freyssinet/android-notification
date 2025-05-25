@@ -2050,7 +2050,7 @@ exports.getSessionStatus = async (req, res) => {
 	try {
     		const result = await pool.query(
                `
-	      	SELECT username, session_status
+	      	SELECT username, is_session_closed
 		FROM users_notification
 		WHERE 
   		($1 IS NOT NULL AND firebase_id = $1)
@@ -2067,7 +2067,7 @@ exports.getSessionStatus = async (req, res) => {
     	}
 
     	const user = result.rows[0];
-    	const sessionStatus = user.session_status ? 'open' : 'closed';
+    	const sessionStatus = user.is_session_closed ? 'open' : 'closed';
 	
 	console.log('getSessionStatus :sessionStatus : ', sessionStatus); 
     	
