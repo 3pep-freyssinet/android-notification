@@ -2053,9 +2053,9 @@ exports.getSessionStatus = async (req, res) => {
 	      	SELECT username, is_session_closed
 		FROM users_notification
 		WHERE 
-  		($1 IS NOT NULL AND firebase_id = $1)
+  		(firebase_id = $1)
   		OR
-  		($2 IS NOT NULL AND android_id = $2)
+  		(android_id = $2)
 		LIMIT 1;
 	      `,
 	      [firebaseId, androidId]
