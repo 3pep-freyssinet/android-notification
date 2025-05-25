@@ -2035,6 +2035,12 @@ exports.resetLockoutStatus = async (req, res) => {
     }
 };
 
+//get session status
+exports.getSessionStatus = async (req, res) => {
+
+
+}
+
 //set session status
 exports.setSessionStatus = async (req, res) => {
     //const username = 'Name147';
