@@ -2067,7 +2067,7 @@ exports.getSessionStatus = async (req, res) => {
     	}
 
     	const user = result.rows[0];
-    	const sessionStatus = user.is_session_closed ? 'open' : 'closed';
+    	const sessionStatus = user.is_session_closed ? 'closed' : 'open';
 	
 	console.log('getSessionStatus :sessionStatus : ', sessionStatus); 
     	
