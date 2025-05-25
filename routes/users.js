@@ -29,6 +29,8 @@ router.get('/get-stored-shared-preferences',          usersController.getStoredS
 router.post('/set-lockout-status', authMiddleware,    usersController.setLockoutStatus);              // POST /users/set-lockout-status
 router.post('/reset-lockout-status',  authMiddleware, usersController.resetLockoutStatus);            // POST /users/reset-lockout-status
 router.post('/set-session-status',  authMiddleware,   usersController.setSessionStatus);              // POST /users/set-session-status
+router.post('/get-session-status',  usersController.getSessionStatus);                                // POST /users/get-session-status
+
 router.get('/get-change-password-session-progress',   authMiddleware,   usersController.getChangePasswordSessionProgress);  // GET /users/get-change-password-session-progress
 router.get('/check-change-password-session',          authMiddleware,   usersController.checkChangePasswordSession);        // GET /users/check-change-password-session
 
