@@ -2039,8 +2039,10 @@ exports.resetLockoutStatus = async (req, res) => {
 exports.getSessionStatus = async (req, res) => {
 	console.log('getSessionStatus : start ...'); 
 	const { firebaseId, androidId } = req.body;
-
-  	if (!firebaseId && !androidId) {
+	
+	console.log('getSessionStatus : firebaseId : ', firebaseId, ' androidId : ', androidId);
+  	
+	if (!firebaseId && !androidId) {
 		console.log('getSessionStatus : firebaseId or androidId required'); 
     		return res.status(400).json({ error: 'firebaseId or androidId required' });
   	}
