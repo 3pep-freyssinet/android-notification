@@ -2040,7 +2040,7 @@ exports.getSessionStatus = async (req, res) => {
 	console.log('getSessionStatus : start ...'); 
 	const { firebaseId, androidId } = req.body;
 	
-	console.log('getSessionStatus : firebaseId : ', firebaseId, ' androidId : ', androidId);
+	//console.log('getSessionStatus : firebaseId : ', firebaseId, ' androidId : ', androidId);
   	
 	if (!firebaseId && !androidId) {
 		console.log('getSessionStatus : firebaseId or androidId required'); 
