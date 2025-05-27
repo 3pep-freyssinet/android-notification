@@ -2089,13 +2089,13 @@ exports.setSessionStatus = async (req, res) => {
     //const username = 'Name147';
     //console.log('resetLockoutStatus : req:', req); 
     //console.log('resetLockoutStatus : Headers:', req.headers); // Inspect headers
-    console.log('setSessionStatus : Body:', req.body);           
+	
+    console.log('setSessionStatus : Start...');           
     const {sessionStatus, androidId } = req.body;
 
-    console.log('setSessionStatus : sessionStatus:', sessionStatus);  
+    //console.log('setSessionStatus : sessionStatus:', sessionStatus);  
 	
-    //'sessionStatus' in the body is a string. Convert it to boolean
-    //const boolString = "false"; 
+    //'sessionStatus' in the body is a string. Convert it to boolean 
     const sessionStatusBoolean = (sessionStatus === 'true'); 
 
     console.log('setSessionStatus : androidId:', androidId, ' sessionStatus : ', sessionStatusBoolean)
