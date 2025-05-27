@@ -26,7 +26,7 @@ console.log('tokens_controller : pool = ' + pool);
 
 //revoke jwt token
 exports.revokeJWT = async (req, res) => {
-const token = req.body.token;
+const token = req.body.jwtToken;
 console.log('revokeJWT : jwt token = ' + token);
     if (!token) {
 	console.log('revokeJWT : jwt token Token is required ');   
