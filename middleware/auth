@@ -54,7 +54,7 @@ const authHeader = req.headers['authorization'];
 
     // Check session status
     const result_ = await pool.query(
-      `SELECT session_status FROM users_notification WHERE id = $1`,
+      `SELECT is_session_closed FROM users_notification WHERE id = $1`,
       [req.user.userId]
     );
     if (result_.rows.length === 0) {
