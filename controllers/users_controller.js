@@ -2399,7 +2399,7 @@ async function handleRefreshTokenGeneration(user) {
 }
 
 async function saveSessionStatusInDatabase(user){
-	
+  await pool.query(`UPDATE users_notification SET is_session_closed = false  WHERE id = $1`, [user.id])
 }
 
 
