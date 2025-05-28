@@ -2384,8 +2384,8 @@ async function handleTokens (user){
 	const save_refresh_token = await storeRefreshTokenInDatabase(user, refresh_token, created_at, refresh_expires_at);
 
 	//save the flag 'is_session_closed'
-	const save_session_status = await saveSessionStatusInDatabase(user);
-	const is_session_closed   = save_session_status.rows[0].is_session_closed;
+	const is_session_closed   = false;
+	const save_session_status = await saveSessionStatusInDatabase(user, is_session_closed);
 	
        console.log('registered : user : ', user, ' refresh_token : ', refresh_token, ' expires_at : ', refresh_expires_at, ' is_session_closed : ', is_session_closed);
 
@@ -2400,8 +2400,8 @@ async function handleRefreshTokenGeneration(user) {
 	return refreshToken;
 }
 
-async function saveSessionStatusInDatabase(user){
-  await pool.query(`UPDATE users_notification SET is_session_closed = false  WHERE id = $1`, [user.id])
+async function saveSessionStatusInDatabase(user, is_session_closed){
+  await pool.query(`UPDATE users_notification SET is_session_closed = $1  WHERE id = $2`, [is_session_closed, user.id])
 }
 
 
