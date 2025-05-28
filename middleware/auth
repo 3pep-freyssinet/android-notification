@@ -61,7 +61,9 @@ const authHeader = req.headers['authorization'];
       return res.status(404).json({ error: 'User not found' });
     }
     const { session_status } = result_.rows[0];
-    if (!session_status) {
+    if (session_status) {
+      // the user has closed the session or
+      // he remains too long inactive, the session is closed
       return res.status(401).json({ error: 'Session inactive. Please log in again.' });
     }
     next();
