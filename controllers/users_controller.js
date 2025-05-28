@@ -861,9 +861,9 @@ exports.registerUser = async (req, res) => {
         const user = { id: userId, username: username, sector: sector, branch: branch };
 
 	//handle the creation and storing the JWT and REFRESH token.
-	const{jwt_token, refresh_token, refresh_expires_at} = await handleTokens(user);
+	const{jwt_token, refresh_token, refresh_expires_at, is_session_closed} = await handleTokens(user);
 	    
-	console.log('jwt_token : ', jwt_token, ' refresh_token : ', refresh_token, ' refresh_expires_at : ', refresh_expires_at)
+	console.log('jwt_token : ', jwt_token, ' refresh_token : ', refresh_token, ' refresh_expires_at : ', refresh_expires_at, ' is_session_closed : ', is_session_closed)
 	
 	/*
 	//current date
@@ -922,7 +922,8 @@ exports.registerUser = async (req, res) => {
 		message: 'User registered successfully', 
 		jwt_token: jwt_token,
 		refresh_token: refresh_token,
-		refresh_expiry: refresh_expires_at
+		refresh_expiry: refresh_expires_at,
+		is_session_closed: is_session_closed
 	});
 	
 	console.error('registered successfully');
