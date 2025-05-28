@@ -2385,10 +2385,11 @@ async function handleTokens (user){
 
 	//save the flag 'is_session_closed'
 	const save_session_status = await saveSessionStatusInDatabase(user);
+	const is_session_closed   = save_session_status.rows[0].is_session_closed;
 	
-       console.log('registered : user : ', user, ' refresh_token : ', refresh_token, ' expires_at : ', refresh_expires_at);
+       console.log('registered : user : ', user, ' refresh_token : ', refresh_token, ' expires_at : ', refresh_expires_at, ' is_session_closed : ', is_session_closed);
 
-	return {jwt_token, refresh_token, refresh_expires_at};	    
+	return {jwt_token, refresh_token, refresh_expires_at, is_session_closed};	    
 }
 
  //called in "login"           
