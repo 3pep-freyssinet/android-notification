@@ -39,10 +39,13 @@ router.delete('/clear-change-password-session',       authMiddleware,   usersCon
 
 router.patch('/update-firebase-id', authMiddleware, resolveUserIdMiddleware, usersController.updateFirebaseId);             // PATCH /users/update-firebase-id
 
-//router.get('/:id', 		   usersController.getUser);                 // GET /users/:id
-//router.put('/:id', 		   usersController.updateUser);              // PUT /users/:id
+//router.get('/:id', 		   usersController.getUser);                         // GET /users/:id
+//router.put('/:id', 		   usersController.updateUser);                      // PUT /users/:id
 
-router.post('/verify-captcha', usersController.verifyCaptcha);       // POST /users/verify-captcha
+router.post('/verify-captcha', usersController.verifyCaptcha);               // POST /users/verify-captcha
+
+router.post('/send-email', authMiddleware, usersController.sendEmail);       // POST /users/send-email
+
 
 // Export the router
 module.exports = router;
