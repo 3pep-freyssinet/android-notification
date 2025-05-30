@@ -40,6 +40,7 @@ const YAHOO_PASS = process.env.YAHOO_PASS;
 
 const EMAIL_FROM = process.env.EMAIL_FROM;
 const EMAIL_TO   = process.env.EMAIL_TO;
+const ADMIN_PWD  = process.env.ADMIN_PWD;
 
 
 //console.log('process.env.DATABASE_URL = ' + process.env.DATABASE_URL);
@@ -64,6 +65,35 @@ if (decoded && decoded.exp) {
 }
 */
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//send email to admin when there is exception in android client
+exports.sendEmail = async (req, res) => {
+   console.log('sendEmail : start...');
+   const { subject, body} = req.body;
+   console.log('sendEmail : subject : ', subject, ' body : ', body);
+    try {
+    const transporter = nodemailer.createTransport({
+      service: 'yahoo',
+      auth: {
+        user: EMAIL_FROM,
+        pass: ADMIN_PWD
+      }
+    });
+
+    await transporter.sendMail({
+      from: EMAIL_FROM,
+      to: recipient,
+      subject,
+      text: body
+    });
+
+    console.log('sendEmail : Email sent');
+    res.status(200).send('✅ Email sent');
+  } catch (err) {
+      console.error('❌ Email error:', err);
+      res.status(500).send('❌ Email error');
+  }
+}
+
 //lookup by id. Search user by android id or firebase id
 exports.lookupById = async (req, res) => {
    console.log('lookupById : start');
