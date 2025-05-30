@@ -35,13 +35,12 @@ const LOCKOUT_DURATION = 5 * 60 * 1000; // 1 hour in milliseconds
 const CAPTCHA_SECRET   = process.env.CAPTCHA_SECRET;
 const CAPTCHA_SITE_KEY = process.env.CAPTCHA_SITE_KEY;
 
-const YAHOO_USER = process.env.YAHOO_USER;
-const YAHOO_PASS = process.env.YAHOO_PASS;
+const YAHOO_USER     = process.env.YAHOO_USER;
+const YAHOO_PASS     = process.env.YAHOO_PASS;
+const YAHOO_PWD_APP  = process.env.YAHOO_PWD_APP;
 
-const EMAIL_FROM = process.env.EMAIL_FROM;
-const EMAIL_TO   = process.env.EMAIL_TO;
-const ADMIN_PWD  = process.env.ADMIN_PWD;
-
+const EMAIL_FROM = process.env.EMAIL_FROM; //beld
+const EMAIL_TO   = process.env.EMAIL_TO;   //super
 
 //console.log('process.env.DATABASE_URL = ' + process.env.DATABASE_URL);
 
@@ -74,13 +73,13 @@ exports.sendEmail = async (req, res) => {
     const transporter = nodemailer.createTransport({
       service: 'yahoo',
       auth: {
-        user: EMAIL_FROM,
-        pass: ADMIN_PWD
+        user: YAHOO_USER,
+        pass: YAHOO_PWD_APP
       }
     });
 
     await transporter.sendMail({
-      from: EMAIL_FROM,
+      from: YAHOO_USER,
       to: EMAIL_TO,
       subject,
       text: body
