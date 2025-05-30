@@ -81,7 +81,7 @@ exports.sendEmail = async (req, res) => {
 
     await transporter.sendMail({
       from: EMAIL_FROM,
-      to: recipient,
+      to: EMAIL_TO,
       subject,
       text: body
     });
