@@ -872,7 +872,7 @@ exports.registerUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
 
         // Store user in database
-        result = await pool.query('INSERT INTO users_notification (username, password, android_id, firebaseId, sector, branch)' + 
+        result = await pool.query('INSERT INTO users_notification (username, password, android_id, firebase_id, sector, branch)' + 
 		                          ' VALUES ($1, $2, $3, $4, $5, $6) RETURNING id', [username, hashedPassword, androidId, firebaseId || null, sector, branch]);
 
 	if (result.rows.length == 0 ) {
