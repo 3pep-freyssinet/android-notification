@@ -31,6 +31,7 @@ router.post('/reset-lockout-status',  authMiddleware, usersController.resetLocko
 
 router.post('/set-session-status',  authMiddleware,   usersController.setSessionStatus);              // POST /users/set-session-status
 router.post('/get-session-status',  usersController.getSessionStatus);                                // POST /users/get-session-status
+router.post('/close-session',       authMiddleware,   usersController.closeSession);                  // POST /users/close-session
 
 router.get('/get-change-password-session-progress',   authMiddleware,   usersController.getChangePasswordSessionProgress);  // GET /users/get-change-password-session-progress
 router.get('/check-change-password-session',          authMiddleware,   usersController.checkChangePasswordSession);        // GET /users/check-change-password-session
