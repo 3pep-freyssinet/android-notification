@@ -2114,6 +2114,29 @@ exports.getSessionStatus = async (req, res) => {
   }
 }
 
+//close session
+exports.closeSession = async (req, res) => {	
+    console.log('closeSession : Start...'); 
+  try {
+    // Assuming `req.userId` is set by the authentication middleware
+    const userId = req.userId;
+    console.log('closeSession : userId : ', userId);
+	  
+    // Update the `is_session_closed` flag in `users_notification`
+    await db.query(
+      'UPDATE users_notification SET is_session_closed = TRUE WHERE id = $1',
+      [userId]
+    );
+
+    // Respond to the client
+    console.log('closeSession : session closed successfully');
+    res.status(200).json({ message: 'Logout successful and session closed.' });
+  } catch (error) {
+    console.error('closeSession : Logout error:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+}
+
 //set session status
 exports.setSessionStatus = async (req, res) => {
     //const username = 'Name147';
