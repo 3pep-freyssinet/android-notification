@@ -794,7 +794,8 @@ exports.forgotPassword = async (req, res) => {
 });
 */
     //if(true)res.json({ message: 'Password reset email sent' });
-	  
+
+    //the 'resetLink' is an ejs file 'reset-password' in 'views' folder
     const resetLink = `https://android-notification.onrender.com/reset-password?token=${resetToken}&userId=${userId}`;
     console.log('forgotPassword : resetLink :', resetLink);  
 	  
