@@ -796,6 +796,8 @@ exports.forgotPassword = async (req, res) => {
     //if(true)res.json({ message: 'Password reset email sent' });
 	  
     const resetLink = `https://android-notification.onrender.com/reset-password?token=${resetToken}&userId=${userId}`;
+    console.log('forgotPassword : resetLink :', resetLink);  
+	  
     //const email_ = 'tomcat.super@yahoo.fr';
     await transporter.sendMail({
       //from: '"Your App" <beldi.chergui@gmail.com>',
