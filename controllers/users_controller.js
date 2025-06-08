@@ -2106,7 +2106,7 @@ exports.getSessionStatus = async (req, res) => {
 	
 	console.log('getSessionStatus :sessionStatus : ', sessionStatus); 
     	
-	return res.json({
+	return res.status(200).json({
       	  session_status: sessionStatus,
           //username: user.username,
     });
