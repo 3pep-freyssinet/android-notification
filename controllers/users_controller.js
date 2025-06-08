@@ -2126,7 +2126,7 @@ exports.closeSession = async (req, res) => {
     console.log('closeSession : userId : ', userId);
 	  
     // Update the `is_session_closed` flag in `users_notification`
-    await db.query(
+    await pool.query(
       'UPDATE users_notification SET is_session_closed = TRUE WHERE id = $1',
       [userId]
     );
