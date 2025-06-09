@@ -2308,7 +2308,7 @@ exports.loginUser = async (req, res) => {
 		await pool.query('UPDATE users_notification SET failed_attempts = 0, lockout_until = NULL WHERE username = $1', [username]);
 
 	    //handle the creation and storing the JWT and REFRESH token.
-	    const{jwt_token, refresh_token, refresh_expires_at, is_session_closed} = await handleTokens(user);
+	    const{jwt_token, refresh_token, refresh_expires_at} = await handleTokens(user);
 	    
 	/*
 	//current date
@@ -2394,7 +2394,7 @@ exports.loginUser = async (req, res) => {
 		jwt_token: jwt_token,
 		refresh_token: refresh_token,
 		refresh_expiry: refresh_expires_at,
-		is_session_closed: is_session_closed
+		is_session_closed: false, //is_session_closed
 	});
 	    
     } catch (error) {
