@@ -914,7 +914,7 @@ exports.registerUser = async (req, res) => {
 	const expiryDays_ = parseInt(REFRESH_EXPIRY.replace('d', ''), 10); // The radix '10' specifies the base for parsing.
 	console.log('register : REFRESH expiryDays : ', expiryDays_); 
 	    
-	const refresh_expires_at = new Date(now + expiryDays_ * 24 * 60 * 60 * 1000);
+	//const refresh_expires_at = new Date(now + expiryDays_ * 24 * 60 * 60 * 1000);//already done in 'handleToken'
 	console.log('register : refresh_expires_at : ', refresh_expires_at);
 	    
 	// Generate a JWT for the registered user
