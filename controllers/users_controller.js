@@ -2456,13 +2456,13 @@ async function handleTokens (user){
 	//save refresh Token in database
 	const save_refresh_token = await storeRefreshTokenInDatabase(user, refresh_token, created_at, refresh_expires_at);
 
-	//save the flag 'is_session_closed'
-	const is_session_closed   = false;
-	const save_session_status = await saveSessionStatusInDatabase(user, is_session_closed);
+	//save the flag 'is_session_closed' done in session creation in 'registerUser'
+	//const is_session_closed   = false;
+	//const save_session_status = await saveSessionStatusInDatabase(user, is_session_closed);
 	
-       console.log('registered : user : ', user, ' refresh_token : ', refresh_token, ' expires_at : ', refresh_expires_at, ' is_session_closed : ', is_session_closed);
+       console.log('registered : user : ', user, ' refresh_token : ', refresh_token, ' refresh token expires at : ', refresh_expires_at);
 
-	return {jwt_token, refresh_token, refresh_expires_at, is_session_closed};	    
+	return {jwt_token, refresh_token, refresh_expires_at};	    
 }
 
  //called in "login"           
