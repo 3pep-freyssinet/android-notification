@@ -881,7 +881,14 @@ exports.registerUser = async (req, res) => {
 	if (result.rows.length == 0 ) {
                     console.error('register : cannot register the user');
 		    return res.status(400).json({ message: 'cannot register the user' });
-                 }  
+        } 
+
+	// Insert new session tied to the user
+    	await pool.query(
+	  `INSERT INTO sessions (users_notification_id, is_session_closed)
+	   VALUES ($1, false)`,
+	  [userId]
+	);
 	    
 	//console.log('register : result : ', result);
 		
