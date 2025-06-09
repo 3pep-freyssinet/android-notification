@@ -897,7 +897,6 @@ exports.registerUser = async (req, res) => {
 	    
 	console.log('jwt_token : ', jwt_token, ' refresh_token : ', refresh_token, ' refresh_expires_at : ', refresh_expires_at, ' is_session_closed : ', is_session_closed)
 	
-	/*
 	//current date
 	const now = Date.now();
 
