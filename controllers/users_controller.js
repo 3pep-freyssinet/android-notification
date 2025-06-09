@@ -2084,17 +2084,19 @@ exports.getSessionStatus = async (req, res) => {
 	
 	try {
     		const result = await pool.query(
-               `
-	      	SELECT username, is_session_closed
-		FROM users_notification
-		WHERE 
-  		(firebase_id = $1)
-  		OR
-  		(android_id = $2)
-		LIMIT 1;
-	      `,
-	      [firebaseId, androidId]
-	    );
+		  `SELECT is_session_closed
+		   FROM sessions
+		   WHERE users_notification_id = (
+		       SELECT id
+		       FROM users_notification
+		       WHERE android_id = $1
+		       LIMIT 1
+		   )
+		   AND is_session_closed = false
+		   ORDER BY connected_at DESC
+		   LIMIT 1`,
+		  [androidId]
+		);
 
     	if (result.rows.length === 0) {
 		console.log('getSessionStatus : Device not found'); 
