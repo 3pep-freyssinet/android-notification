@@ -2222,10 +2222,20 @@ exports.loginUser = async (req, res) => {
         if (userResult.rows.length === 0) {
             return res.status(400).json({ error: 'Invalid username or password' });
         }
-        //Here the user exists
+        //Here the user exists, update its session.
+	const userId = userResult.rows[0].id;
+        // Update the session
+    	await pool.query(
+      		`UPDATE sessions
+       		SET connected_at = CURRENT_TIMESTAMP,
+           	is_session_closed = false
+       		WHERE users_notification_id = $1`,
+      		[userId]
+    	);
+	
 	
         const user = userResult.rows[0];
-	console.log('(login : user : ', user);
+	console.log('(login : user : ', user, ' userId : ', userId);
 
 	//reset 'lockout_until' field
 
