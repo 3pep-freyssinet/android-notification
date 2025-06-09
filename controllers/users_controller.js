@@ -896,7 +896,8 @@ exports.registerUser = async (req, res) => {
 	const{jwt_token, refresh_token, refresh_expires_at, is_session_closed} = await handleTokens(user);
 	    
 	console.log('jwt_token : ', jwt_token, ' refresh_token : ', refresh_token, ' refresh_expires_at : ', refresh_expires_at, ' is_session_closed : ', is_session_closed)
-	
+
+	/*
 	//current date
 	const now = Date.now();
 
@@ -932,7 +933,7 @@ exports.registerUser = async (req, res) => {
 	// Generate Refresh token
 	const refresh_token = await generateRefreshToken();
 	console.log('registered : refresh_token : ', refresh_token, ' refresh_created_at : ', created_at, ' refresh_expires_at : ', refresh_expires_at);
-
+        */
 	/*
 	const refresh_expiryDays = parseInt(REFRESH_EXPIRY.replace('d', ''), 10); // '10' is the base parsing
 	console.log('registered : refresh_expiryDays : ', refresh_expiryDays);
