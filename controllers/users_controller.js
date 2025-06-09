@@ -2129,7 +2129,13 @@ exports.closeSession = async (req, res) => {
 	  
     // Update the `is_session_closed` flag in `users_notification`
     await pool.query(
-      'UPDATE users_notification SET is_session_closed = TRUE WHERE id = $1',
+      `UPDATE sessions
+       SET is_session_closed = TRUE,
+           disconnected_at = NOW()
+       WHERE users_notification_id = $1
+         AND is_session_closed = false
+       ORDER BY connected_at DESC
+       LIMIT 1`,
       [userId]
     );
 
