@@ -2157,11 +2157,17 @@ exports.setSessionStatus = async (req, res) => {
     console.log('setSessionStatus : androidId:', androidId, ' sessionStatus : ', sessionStatusBoolean)
     try {
         const result = await pool.query(
-            `UPDATE users_notification 
-             SET is_session_closed = $1 
-             WHERE android_id = $2`, 
-            [sessionStatusBoolean, androidId]
-        );
+      `
+      UPDATE sessions
+      SET is_session_closed = $1, disconnected_at = CURRENT_TIMESTAMP
+      WHERE 
+        (android_id = $2 OR firebase_id = $3)
+        AND is_session_closed = false
+      ORDER BY connected_at DESC
+      LIMIT 1
+      `,
+      [sessionStatusBoolean, androidId, firebaseId]
+    );
         //console.log('setSessionStatus : result:', JSON.stringify(result));
 	    
         if (result.rowCount === 0) {
