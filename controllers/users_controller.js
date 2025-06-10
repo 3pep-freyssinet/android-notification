@@ -2209,9 +2209,9 @@ exports.updateUser = async (req, res) => {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Login a user
 exports.loginUser = async (req, res) => {
-    const { username, password, openSession } = req.body;
+    const { username, password, androidId, firebaseId } = req.body;
 	
-    console.log('loginUser : username : ', username, ' password : ', password, ' openSession : ', openSession);
+    console.log('loginUser : username : ', username, ' password : ', password, ' androidId : ', androidId, ' firebaseId : ', firebaseId);
 	    
     try {
         // Check if the user exists
@@ -2222,22 +2222,10 @@ exports.loginUser = async (req, res) => {
         if (userResult.rows.length === 0) {
             return res.status(400).json({ error: 'Invalid username or password' });
         }
-        //Here the user exists, update its session.
-	const userId = userResult.rows[0].id;
-        // Update the session
-    	await pool.query(
-      		`UPDATE sessions
-       		SET connected_at = CURRENT_TIMESTAMP,
-           	is_session_closed = false
-       		WHERE users_notification_id = $1`,
-      		[userId]
-    	);
-	
-	
+        //Here the user exists.
+	    
         const user = userResult.rows[0];
-	console.log('(login : user : ', user, ' userId : ', userId);
-
-	//reset 'lockout_until' field
+	console.log('(login : user : ', user, ' userId : ', user.id);
 
 	/*
 	//convert 'timestamp' to long
@@ -2308,17 +2296,32 @@ exports.loginUser = async (req, res) => {
         	//}
 
 	        //if password is successfull, save sessionId only if session is required
-	        if(openSession != null){
-		   const sessionId = await createSession(user.id);
-		}
+	        //if(openSession != null){
+		//   const sessionId = await createSession(user.id);
+		//}
 
 	        //send 'sessionId' to frontend in response
 	    
-		// If password is correct, reset failed attempts and lockout
-		await pool.query('UPDATE users_notification SET failed_attempts = 0, lockout_until = NULL WHERE username = $1', [username]);
+		// If password is correct, reset failed attempts and lockout and other columns
+		await pool.query('UPDATE users_notification SET ' +
+				 ' failed_attempts = 0, lockout_until = NULL, android_id = $2, firebase_id = $3 ' + 
+				 ' WHERE username = $1', 
+				  [username, androidId, firebaseId]
+				);
 
-	    //handle the creation and storing the JWT and REFRESH token.
-	    const{jwt_token, refresh_token, refresh_expires_at} = await handleTokens(user);
+	    	//handle the creation and storing the JWT and REFRESH token.
+	    	const{jwt_token, refresh_token, refresh_expires_at} = await handleTokens(user);
+
+	     	//update the session.
+		const userId = userResult.rows[0].id;
+        	// Update the session
+    		await pool.query(
+      			`UPDATE sessions
+       			SET connected_at = CURRENT_TIMESTAMP,
+           		is_session_closed = false
+       			WHERE users_notification_id = $1`,
+      			[userId]
+    		);
 	    
 	/*
 	//current date
