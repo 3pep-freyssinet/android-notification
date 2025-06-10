@@ -2140,9 +2140,7 @@ exports.closeSession = async (req, res) => {
        SET is_session_closed = TRUE,
            disconnected_at = NOW()
        WHERE users_notification_id = $1
-         AND is_session_closed = false
-       ORDER BY connected_at DESC
-       LIMIT 1`,
+       AND is_session_closed = false`,
       [userId]
     );
 
