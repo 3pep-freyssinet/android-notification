@@ -25,7 +25,7 @@ const authHeader = req.headers['authorization'];
   }
 
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    console.log('auth : test : true ');
+    console.log('auth : authHeader : false or authHeader.startsWith("Bearer"): false ');
     return res.status(401).json({ error: 'Unauthorized' });
   }
 
