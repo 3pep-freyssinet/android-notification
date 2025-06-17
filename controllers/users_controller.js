@@ -2132,7 +2132,8 @@ exports.closeSession = async (req, res) => {
   try {
     // Assuming `req.userId` is set by the authentication middleware
     console.log('closeSession : req : ', req);
-    const userId = req.userId;
+    const userId = req.user.userId;
+	  
     if (!userId) {
 	console.log('closeSession : userId required');
         return res.status(403).json({ message: 'closeSession : userId required' });
