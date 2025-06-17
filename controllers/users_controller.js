@@ -2132,10 +2132,14 @@ exports.closeSession = async (req, res) => {
   try {
     // Assuming `req.userId` is set by the authentication middleware
     const userId = req.userId;
+    if (!userId) {
+	console.log('closeSession : userId required');
+        return res.status(403).json({ message: 'closeSession : userId required' });
+    }
     console.log('closeSession : userId : ', userId);
 	  
     // Update the `is_session_closed` flag in `users_notification`
-    await pool.query(
+    const result = await pool.query(
       `UPDATE sessions
        SET is_session_closed = TRUE,
            disconnected_at = NOW()
@@ -2143,10 +2147,16 @@ exports.closeSession = async (req, res) => {
        AND is_session_closed = false`,
       [userId]
     );
-
+    
+    if (result.rowCount === 0) {
+	console.log('closeSession : failure');
+        return res.status(404).json({ message: 'closeSession : failure' });
+    }
+	  
     // Respond to the client
     console.log('closeSession : session closed successfully');
-    res.status(200).json({ message: 'Logout successful and session closed.' });
+    res.status(200).json({ message: 'Logout successful and session closed.' })
+	    ;
   } catch (error) {
     console.error('closeSession : Logout error:', error);
     res.status(500).json({ message: 'Internal server error' });
