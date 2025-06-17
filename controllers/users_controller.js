@@ -2131,7 +2131,7 @@ exports.closeSession = async (req, res) => {
     console.log('closeSession : Start...'); 
   try {
     // Assuming `req.userId` is set by the authentication middleware
-    console.log('closeSession : req : ', req);
+    //console.log('closeSession : req : ', req);
     const userId = req.user.userId;
 	  
     if (!userId) {
