@@ -75,11 +75,11 @@ app
   })
   */
 
-//Serve files from the root '/' directory. 'https://..../captcha.html', 'captcha.html' must be in ./captcha.html'
+//Serve files from the root '/' directory. 'https://..../cloudflare.html', 'cloudflare.html' must be in ./cloudflare.html'
 app.get('/', (req, res) => {
-    console.log('Serving captcha.html');
-    // Path to your captcha.html file
-    const filePath = path.join(__dirname, 'public', 'captcha.html');
+    console.log('Serving cloudflare.html');
+    // Path to your captcha.html file or cloudflare.html
+    const filePath = path.join(__dirname, 'public', 'cloudflare.html');
 
     // Read the HTML file
     fs.readFile(filePath, 'utf8', (err, data) => {
