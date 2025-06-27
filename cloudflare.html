@@ -1,1 +1,37 @@
-ddd
+<html>
+  <head>
+    <title>Cloudflare Turnstile Demo</title>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <script type="text/javascript">
+        function onCaptchaSuccess(token) {
+            // Pass the Turnstile token to Android
+            HCaptchaInterface.onCaptchaSuccess(token); // Keep the interface name if used by Android
+
+            alert("document.getElementById('submit') : " + document.getElementById('submit'));
+
+            // Enable the submit button
+            document.getElementById('submit').disabled = false;
+        }
+
+        function onCaptchaError() {
+            console.log("Captcha failed");
+            HCaptchaInterface.onCaptchaError(); // Keep consistent if Android depends on this
+        }
+    </script>
+  </head>
+  <body>
+    <form action="" method="POST">
+      <input type="text" name="email" placeholder="Email" />
+      <input type="password" name="password" placeholder="Password" />
+      
+      <div class="cf-turnstile"
+           data-sitekey="ClOUDFLARE_SITE_KEY"
+           data-callback="onCaptchaSuccess"
+           data-error-callback="onCaptchaError">
+      </div>
+      
+      <br />
+      <input id="submit" type="submit" value="Submit" disabled/>
+    </form>
+  </body>
+</html>
