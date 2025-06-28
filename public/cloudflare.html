@@ -8,12 +8,13 @@
             // Pass the Turnstile token to Android
             //'HCaptchaInterface' is the interface name used in android. cf 'LoginActivity.oncreate' : 
             // captcha.addJavascriptInterface(new HCaptchaInterface(this, client, progressBar, captchaStatus), "HCaptchaInterface");
-            HCaptchaInterface.onCaptchaSuccess(token); // Keep the interface name if used by Android
+            
+            //HCaptchaInterface.onCaptchaSuccess(token); // Keep the interface name if used by Android
 
-            alert("document.getElementById('submit') : " + document.getElementById('submit'));
-
+            //alert("document.getElementById('submit') : " + document.getElementById('submit'));
+            alert("Hello the World"); 
             // Enable the submit button
-            document.getElementById('submit').disabled = false;
+            //document.getElementById('submit').disabled = false;
         }
 
         function onCaptchaError() {
@@ -24,7 +25,7 @@
     
   </head>
   <body>
-    hhhhhhhhhhhhhhhhhhhhhhh
+    
     <form action="" method="POST">
       <!--
       <input type="text" name="email" placeholder="Email" />
