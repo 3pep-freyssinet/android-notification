@@ -32,10 +32,13 @@ const path       = require('path');
 const JWT_SECRET 		= process.env.JWT_SECRET;
 const REFRESH_TOKEN_SECRET 	= process.env.REFRESH_TOKEN_SECRET;
 
-console.log("JWT_SECRET : ", JWT_SECRET, " REFRESH_TOKEN_SECRET : ", REFRESH_TOKEN_SECRET);
+console.log("index : JWT_SECRET : ", JWT_SECRET, " REFRESH_TOKEN_SECRET : ", REFRESH_TOKEN_SECRET);
 
-const CAPTCHA_SITE_KEY = process.env.CAPTCHA_SITE_KEY;
-console.log('CAPTCHA_SITE_KEY:', CAPTCHA_SITE_KEY);
+const CAPTCHA_SITE_KEY    = process.env.CAPTCHA_SITE_KEY;
+const CLOUDFLARE_SITE_KEY = process.env.CLOUDFLARE_SITE_KEY;
+
+console.log('index : CAPTCHA_SITE_KEY:', CAPTCHA_SITE_KEY);
+console.log('index : CLOUDFLARE_SITE_KEY:', CLOUDFLARE_SITE_KEY);
 
 // Middleware to parse application/x-www-form-urlencoded data
 //The data are sent in FormBody, use : 'app.use(express.urlencoded({ extended: true }))'
@@ -47,7 +50,7 @@ const REFRESH_EXPIRY = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 da
 const JWT_EXPIRY     = '1d'; 
 //const JWT_EXPIRY   = new Date(Date.now() +  1 * 24 * 60 * 60 * 1000); // 1 days in the future
 
-console.log("REFRESH_EXPIRY = ", REFRESH_EXPIRY, " JWT_EXPIRY = ", JWT_EXPIRY);
+console.log("index : REFRESH_EXPIRY = ", REFRESH_EXPIRY, " JWT_EXPIRY = ", JWT_EXPIRY);
 
 
 // Serve static files from the "public" directory
