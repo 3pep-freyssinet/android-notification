@@ -2129,26 +2129,39 @@ exports.getSessionStatus = async (req, res) => {
 //close session
 exports.closeSession = async (req, res) => {	
     console.log('closeSession : Start...'); 
-  try {
-    // Assuming `req.userId` is set by the authentication middleware
-    //console.log('closeSession : req : ', req);
-    const userId = req.user.userId;
+    const { androidId } = req.body;
+  
+    try {
+    	// Assuming `req.userId` is set by the authentication middleware
+    	//console.log('closeSession : req : ', req);
+    	const userId = req.user.userId;
 	  
-    if (!userId) {
-	console.log('closeSession : userId required');
-        return res.status(403).json({ message: 'closeSession : userId required' });
-    }
-    console.log('closeSession : userId : ', userId);
-	  
-    // Update the `is_session_closed` flag in `users_notification`
-    const result = await pool.query(
-      `UPDATE sessions
-       SET is_session_closed = TRUE,
+    	if ((!userId) && (!androidId)) {
+		console.log('closeSession : userId or androidId required');
+        	return res.status(403).json({ message: 'closeSession : userId or androidId required' });
+    	}
+    	
+	//get userId if it is null
+	const result;
+	if((!userId) && (androidId)){
+	   const result = await pool.query(
+      	   `SELECT id FROM users_notification WHERE androidId = $1`,
+           [androidId]
+           );
+	   userId = result.rows[0].id;
+        }
+	 
+	console.log('closeSession : userId : ', userId);
+	    
+    	// Update the `is_session_closed` flag in `users_notification`
+    	const result = await pool.query(
+      	  `UPDATE sessions
+          SET is_session_closed = TRUE,
            disconnected_at = NOW()
-       WHERE users_notification_id = $1
-       AND is_session_closed = false`,
-      [userId]
-    );
+          WHERE users_notification_id = $1
+          AND is_session_closed = false`,
+          [userId]
+        );
     
     if (result.rowCount === 0) {
 	console.log('closeSession : failure');
