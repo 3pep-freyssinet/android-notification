@@ -2137,7 +2137,7 @@ exports.closeSession = async (req, res) => {
 	    
     	//const userId = req.user.userId;
 
-	const userId = null;    
+	var userId;    
     	if (!req.user){
 		if(!androidId) {
 			console.log('closeSession : userId or androidId required');
