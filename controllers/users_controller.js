@@ -2145,7 +2145,7 @@ exports.closeSession = async (req, res) => {
     		}else{
 			//get userId 
 	   		const result = await pool.query(
-      	   		   `SELECT id FROM users_notification WHERE androidId = $1`,
+      	   		   `SELECT id FROM users_notification WHERE android_id = $1`,
            		   [androidId]
            		);
 	   		userId = result.rows[0].id;
