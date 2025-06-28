@@ -2129,7 +2129,7 @@ exports.getSessionStatus = async (req, res) => {
 //close session
 exports.closeSession = async (req, res) => {	
     console.log('closeSession : Start...'); 
-    const { androidId } = req.body;
+    const { android_id } = req.body;
     console.log('closeSession : androidId : ', androidId);
     try {
     	// Assuming `req.userId` is set by the authentication middleware
