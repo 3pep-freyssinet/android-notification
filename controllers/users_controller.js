@@ -2139,7 +2139,7 @@ exports.closeSession = async (req, res) => {
 
 	const userId = null;    
     	if (!req.user){
-		if(!androidId)) {
+		if(!androidId) {
 			console.log('closeSession : userId or androidId required');
         		return res.status(403).json({ message: 'closeSession : userId or androidId required' });
     		}else{
