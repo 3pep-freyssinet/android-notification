@@ -2568,7 +2568,7 @@ response = http.post(url=VERIFY_URL, data=data)
 response_json = JSON.parse(response.content)	
 */
 	
-console.log('verify captcha : response.data : ', response.data); // Check for errors or unexpected responses
+//console.log('verify captcha : response.data : ', response.data); // Check for errors or unexpected responses
 	
         // Check if CAPTCHA verification was successful
         if (response.data.success) {
