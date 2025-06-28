@@ -35,6 +35,8 @@ const LOCKOUT_DURATION = 5 * 60 * 1000; // 1 hour in milliseconds
 const CAPTCHA_SECRET   = process.env.CAPTCHA_SECRET;
 const CAPTCHA_SITE_KEY = process.env.CAPTCHA_SITE_KEY;
 
+const CLOUDFLARE_SECRET   = process.env.CLOUDFLARE_SECRET;
+
 const YAHOO_USER     = process.env.YAHOO_USER;
 const YAHOO_PASS     = process.env.YAHOO_PASS;
 const YAHOO_PWD_APP  = process.env.YAHOO_PWD_APP;
@@ -2522,7 +2524,7 @@ async function saveSessionStatusInDatabase(user, is_session_closed){
  exports.verifyCaptcha = async (req, res) => {
     const captchaToken = req.body.captcha_token;
     
-	//console.log('verifyCaptcha : captchaToken : ' + captchaToken);
+	console.log('verifyCaptcha : captchaToken : ' + captchaToken);
 	 
 	 try {
         // Send the token to the CAPTCHA provider (hCaptcha, reCAPTCHA) for verification
@@ -2535,12 +2537,14 @@ async function saveSessionStatusInDatabase(user, is_session_closed){
             }
         });
 	*/
-	
+	//'https://hcaptcha.com/siteverify'
+	////'https://challenges.cloudflare.com/turnstile/v0/siteverify'
+		 
 	//solution 2
 	const response = await axios.post(
-            'https://hcaptcha.com/siteverify',
+            'https://challenges.cloudflare.com/turnstile/v0/siteverify', 
             new URLSearchParams({
-                secret: CAPTCHA_SECRET,
+                secret: CLOUDFLARE_SECRET,
                 response: captchaToken,
             }).toString(),
             {
@@ -2564,7 +2568,7 @@ response = http.post(url=VERIFY_URL, data=data)
 response_json = JSON.parse(response.content)	
 */
 	
-console.log('verify captcha : ', response.data); // Check for errors or unexpected responses
+console.log('verify captcha : response.data : ', response.data); // Check for errors or unexpected responses
 	
         // Check if CAPTCHA verification was successful
         if (response.data.success) {
