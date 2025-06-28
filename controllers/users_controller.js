@@ -2167,8 +2167,8 @@ exports.closeSession = async (req, res) => {
         );
     
     if (result.rowCount === 0) {
-	console.log('closeSession : failure');
-        return res.status(404).json({ message: 'closeSession : failure' });
+	console.log('closeSession: already closed or no session found');
+        return res.status(200).json({ message: 'Session already closed or not found' });
     }
 	  
     // Respond to the client
