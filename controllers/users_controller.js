@@ -2142,7 +2142,6 @@ exports.closeSession = async (req, res) => {
     	}
     	
 	//get userId if it is null
-	const result;
 	if((!userId) && (androidId)){
 	   const result = await pool.query(
       	   `SELECT id FROM users_notification WHERE androidId = $1`,
