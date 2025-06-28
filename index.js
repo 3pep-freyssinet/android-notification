@@ -88,7 +88,7 @@ app.get('/', (req, res) => {
         }
 
         // Replace the placeholder with the environment variable
-        const updatedHtml = data.replace(/data-sitekey=\s*['"]?CAPTCHA_SITE_KEY['"]?/g,  `data-sitekey="${CAPTCHA_SITE_KEY}"`)
+        const updatedHtml = data.replace(/data-sitekey=\s*['"]?CLOUDFLARE_SITE_KEY['"]?/g,  `data-sitekey="${CLOUDFLARE_SITE_KEY}"`)
 		//const updatedHtml = data.replace(/data-sitekey=\s*['"]?HCAPTCHA_SITEKEY['"]?/g, `data-sitekey="${process.env.HCAPTCHA_SITEKEY}"`);
 		//const updatedHtml = data.replace(/data-sitekey=\s*['"]?HCAPTCHA_SITEKEY['"]?/g, `data-sitekey="${process.env.HCAPTCHA_SITEKEY}"` 
 		//const updatedHtml = data.replace(/data-sitekey=\s*['"]?HCAPTCHA_SITEKEY['"]?/g, `data-sitekey='${process.env.CAPTCHA_SITE_KEY}'` // Use single quotes in the final HTML
