@@ -77,6 +77,10 @@ app
     });
   })
   */
+//ping
+app.get('/ping', (req, res) => {
+  res.status(200).send('OK');
+});
 
 //Serve files from the root '/' directory. 'https://..../cloudflare.html', 'cloudflare.html' must be in ./cloudflare.html'
 app.get('/', (req, res) => {
