@@ -840,6 +840,37 @@ res.send(`
   `);
 }
 
+// Verify if the provided username is already existed
+exports.verifyUser = async (req, res) => {
+    console.log('verifyUser : start ...\n');
+	
+    const { username } = req.body;
+    if (!username) {
+        console.log('verifyUser : the username is required');
+	return res.status(400).json({ message: 'Username is required' });
+    }
+   try {
+        // Check if user already exists
+        const existingUser = await pool.query('SELECT * FROM users_notification WHERE username = $1', [username]);
+		
+	//console.log('verifyUser : existingUser : ', existingUser);
+		
+	console.log('verifyUser : existingUser.rows.length  : ', existingUser.rows.length );
+        
+	if ((existingUser.rows.length != 0 ) && (existingUser.rows.length > 0)) {
+           console.log('verifyUser : the user already exists');
+	   return res.status(401).json({ message: 'Username already exists' });
+        }
+
+	// here the user not exists
+	console.log('verifyUser : the user not exists');
+	return res.status(200).json({ message: 'Username not exists' });
+   }catch(error){
+	console.error('verifyUser failure : ' + error);
+        res.status(500).json({ message: 'Server error' });
+   }
+}
+	
 // Register a new user
 exports.registerUser = async (req, res) => {
     // Register user endpoint
