@@ -2,7 +2,9 @@
   <head>
     <title>Cloudflare Turnstile Demo</title>
     
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script> 
+    //<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script> 
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoaded" async defer></script>
+
     <script type="text/javascript">
         function onCaptchaSuccess(token) {
             // Pass the Turnstile token to Android
@@ -20,6 +22,11 @@
         function onCaptchaError() {
             console.log("Captcha failed");
             HCaptchaInterface.onCaptchaError(); // Keep consistent if Android depends on this
+        }
+        function onTurnstileLoaded() {
+            if (window.HCaptchaInterface && HCaptchaInterface.onTurnstileReady) {
+                HCaptchaInterface.onTurnstileReady();
+            }
         }
     </script>
     
@@ -39,35 +46,7 @@
            data-error-callback="onCaptchaError"
            data-retry="auto">
       </div>
-      <script>
-      function notifyAndroidLoaded() {
-        if (window.HCaptchaInterface && HCaptchaInterface.onTurnstileReady) {
-            HCaptchaInterface.onTurnstileReady(); // Java → progressBar.setVisibility(View.GONE)
-        }
-      }
-
-      const observer = new MutationObserver(() => {
-        const iframe = document.querySelector("iframe[src*='turnstile']");
-        if (iframe && iframe.complete) {
-            notifyAndroidLoaded();
-            observer.disconnect(); // Done observing
-        }
-       });
-
-       window.onload = function () {
-        observer.observe(document.body, { childList: true, subtree: true });
-
-        // Also fallback: poll in case iframe doesn't trigger mutation
-        const interval = setInterval(() => {
-            const iframe = document.querySelector("iframe[src*='turnstile']");
-            if (iframe && iframe.complete) {
-                notifyAndroidLoaded();
-                clearInterval(interval);
-            }
-        }, 100);
-       };
-       </script>
-
+      
       <!--
       <br />
       <input id="submit" type="submit" value="Submit" disabled/>
