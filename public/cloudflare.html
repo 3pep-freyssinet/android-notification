@@ -27,6 +27,7 @@
             console.log('onTurnstileLoaded');
             console.log('window.HCaptchaInterface : ', window.HCaptchaInterface);
             console.log(' HCaptchaInterface.onTurnstileReady : ',  HCaptchaInterface.onTurnstileReady);
+            console.log(' test : ',  (window.HCaptchaInterface && HCaptchaInterface.onTurnstileReady));
             if (window.HCaptchaInterface && HCaptchaInterface.onTurnstileReady) {
                 HCaptchaInterface.onTurnstileReady();
             }
