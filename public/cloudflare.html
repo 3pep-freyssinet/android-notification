@@ -29,6 +29,7 @@
             console.log(' HCaptchaInterface.onTurnstileReady : ',  HCaptchaInterface.onTurnstileReady);
             console.log(' test : ',  (window.HCaptchaInterface && HCaptchaInterface.onTurnstileReady));
             if (window.HCaptchaInterface && HCaptchaInterface.onTurnstileReady) {
+               console.log('onTurnstileLoaded : here');
                 HCaptchaInterface.onTurnstileReady();
             }
         }
