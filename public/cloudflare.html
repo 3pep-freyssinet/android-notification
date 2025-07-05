@@ -24,12 +24,8 @@
             HCaptchaInterface.onCaptchaError(); // Keep consistent if Android depends on this
         }
         function onTurnstileLoaded() {
-            console.log('onTurnstileLoaded');
-            console.log('window.HCaptchaInterface : ', window.HCaptchaInterface);
-            console.log(' HCaptchaInterface.onTurnstileReady : ',  HCaptchaInterface.onTurnstileReady);
-            console.log(' test : ',  (window.HCaptchaInterface && HCaptchaInterface.onTurnstileReady));
             if (window.HCaptchaInterface && HCaptchaInterface.onTurnstileReady) {
-               console.log('onTurnstileLoaded : here');
+               //console.log('onTurnstileLoaded : here');
                 HCaptchaInterface.onTurnstileReady();
             }
         }
