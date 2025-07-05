@@ -24,6 +24,7 @@
             HCaptchaInterface.onCaptchaError(); // Keep consistent if Android depends on this
         }
         function onTurnstileLoaded() {
+            console.log('onTurnstileLoaded');
             if (window.HCaptchaInterface && HCaptchaInterface.onTurnstileReady) {
                 HCaptchaInterface.onTurnstileReady();
             }
