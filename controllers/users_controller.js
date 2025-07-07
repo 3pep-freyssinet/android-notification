@@ -849,6 +849,7 @@ exports.verifyUser = async (req, res) => {
         console.log('verifyUser : the username is required');
 	return res.status(400).json({ message: 'Username is required' });
     }
+     console.log('verifyUser : username : ', username);
    try {
         // Check if user already exists
         const existingUser = await pool.query('SELECT * FROM users_notification WHERE username = $1', [username]);
