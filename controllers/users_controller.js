@@ -881,13 +881,8 @@ exports.registerUser = async (req, res) => {
 	const { username, password, androidId, firebaseId, sector, branch } = req.body;
 
 	console.log('register : username : ', username, ' password : ', password, ' androidId : ', androidId, ' firebaseId : ', firebaseId, ' sector : ', sector, ' branch : ', branch);
-	res.status(200).json({ 
-		message: 'User registered successfully', 
-		//jwt_token: jwt_token,
-		//refresh_token: refresh_token,
-		//refresh_expiry: refresh_expires_at,
-		//is_session_closed: false, //is_session_closed
-	});
+	
+	res.status(500).json({ message: 'Server error' });
         if(true)return;
 	
     try {
