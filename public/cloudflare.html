@@ -39,8 +39,19 @@
       <input type="password" name="password" placeholder="Password" />
       -->
       
-      <!-- The KEY is filled at runtime from the environment. See 'index.js' -->
+      <script type="text/javascript">
+      let turnstileIsReady = false;
+
+      function onTurnstileLoaded() {
+        turnstileIsReady = true;
+
+        if (window.HCaptchaInterface && HCaptchaInterface.onTurnstileReady) {
+            HCaptchaInterface.onTurnstileReady();
+        }
+    }
+    </script>
       
+      <!-- The KEY is filled at runtime from the environment. See 'index.js' -->
      <div id="cf-turnstile" class="cf-turnstile"
            data-sitekey="CLOUDFLARE_SITE_KEY"
            data-callback="onCaptchaSuccess"
