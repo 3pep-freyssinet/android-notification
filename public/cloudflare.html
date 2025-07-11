@@ -27,6 +27,7 @@
           turnstileIsReady = true;
 
           if (window.HCaptchaInterface && HCaptchaInterface.onTurnstileReady) {
+              console.log('HCaptchaInterface : ', HCaptchaInterface);
               HCaptchaInterface.onTurnstileReady();
           }
         }
