@@ -40,16 +40,20 @@
       -->
       
       <script type="text/javascript">
-      let turnstileIsReady = false;
+    let turnstileIsReady = false;
 
-      function onTurnstileLoaded() {
+    function onTurnstileLoaded() {
+        console.log("Turnstile loaded.");
         turnstileIsReady = true;
 
         if (window.HCaptchaInterface && HCaptchaInterface.onTurnstileReady) {
+            console.log("Calling Android: onTurnstileReady()");
             HCaptchaInterface.onTurnstileReady();
+        } else {
+            console.log("HCaptchaInterface or onTurnstileReady missing");
         }
     }
-    </script>
+</script>
       
       <!-- The KEY is filled at runtime from the environment. See 'index.js' -->
      <div id="cf-turnstile" class="cf-turnstile"
