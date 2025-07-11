@@ -24,11 +24,18 @@
             HCaptchaInterface.onCaptchaError(); // Keep consistent if Android depends on this
         }
         function onTurnstileLoaded() {
-            if (window.HCaptchaInterface && HCaptchaInterface.onTurnstileReady) {
-               //console.log('onTurnstileLoaded : here');
-                HCaptchaInterface.onTurnstileReady();
-            }
+          turnstileIsReady = true;
+
+          if (window.HCaptchaInterface && HCaptchaInterface.onTurnstileReady) {
+              HCaptchaInterface.onTurnstileReady();
+          }
         }
+
+        function resetTurnstileWidget() {
+          if (turnstileIsReady) {
+              turnstile.reset('cf-turnstile');
+          }
+      }
     </script>
     
   </head>
@@ -38,22 +45,6 @@
       <input type="text" name="email" placeholder="Email" />
       <input type="password" name="password" placeholder="Password" />
       -->
-      
-      <script type="text/javascript">
-    let turnstileIsReady = false;
-
-    function onTurnstileLoaded() {
-        console.log("Turnstile loaded.");
-        turnstileIsReady = true;
-
-        if (window.HCaptchaInterface && HCaptchaInterface.onTurnstileReady) {
-            console.log("Calling Android: onTurnstileReady()");
-            HCaptchaInterface.onTurnstileReady();
-        } else {
-            console.log("HCaptchaInterface or onTurnstileReady missing");
-        }
-    }
-</script>
       
       <!-- The KEY is filled at runtime from the environment. See 'index.js' -->
      <div id="cf-turnstile" class="cf-turnstile"
