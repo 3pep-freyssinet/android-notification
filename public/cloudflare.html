@@ -28,7 +28,7 @@
 
         try {
           widgetId = turnstile.render('#cf-turnstile', {
-            sitekey: 'CLOUDFLARE_SITE_KEYY', // Replace with your actual site key
+            sitekey: 'CLOUDFLARE_SITE_KEY', // Replace with your actual site key
             callback: onCaptchaSuccess,
             'error-callback': onCaptchaError
           });
@@ -40,6 +40,7 @@
           console.error("Turnstile render failed:", e);
         }
       }
+
 
       function resetCaptcha() {
         if (turnstileIsReady && widgetId !== null) {
