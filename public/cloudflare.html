@@ -1,60 +1,65 @@
-<!DOCTYPE html>
 <html>
   <head>
     <title>Cloudflare Turnstile Demo</title>
-
-    <!-- Cloudflare Turnstile JS -->
+    
+    <!-- <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script> -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoaded" async defer></script>
 
     <script type="text/javascript">
-      let turnstileIsReady = false;
-      let widgetId = null;
+        function onCaptchaSuccess(token) {
+            // Pass the Turnstile token to Android
+            //'HCaptchaInterface' is the interface name used in android. cf 'LoginActivity.oncreate' : 
+            // captcha.addJavascriptInterface(new HCaptchaInterface(this, client, progressBar, captchaStatus), "HCaptchaInterface");
+            
+            HCaptchaInterface.onCaptchaSuccess(token); // Keep the interface name if used by Android
 
-      function onCaptchaSuccess(token) {
-        if (window.HCaptchaInterface && HCaptchaInterface.onCaptchaSuccess) {
-          HCaptchaInterface.onCaptchaSuccess(token);
+            //alert("document.getElementById('submit') : " + document.getElementById('submit'));
+            alert("Hello the World"); 
+            // Enable the submit button
+            //document.getElementById('submit').disabled = false;
         }
-      }
 
-      function onCaptchaError() {
-        if (window.HCaptchaInterface && HCaptchaInterface.onCaptchaError) {
-          HCaptchaInterface.onCaptchaError();
+        function onCaptchaError() {
+            console.log("Captcha failed");
+            HCaptchaInterface.onCaptchaError(); // Keep consistent if Android depends on this
         }
-      }
-
-      function onTurnstileLoaded() {
-        turnstileIsReady = true;
-        console.log("Turnstile loaded.");
-
-        try {
-          widgetId = turnstile.render('#cf-turnstile', {
-            sitekey: 'CLOUDFLARE_SITE_KEY', // Replace with your actual site key
-            callback: onCaptchaSuccess,
-            'error-callback': onCaptchaError
-          });
+        function onTurnstileLoaded() {
+          turnstileIsReady = true;
 
           if (window.HCaptchaInterface && HCaptchaInterface.onTurnstileReady) {
-            HCaptchaInterface.onTurnstileReady();
+              console.log('HCaptchaInterface : ', HCaptchaInterface);
+              HCaptchaInterface.onTurnstileReady();
           }
-        } catch (e) {
-          console.error("Turnstile render failed:", e);
         }
-      }
 
-
-      function resetCaptcha() {
-        if (turnstileIsReady && widgetId !== null) {
-          turnstile.reset(widgetId);
-        } else {
-          console.warn("Turnstile not ready or widgetId missing");
-        }
+        function resetTurnstileWidget() {
+          if (turnstileIsReady) {
+              turnstile.reset('cf-turnstile');
+          }
       }
     </script>
+    
   </head>
-
   <body>
-    <form>
-      <div id="cf-turnstile" class="cf-turnstile"></div>
+    <form action="" method="POST">
+      <!--
+      <input type="text" name="email" placeholder="Email" />
+      <input type="password" name="password" placeholder="Password" />
+      -->
+      
+      <!-- The KEY is filled at runtime from the environment. See 'index.js' -->
+     <div id="cf-turnstile" class="cf-turnstile"
+           data-sitekey="CLOUDFLARE_SITE_KEY"
+           data-callback="onCaptchaSuccess"
+           data-error-callback="onCaptchaError"
+           data-retry="auto">
+      </div>
+      
+      <!--
+      <br />
+      <input id="submit" type="submit" value="Submit" disabled/>
+      -->
     </form>
+    
   </body>
 </html>
