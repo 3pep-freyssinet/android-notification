@@ -1,56 +1,67 @@
 <html>
-  <head>
-    <title>Cloudflare Turnstile Demo</title>
+<head>
+  <title>Cloudflare Turnstile Demo</title>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoaded" async defer></script>
 
-    <!-- Auto-rendering enabled by default -->
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoaded" async defer></script>
+  <script type="text/javascript">
+    let turnstileIsReady = false;
 
-    <script type="text/javascript">
-      let turnstileIsReady = false;
-      let turnstileWidgetId = null;
-
-      function onCaptchaSuccess(token) {
-        if (window.HCaptchaInterface && HCaptchaInterface.onCaptchaSuccess) {
-          HCaptchaInterface.onCaptchaSuccess(token);
-        }
+    function onCaptchaSuccess(token) {
+      if (window.HCaptchaInterface && HCaptchaInterface.onCaptchaSuccess) {
+        HCaptchaInterface.onCaptchaSuccess(token);
       }
+    }
 
-      function onCaptchaError() {
-        if (window.HCaptchaInterface && HCaptchaInterface.onCaptchaError) {
-          HCaptchaInterface.onCaptchaError();
-        }
+    function onCaptchaError() {
+      if (window.HCaptchaInterface && HCaptchaInterface.onCaptchaError) {
+        HCaptchaInterface.onCaptchaError();
       }
+    }
 
-      function onTurnstileLoaded() {
-        turnstileIsReady = true;
-
-        // Grab widget ID after auto-render
-        const container = document.getElementById('cf-turnstile');
-        turnstileWidgetId = turnstile.getWidgetId(container);
-
-        if (window.HCaptchaInterface && HCaptchaInterface.onTurnstileReady) {
-          HCaptchaInterface.onTurnstileReady();
-        }
+    function onTurnstileLoaded() {
+      turnstileIsReady = true;
+      if (window.HCaptchaInterface && HCaptchaInterface.onTurnstileReady) {
+        HCaptchaInterface.onTurnstileReady();
       }
+    }
 
-      function resetTurnstileWidget() {
-        if (turnstileIsReady && turnstileWidgetId !== null) {
-          turnstile.reset(turnstileWidgetId);
-        } else {
-          console.warn("Cannot reset: Turnstile not ready or widget ID missing.");
-        }
+    function resetTurnstileWidget() {
+      if (!turnstileIsReady) return;
+
+      const container = document.getElementById("captcha-container");
+
+      // Remove existing widget
+      container.innerHTML = "";
+
+      // Recreate it
+      const newDiv = document.createElement("div");
+      newDiv.id = "cf-turnstile";
+      newDiv.className = "cf-turnstile";
+      newDiv.setAttribute("data-sitekey", "CLOUDFLARE_SITE_KEY");
+      newDiv.setAttribute("data-callback", "onCaptchaSuccess");
+      newDiv.setAttribute("data-error-callback", "onCaptchaError");
+      newDiv.setAttribute("data-retry", "auto");
+
+      container.appendChild(newDiv);
+
+      // Ask Turnstile to re-render
+      if (typeof turnstile !== 'undefined') {
+        turnstile.render(newDiv);
       }
-    </script>
-  </head>
+    }
+  </script>
+</head>
 
-  <body>
-    <form method="POST" action="">
+<body>
+  <form action="" method="POST">
+    <div id="captcha-container">
       <div id="cf-turnstile" class="cf-turnstile"
-           data-sitekey="CLOUDFLARE_SITE_KEY"
-           data-callback="onCaptchaSuccess"
-           data-error-callback="onCaptchaError"
-           data-retry="auto">
+        data-sitekey="CLOUDFLARE_SITE_KEY"
+        data-callback="onCaptchaSuccess"
+        data-error-callback="onCaptchaError"
+        data-retry="auto">
       </div>
-    </form>
-  </body>
+    </div>
+  </form>
+</body>
 </html>
