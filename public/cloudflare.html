@@ -2,7 +2,7 @@
   <head>
     <title>Cloudflare Turnstile Demo</title>
 
-    <!-- Load Turnstile API -->
+    <!-- Auto-rendering enabled by default -->
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoaded" async defer></script>
 
     <script type="text/javascript">
@@ -24,13 +24,9 @@
       function onTurnstileLoaded() {
         turnstileIsReady = true;
 
-        // Manually render and store widget ID
-        turnstileWidgetId = turnstile.render('#cf-turnstile', {
-          sitekey: 'CLOUDFLARE_SITE_KEY', // <-- Replace this with real key from Android
-          callback: onCaptchaSuccess,
-          'error-callback': onCaptchaError,
-          retry: 'auto'
-        });
+        // Grab widget ID after auto-render
+        const container = document.getElementById('cf-turnstile');
+        turnstileWidgetId = turnstile.getWidgetId(container);
 
         if (window.HCaptchaInterface && HCaptchaInterface.onTurnstileReady) {
           HCaptchaInterface.onTurnstileReady();
@@ -41,7 +37,7 @@
         if (turnstileIsReady && turnstileWidgetId !== null) {
           turnstile.reset(turnstileWidgetId);
         } else {
-          console.warn("Turnstile not ready or widgetId missing.");
+          console.warn("Cannot reset: Turnstile not ready or widget ID missing.");
         }
       }
     </script>
@@ -49,7 +45,12 @@
 
   <body>
     <form method="POST" action="">
-      <div id="cf-turnstile"></div>
+      <div id="cf-turnstile" class="cf-turnstile"
+           data-sitekey="CLOUDFLARE_SITE_KEY"
+           data-callback="onCaptchaSuccess"
+           data-error-callback="onCaptchaError"
+           data-retry="auto">
+      </div>
     </form>
   </body>
 </html>
