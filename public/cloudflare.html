@@ -1,67 +1,27 @@
+<!DOCTYPE html>
 <html>
-<head>
-  <title>Cloudflare Turnstile Demo</title>
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoaded" async defer></script>
-
-  <script type="text/javascript">
-    let turnstileIsReady = false;
-
-    function onCaptchaSuccess(token) {
-      if (window.HCaptchaInterface && HCaptchaInterface.onCaptchaSuccess) {
-        HCaptchaInterface.onCaptchaSuccess(token);
-      }
-    }
-
-    function onCaptchaError() {
-      if (window.HCaptchaInterface && HCaptchaInterface.onCaptchaError) {
-        HCaptchaInterface.onCaptchaError();
-      }
-    }
-
-    function onTurnstileLoaded() {
-      turnstileIsReady = true;
-      if (window.HCaptchaInterface && HCaptchaInterface.onTurnstileReady) {
-        HCaptchaInterface.onTurnstileReady();
-      }
-    }
-
-    function resetTurnstileWidget() {
-      if (!turnstileIsReady) return;
-
-      const container = document.getElementById("captcha-container");
-
-      // Remove existing widget
-      container.innerHTML = "";
-
-      // Recreate it
-      const newDiv = document.createElement("div");
-      newDiv.id = "cf-turnstile";
-      newDiv.className = "cf-turnstile";
-      newDiv.setAttribute("data-sitekey", "CLOUDFLARE_SITE_KEY");
-      newDiv.setAttribute("data-callback", "onCaptchaSuccess");
-      newDiv.setAttribute("data-error-callback", "onCaptchaError");
-      newDiv.setAttribute("data-retry", "auto");
-
-      container.appendChild(newDiv);
-
-      // Ask Turnstile to re-render
-      if (typeof turnstile !== 'undefined') {
-        turnstile.render(newDiv);
-      }
-    }
-  </script>
-</head>
-
-<body>
-  <form action="" method="POST">
-    <div id="captcha-container">
-      <div id="cf-turnstile" class="cf-turnstile"
-        data-sitekey="CLOUDFLARE_SITE_KEY"
-        data-callback="onCaptchaSuccess"
-        data-error-callback="onCaptchaError"
-        data-retry="auto">
-      </div>
+  <head>
+    <title>Turnstile Test</title>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+  </head>
+  <body>
+    <div class="cf-turnstile"
+         data-sitekey="CLOUDFLARE_SITE_KEY"
+         data-callback="onCaptchaSuccess"
+         data-error-callback="onCaptchaError">
     </div>
-  </form>
-</body>
+
+    <script>
+      function onCaptchaSuccess(token) {
+        alert("Token: " + token);
+        if (window.HCaptchaInterface && HCaptchaInterface.onCaptchaSuccess) {
+          HCaptchaInterface.onCaptchaSuccess(token);
+        }
+      }
+
+      function onCaptchaError() {
+        alert("Captcha error");
+      }
+    </script>
+  </body>
 </html>
