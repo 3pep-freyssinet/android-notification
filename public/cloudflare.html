@@ -26,9 +26,16 @@
       callback: onCaptchaSuccess,
       'error-callback': onCaptchaError
     });
+    
+    try {
+      if (window.HCaptchaInterface?.onTurnstileReady) {
+        console.log("Calling Android: onTurnstileReady()");
+        HCaptchaInterface.onTurnstileReady();
+      }
+    } catch (e) {
+      console.error("Java exception in onTurnstileReady:", e);
+    }
 
-    if (window.HCaptchaInterface?.onTurnstileReady)
-      HCaptchaInterface.onTurnstileReady();
   }
 
   function resetTurnstileWidget() {
