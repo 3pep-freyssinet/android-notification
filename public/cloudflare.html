@@ -2,7 +2,69 @@
 <html>
   <head>
     <title>Turnstile Test</title>
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer>
+    //<script type="text/javascript">
+  let turnstileIsReady = false;
+  let turnstileToken = null;
+  let resetTimer = null;
+
+  function onCaptchaSuccess(token) {
+    turnstileToken = token;
+    console.log("Captcha succeeded, token:", token);
+
+    // Notify Android
+    if (window.HCaptchaInterface && HCaptchaInterface.onCaptchaSuccess) {
+      HCaptchaInterface.onCaptchaSuccess(token);
+    }
+
+    alert("Captcha succeeded!");
+
+    // Start reset timer (90 seconds)
+    if (resetTimer) clearTimeout(resetTimer);
+    resetTimer = setTimeout(() => {
+      console.log("Token expired, resetting widget");
+      resetTurnstileWidget();
+
+      // Optional: notify Android
+      if (window.HCaptchaInterface && HCaptchaInterface.onCaptchaExpired) {
+        HCaptchaInterface.onCaptchaExpired();
+      }
+    }, 90000); // 90 seconds
+  }
+
+  function onCaptchaError() {
+    console.log("Captcha failed");
+
+    // Notify Android
+    if (window.HCaptchaInterface && HCaptchaInterface.onCaptchaError) {
+      HCaptchaInterface.onCaptchaError();
+    }
+
+    alert("Captcha failed!");
+  }
+
+  function onTurnstileLoaded() {
+    turnstileIsReady = true;
+    console.log("Turnstile is ready");
+
+    if (window.HCaptchaInterface && HCaptchaInterface.onTurnstileReady) {
+      HCaptchaInterface.onTurnstileReady();
+    }
+  }
+
+  function resetTurnstileWidget() {
+    if (turnstileIsReady && window.turnstile) {
+      console.log("Resetting turnstile widget");
+      turnstile.reset('cf-turnstile');
+      turnstileToken = null;
+
+      if (resetTimer) {
+        clearTimeout(resetTimer);
+        resetTimer = null;
+      }
+    }
+  }
+    </script>
   </head>
   <body>
     <div id="captcha-container">
