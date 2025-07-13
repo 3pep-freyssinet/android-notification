@@ -3,39 +3,33 @@
   <head>
   <title>Turnstile Test</title>
   <script type="text/javascript">
-    let turnstileIsReady = false;
-    let turnstileToken = null;
-    let resetTimer = null;
-  
-    window.onCaptchaSuccess = function (token) {
-      console.log("Captcha succeeded, token:", token);
-      turnstileToken = token;
-  
-      if (window.HCaptchaInterface && HCaptchaInterface.onCaptchaSuccess) {
-        HCaptchaInterface.onCaptchaSuccess(token);
-      }
-  
-      alert("Captcha succeeded!");
-      console.log("Captcha succeeded!");
-      
+  let turnstileIsReady = false;
+  let turnstileToken = null;
+  let turnstileWidgetId = null;
+  let resetTimer = null;
+
+  window.onCaptchaSuccess = function (token) {
+    console.log("Captcha succeeded, token:", token);
+    turnstileToken = token;
+
+    if (window.HCaptchaInterface && HCaptchaInterface.onCaptchaSuccess) {
+      HCaptchaInterface.onCaptchaSuccess(token);
+    }
+
+    alert("Captcha succeeded!");
+
     if (resetTimer) clearTimeout(resetTimer);
     resetTimer = setTimeout(() => {
       console.log("Token expired, resetting widget");
       window.resetTurnstileWidget();
-
-      if (window.HCaptchaInterface && HCaptchaInterface.onCaptchaExpired) {
-        HCaptchaInterface.onCaptchaExpired();
-      }
-    }, 90000); // 90 seconds
+    }, 90000);
   };
 
   window.onCaptchaError = function () {
     console.log("Captcha failed");
-
     if (window.HCaptchaInterface && HCaptchaInterface.onCaptchaError) {
       HCaptchaInterface.onCaptchaError();
     }
-
     alert("Captcha failed!");
   };
 
@@ -43,34 +37,42 @@
     turnstileIsReady = true;
     console.log("Turnstile is ready");
 
+    // 🔥 Store the widget ID so we can reset it later
+    const container = document.getElementById('cf-turnstile');
+    if (container) {
+      turnstileWidgetId = turnstile.getWidgetId(container);
+      console.log("Turnstile widget ID:", turnstileWidgetId);
+    }
+
     if (window.HCaptchaInterface && HCaptchaInterface.onTurnstileReady) {
       HCaptchaInterface.onTurnstileReady();
     }
   };
 
   window.resetTurnstileWidget = function () {
-    if (turnstileIsReady && window.turnstile) {
+    if (turnstileIsReady && turnstileWidgetId !== null) {
       console.log("Resetting turnstile widget");
-      turnstile.reset('cf-turnstile');
+      turnstile.reset(turnstileWidgetId);
       turnstileToken = null;
 
       if (resetTimer) {
         clearTimeout(resetTimer);
         resetTimer = null;
       }
+    } else {
+      console.warn("Turnstile not ready or widgetId missing");
     }
   };
 </script>
 
+
   </head>
   <body>
     <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoaded" async defer></script>
-    <div id="captcha-container">
-      <div class="cf-turnstile"
+    <div id="cf-turnstile" class="cf-turnstile"
            data-sitekey="CLOUDFLARE_SITE_KEY"
            data-callback="onCaptchaSuccess"
            data-error-callback="onCaptchaError">
       </div>
-    </div>
   </body>
 </html>
