@@ -2,8 +2,8 @@
 <html>
   <head>
     <title>Turnstile Test</title>
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer>
-    //<script type="text/javascript">
+    //<script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer>
+    <script type="text/javascript">
   let turnstileIsReady = false;
   let turnstileToken = null;
   let resetTimer = null;
@@ -67,6 +67,7 @@
     </script>
   </head>
   <body>
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoaded" async defer></script>
     <div id="captcha-container">
       <div class="cf-turnstile"
            data-sitekey="CLOUDFLARE_SITE_KEY"
@@ -74,53 +75,5 @@
            data-error-callback="onCaptchaError">
       </div>
     </div>
-
-    <script>
-      function onCaptchaSuccess(token) {
-        alert("Token: " + token);
-        if (window.HCaptchaInterface && HCaptchaInterface.onCaptchaSuccess) {
-          HCaptchaInterface.onCaptchaSuccess(token);
-        }
-      }
-
-      function onCaptchaError() {
-        alert("Captcha error");
-      }
-      //////////////////////////////////////////
-      let turnstileIsReady = false;
-      let widgetId = null;
-
-      function onTurnstileLoaded() {
-         turnstileIsReady = true;
-
-        // Render the widget manually and store its ID
-        widgetId = turnstile.render('#cf-turnstile', {
-          sitekey: '0x4AAAAAABipTppMFYkyCGsB',
-          callback: onCaptchaSuccess,
-          'error-callback': onCaptchaError,
-          retry: 'auto'
-        });
-      
-        if (window.HCaptchaInterface && HCaptchaInterface.onTurnstileReady) {
-          HCaptchaInterface.onTurnstileReady();
-        }
-      }
-
-      function resetTurnstileWidget() {
-        if (turnstileIsReady && widgetId !== null) {
-          turnstile.remove(widgetId); // remove the existing widget
-      
-          const container = document.getElementById("captcha-container");
-          container.innerHTML = '<div id="cf-turnstile" class="cf-turnstile"></div>'; // recreate inner div
-      
-          widgetId = turnstile.render('#cf-turnstile', {
-            sitekey: '0x4AAAAAABipTppMFYkyCGsB',
-            callback: onCaptchaSuccess,
-            'error-callback': onCaptchaError,
-            retry: 'auto'
-          });
-        }
-      }
-    </script>
   </body>
 </html>
