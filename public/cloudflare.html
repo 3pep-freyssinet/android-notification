@@ -15,11 +15,13 @@
     // Notify Android
     if (window.HCaptchaInterface && HCaptchaInterface.onCaptchaSuccess) {
       alert("Notify Android");
+       console.log("Notify Android");
       HCaptchaInterface.onCaptchaSuccess(token);
     }
 
     alert("Captcha succeeded!");
-
+    console.log("Captcha succeeded!");
+    
     // Start reset timer (90 seconds)
     if (resetTimer) clearTimeout(resetTimer);
     resetTimer = setTimeout(() => {
