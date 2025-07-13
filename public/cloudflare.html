@@ -1,63 +1,51 @@
 <html>
 <head>
-<script type="text/javascript">
-  let turnstileWidgetId = null;
-  let turnstileIsReady = false;
+  <script type="text/javascript">
+    let turnstileWidgetId = null;
+    let turnstileIsReady = false;
 
-  function onCaptchaSuccess(token) {
-    console.log("Captcha success:", token);
-    if (window.HCaptchaInterface?.onCaptchaSuccess)
-      HCaptchaInterface.onCaptchaSuccess(token);
-  }
+    function onCaptchaSuccess(token) {
+      console.log("Captcha success:", token);
+      window.HCaptchaInterface?.onCaptchaSuccess?.(token);
+    }
 
-  function onCaptchaError() {
-    console.log("Captcha error");
-    if (window.HCaptchaInterface?.onCaptchaError)
-      HCaptchaInterface.onCaptchaError();
-  }
+    function onCaptchaError() {
+      console.log("Captcha error");
+      window.HCaptchaInterface?.onCaptchaError?.();
+    }
 
-  function onTurnstileLoaded() {
-    console.log("Turnstile loaded");
+    function onTurnstileLoaded() {
+      console.log("Turnstile loaded");
+      turnstileIsReady = true;
 
-    turnstileIsReady = true;
+      // Render only once, using JS
+      turnstileWidgetId = turnstile.render('#cf-turnstile', {
+        sitekey: '0x4AAAAAABipTppMFYkyCGsB', // <-- your actual site key
+        callback: onCaptchaSuccess,
+        'error-callback': onCaptchaError
+      });
 
-    turnstileWidgetId = turnstile.render('#cf-turnstile', {
-      sitekey: '0x4AAAAAABipTppMFYkyCGsB', // Replace with your real key
-      callback: onCaptchaSuccess,
-      'error-callback': onCaptchaError
-    });
-    
-    try {
-      if (window.HCaptchaInterface?.onTurnstileReady) {
-        console.log("Calling Android: onTurnstileReady()");
-        //HCaptchaInterface.onTurnstileReady();
+      try {
+        window.HCaptchaInterface?.onTurnstileReady?.();
+      } catch (e) {
+        console.error("Java exception in onTurnstileReady:", e);
       }
-    } catch (e) {
-      console.error("Java exception in onTurnstileReady:", e);
     }
 
-  }
-
-  function resetTurnstileWidget() {
-    if (turnstileIsReady && turnstileWidgetId !== null) {
-      console.log("Resetting widget with ID:", turnstileWidgetId);
-      turnstile.reset(turnstileWidgetId);
-    } else {
-      console.warn("Turnstile not ready or widgetId missing");
+    function resetTurnstileWidget() {
+      if (turnstileIsReady && turnstileWidgetId !== null) {
+        console.log("Resetting widget with ID:", turnstileWidgetId);
+        turnstile.reset(turnstileWidgetId);
+      } else {
+        console.warn("Turnstile not ready or widgetId missing");
+      }
     }
-  }
-</script>
-
-<script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoaded&render=explicit" async defer></script>
-
+  </script>
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoaded&render=explicit" async defer></script>
 </head>
 
-  <body>
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoaded" async defer></script>
-    <div id="cf-turnstile"
-           data-sitekey="CLOUDFLARE_SITE_KEY"
-           data-callback="onCaptchaSuccess"
-           data-error-callback="onCaptchaError">
-      </div>
-  </body>
+<body>
+  <!-- No data-sitekey, this is for manual rendering only -->
+  <div id="cf-turnstile"></div>
+</body>
 </html>
