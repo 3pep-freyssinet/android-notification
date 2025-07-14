@@ -1,35 +1,58 @@
 <html>
 <head>
-  <script type="text/javascript">
-    let turnstileWidgetId = null;
-    let turnstileIsReady = false;
+  <meta charset="UTF-8">
+  <title>Cloudflare Turnstile Demo</title>
+
+  <script>
+    let turnstileWidgetId    = null;
+    let turnstileIsReady     = false;
+    let turnstileInitialized = false;
 
     function onCaptchaSuccess(token) {
       console.log("Captcha success:", token);
-      window.HCaptchaInterface?.onCaptchaSuccess?.(token);
+      if (window.HCaptchaInterface?.onCaptchaSuccess) {
+        HCaptchaInterface.onCaptchaSuccess(token);
+      }
+      alert("Captcha solved successfully!");
     }
 
-    function onCaptchaError() {
-      console.log("Captcha error");
-      window.HCaptchaInterface?.onCaptchaError?.();
+    function onCaptchaError(error) {
+      console.error("Captcha error", error);
+      if (window.HCaptchaInterface?.onCaptchaError) {
+        HCaptchaInterface.onCaptchaError();
+      }
+      alert("Turnstile failed to load or verify. Please try again.");
     }
 
     function onTurnstileLoaded() {
       console.log("Turnstile loaded");
       turnstileIsReady = true;
 
-      // Render only once, using JS
-      turnstileWidgetId = turnstile.render('#cf-turnstile', {
-        sitekey: '0x4AAAAAABipTppMFYkyCGsB', // <-- your actual site key
-        callback: onCaptchaSuccess,
-        'error-callback': onCaptchaError
-      });
+      if (!turnstileInitialized) {
+        turnstileWidgetId = turnstile.render('#cf-turnstile', {
+          sitekey: '0x4AAAAAABipTppMFYkyCGsB', // ⬅️ Replace with your real site key
+          callback: onCaptchaSuccess,
+          'error-callback': onCaptchaError,
+        });
+        turnstileInitialized = true;
+      }
 
       try {
-        //window.HCaptchaInterface?.onTurnstileReady?.();
+        if (window.HCaptchaInterface?.onTurnstileReady) {
+          console.log("Calling Android: onTurnstileReady()");
+          HCaptchaInterface.onTurnstileReady();
+        }
       } catch (e) {
         console.error("Java exception in onTurnstileReady:", e);
       }
+
+      // Optional timeout fallback
+      setTimeout(() => {
+        if (!turnstileWidgetId) {
+          console.warn("Turnstile did not render within 5 seconds");
+          onCaptchaError("timeout");
+        }
+      }, 5000);
     }
 
     function resetTurnstileWidget() {
@@ -41,11 +64,12 @@
       }
     }
   </script>
+
+  <!-- ✅ Load Turnstile script once -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileLoaded&render=explicit" async defer></script>
 </head>
 
 <body>
-  <!-- No data-sitekey, this is for manual rendering only -->
   <div id="cf-turnstile"></div>
 </body>
 </html>
