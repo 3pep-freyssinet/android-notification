@@ -51,9 +51,10 @@
       setTimeout(() => {
         if (!turnstileWidgetId) {
           console.warn("Turnstile did not render within 5 seconds");
+          alert("Turnstile did not render within 5 seconds.");
           onCaptchaError("timeout");
         }
-      }, 5000);
+      }, 1000);
     }
 
     function resetTurnstileWidget() {
