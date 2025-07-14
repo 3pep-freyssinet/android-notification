@@ -27,6 +27,9 @@
     function onTurnstileLoaded() {
       console.log("Turnstile loaded");
       turnstileIsReady = true;
+
+      onCaptchaError("error loading challenge");
+      if(true) return;
       
       if (!turnstileInitialized) {
         turnstileWidgetId = turnstile.render('#cf-turnstile', {
@@ -36,8 +39,7 @@
         });
         turnstileInitialized = true;
       }
-      onTurnstileLoaded("error loading challenge");
-      if(true) return;
+      
       try {
         if (window.HCaptchaInterface?.onTurnstileReady) {
           console.log("Calling Android: onTurnstileReady()");
