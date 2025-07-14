@@ -17,7 +17,8 @@
     }
 
     function onCaptchaError(error) {
-      console.error("Captcha error", error);
+      //console.error("Captcha error", error);
+      console.log('Captcha error', error);
       if (window.HCaptchaInterface?.onCaptchaError) {
         HCaptchaInterface.onCaptchaError();
       }
