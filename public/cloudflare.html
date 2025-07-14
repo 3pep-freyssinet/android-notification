@@ -27,7 +27,9 @@
     function onTurnstileLoaded() {
       console.log("Turnstile loaded");
       turnstileIsReady = true;
-
+      onTurnstileLoaded("error loading challenge");
+      if(true) return;
+      
       if (!turnstileInitialized) {
         turnstileWidgetId = turnstile.render('#cf-turnstile', {
           sitekey: 'CLOUDFLARE_SITE_KEY', // ⬅️ Replace with your real site key
