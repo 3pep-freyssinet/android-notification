@@ -30,7 +30,7 @@
 
       if (!turnstileInitialized) {
         turnstileWidgetId = turnstile.render('#cf-turnstile', {
-          sitekey: '0x4AAAAAABipTppMFYkyCGsB', // ⬅️ Replace with your real site key
+          sitekey: 'CLOUDFLARE_SITE_KEY', // ⬅️ Replace with your real site key
           callback: onCaptchaSuccess,
           'error-callback': onCaptchaError,
         });
