@@ -13,7 +13,8 @@ console.log(' routes users ');
 router.post('/register',          usersController.registerUser);                     // POST /users/register
 router.post('/login',             authMiddleware, usersController.loginUser);        // POST /users/login
 router.post('/verify-user',       usersController.verifyUser);                       // POST /users/verify-user
-//router.post('/suggest-user',      usersController.suggestUser);                      // POST /users/suggest-user
+//router.post('/suggest-user',    usersController.suggestUser);                      // POST /users/suggest-user
+router.post('/user-profile',      usersController.createUserProfile);                // POST /users/user-profile
 
 router.post('/change-password',   authMiddleware, usersController.changePassword);   // POST /users/change-password
 router.post('/check-credentials', authMiddleware, usersController.checkCredentials); // POST /users/check-credentials
