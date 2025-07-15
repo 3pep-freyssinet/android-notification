@@ -871,7 +871,47 @@ exports.verifyUser = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
    }
 }
-	
+
+//Save user profile
+exports.createUserProfile = async (req, res) => {
+  const { username, android_id, gender, birth, email, sector, branch } = req.body;
+
+  if (!username && !android_id) {
+    return res.status(400).json({ error: 'username or android_id is required to identify the user.' });
+  }
+
+  try {
+    // Step 1: Get user_id from users_notification using username or android_id
+    const userQuery = `
+      SELECT id FROM users_notification 
+      WHERE username = $1 OR android_id = $2
+      LIMIT 1
+    `;
+    const userResult = await pool.query(userQuery, [username, android_id]);
+
+    if (userResult.rowCount === 0) {
+      return res.status(404).json({ error: 'User not found in users_notification.' });
+    }
+
+    const user_id = userResult.rows[0].id;
+
+    // Step 2: Insert into users_profile
+    const profileQuery = `
+      INSERT INTO users_profile (user_id, gender, birth, email, sector, branch)
+      VALUES ($1, $2, $3, $4, $5, $6)
+      RETURNING *;
+    `;
+    const values = [user_id, gender, birth, email, sector, branch];
+    const profileResult = await pool.query(profileQuery, values);
+
+    res.status(200).json({ message: 'Profile created successfully.', profile: profileResult.rows[0] });
+
+  } catch (error) {
+    console.error('Profile creation error:', error);
+    res.status(500).json({ error: 'Server error during profile creation.' });
+  }
+};
+
 // Register a new user
 exports.registerUser = async (req, res) => {
     // Register user endpoint
