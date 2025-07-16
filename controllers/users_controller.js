@@ -885,6 +885,20 @@ exports.createUserProfile = async (req, res) => {
     return res.status(400).json({ error: 'username or android_id is required to identify the user.' });
   }
 
+  // Validate format
+    const trimmedEmail = email.trim();
+    if (!validator.isEmail(trimmedEmail)) {
+      return res.status(400).json({ error: 'Invalid email format' });
+    }
+
+    // Sanitize (optional, depends on usage)
+    const safeEmail = validator.normalizeEmail(trimmedEmail);
+
+    // Optional: Check for length, disallowed domains, etc.
+    if (safeEmail.length > 255) {
+      return res.status(400).json({ error: 'Email is too long' });
+    }
+	
   try {
     // Step 1: Get user_id from users_notification using username or android_id
     const userQuery = `
@@ -906,7 +920,7 @@ exports.createUserProfile = async (req, res) => {
       VALUES ($1, $2, $3, $4, $5, $6)
       RETURNING *;
     `;
-    const values = [user_id, gender, birth, email, sector, branch];
+    const values = [user_id, gender, birth, safeEmail, sector, branch];
     const profileResult = await pool.query(profileQuery, values);
 
     res.status(200).json({ message: 'Profile created successfully.', profile: profileResult.rows[0] });
