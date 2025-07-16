@@ -19,6 +19,7 @@ const crypto     = require('crypto');
 const axios      = require('axios');
 const http       = require('http');
 const nodemailer = require('nodemailer');
+const validator  = require('validator');
 
 const JWT_SECRET 		= process.env.JWT_SECRET;
 const REFRESH_TOKEN_SECRET 	= process.env.REFRESH_TOKEN_SECRET;
