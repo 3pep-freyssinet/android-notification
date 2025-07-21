@@ -2201,15 +2201,15 @@ exports.getSessionStatus = async (req, res) => {
 		  [androidId]
 		);
 
-	/*	
+	var sessionStatus = 'open'; //	---> is_session_closed = false
     	if (result.rows.length === 0) {
-		console.log('getSessionStatus : Device not found'); 
-      		return res.status(404).json({ error: 'Device not found' });
+		console.log('getSessionStatus : is_session_closed = true'); 
+		sessionStatus = 'closed'
+      		//return res.status(404).json({ error: 'Device not found' });
     	}
-        */
 		
-    	const user = result.rows[0];
-    	const sessionStatus = user.is_session_closed ? 'closed' : 'open';
+    	//const user = result.rows[0];
+    	//const sessionStatus = user.is_session_closed ? 'closed' : 'open';
 	
 	console.log('getSessionStatus :sessionStatus : ', sessionStatus); 
     	
