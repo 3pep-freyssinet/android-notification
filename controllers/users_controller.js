@@ -873,6 +873,38 @@ exports.verifyUser = async (req, res) => {
    }
 }
 
+
+//check if there is a profile associated with is username
+exports.checkUserProfile = async (req, res) => {
+  console.log('checkUserProfile : Start...');
+  const { username} = req.body;
+  console.log('checkUserProfile : username : ', username);
+	
+  if (!username) {
+    console.log('checkUserProfile : username is required.');  
+    return res.status(400).json({ error: 'username is required.' });
+  }
+
+  try{
+      const userQuery = `
+      	SELECT id FROM users_profile 
+      	WHERE username = $1
+      `;
+      const userResult = await pool.query(userQuery, [username]);
+
+      console.log('checkUserProfile : userResult.rows.length : ', userResult.rows.length); 
+	  
+      boolean profileCompleted = (userResult.rows.length == 1) ? true : false
+      
+      console.log('checkUserProfile : profileCompleted : ', profileCompleted); 
+      
+      return res.status(200).json({ profileCompleted: profileCompleted })
+   }catch(error){
+	console.error('checkUserProfile : Check user profile error:', error);
+        res.status(500).json({ error: 'Check user profile error' });
+   }
+}
+
 //Save user profile
 exports.createUserProfile = async (req, res) => {
   const { username, android_id, gender, birth, email, sector, branch } = req.body;
