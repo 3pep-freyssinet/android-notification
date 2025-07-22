@@ -894,7 +894,7 @@ exports.checkUserProfile = async (req, res) => {
 
       console.log('checkUserProfile : userResult.rows.length : ', userResult.rows.length); 
 	  
-      boolean profileCompleted = (userResult.rows.length == 1) ? true : false
+      const profileCompleted = (userResult.rows.length == 1) ? true : false
       
       console.log('checkUserProfile : profileCompleted : ', profileCompleted); 
       
