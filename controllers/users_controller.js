@@ -890,7 +890,7 @@ exports.checkUserProfile = async (req, res) => {
   try{
       const userQuery = `
       	SELECT id FROM users_profile 
-      	WHERE user_id = $1
+      	WHERE user_id = (SELECT id FROM users_nofication WHERE username = $1)
       `;
       const userResult = await pool.query(userQuery, [username]);
 
