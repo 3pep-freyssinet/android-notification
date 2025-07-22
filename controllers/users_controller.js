@@ -885,10 +885,12 @@ exports.checkUserProfile = async (req, res) => {
     return res.status(400).json({ error: 'username is required.' });
   }
 
+  //get the id associated with username from 'users_nofication' table.
+	
   try{
       const userQuery = `
       	SELECT id FROM users_profile 
-      	WHERE username = $1
+      	WHERE user_id = $1
       `;
       const userResult = await pool.query(userQuery, [username]);
 
