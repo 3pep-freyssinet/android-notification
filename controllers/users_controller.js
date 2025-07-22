@@ -909,19 +909,23 @@ exports.checkUserProfile = async (req, res) => {
 
 //Save user profile
 exports.createUserProfile = async (req, res) => {
+  console.log('createUserProfile : start... ');
   const { username, android_id, gender, birth, email, sector, branch } = req.body;
-
+  console.log('createUserProfile : username : ', username, ' android_id : ', android_id, ' gender : ', gender, ' birth : ', birth, ' email : ', email, ' sector : ', sector, ' branch : ', branch);
+ 
   //test
   //return res.status(400).json({ error: 'username or android_id is required to identify the user.' });
   //if(true)return;
 	
   if (!username && !android_id) {
+    console.log('createUserProfile : username or android_id is required to identify the user. ');  
     return res.status(400).json({ error: 'username or android_id is required to identify the user.' });
   }
 
   // Validate format
     const trimmedEmail = email.trim();
     if (!validator.isEmail(trimmedEmail)) {
+      console.log('createUserProfile : Invalid email format');   
       return res.status(400).json({ error: 'Invalid email format' });
     }
 
@@ -930,6 +934,7 @@ exports.createUserProfile = async (req, res) => {
 
     // Optional: Check for length, disallowed domains, etc.
     if (safeEmail.length > 255) {
+      console.log('createUserProfile : Email is too long');   
       return res.status(400).json({ error: 'Email is too long' });
     }
 	
@@ -943,11 +948,13 @@ exports.createUserProfile = async (req, res) => {
     const userResult = await pool.query(userQuery, [username, android_id]);
 
     if (userResult.rowCount === 0) {
+      console.log('createUserProfile : User not found in users_notification.');     
       return res.status(404).json({ error: 'User not found in users_notification.' });
     }
 
     const user_id = userResult.rows[0].id;
-
+    console.log('createUserProfile : user_id : ', user_id );
+	  
     // Step 2: Insert into users_profile
     const profileQuery = `
       INSERT INTO users_profile (user_id, gender, birth, email, sector, branch)
@@ -956,7 +963,8 @@ exports.createUserProfile = async (req, res) => {
     `;
     const values = [user_id, gender, birth, safeEmail, sector, branch];
     const profileResult = await pool.query(profileQuery, values);
-
+    
+    console.log('createUserProfile : Profile created successfully ' );
     res.status(200).json({ message: 'Profile created successfully.', profile: profileResult.rows[0] });
 
   } catch (error) {
