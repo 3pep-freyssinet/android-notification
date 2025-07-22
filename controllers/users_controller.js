@@ -2200,7 +2200,9 @@ exports.getSessionStatus = async (req, res) => {
 		   LIMIT 1`,
 		  [androidId]
 		);
-
+		
+        console.log('getSessionStatus : result.rows.length : ', result.rows.length);
+		
 	var sessionStatus = 'open'; //	---> is_session_closed = false
     	if (result.rows.length === 0) {
 		console.log('getSessionStatus : is_session_closed = true'); 
