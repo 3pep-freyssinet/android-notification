@@ -910,7 +910,7 @@ exports.checkUserProfile = async (req, res) => {
 //Save user profile
 exports.createUserProfile = async (req, res) => {
   console.log('createUserProfile : start... ');
-  const { username, android_id, gender, birth, email, sector, branch } = req.body;
+  const { username, androidId, gender, birth, email, sector, branch } = req.body;
   console.log('createUserProfile : username : ', username, ' android_id : ', android_id, ' gender : ', gender, ' birth : ', birth, ' email : ', email, ' sector : ', sector, ' branch : ', branch);
  
   //test
