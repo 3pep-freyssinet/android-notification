@@ -968,12 +968,12 @@ exports.createUserProfile = async (req, res) => {
 	INSERT INTO users_profile (user_id, gender, birth, email, sector, branch)
         VALUES ($1, $2, $3, $4, $5, $6)
 	ON CONFLICT (user_id)
-	DO UPDATE SET gender = EXCLUDED.gender,
-                      birth  = EXCLUDED.birth,
-		      email  = EXCLUDED.email,
-	              sector = EXCLUDED.sector,
-	              branch = EXCLUDED.branch,
-	              updated_at = NOW
+	DO UPDATE SET gender     = EXCLUDED.gender,
+                      birth      = EXCLUDED.birth,
+		      email      = EXCLUDED.email,
+	              sector     = EXCLUDED.sector,
+	              branch     = EXCLUDED.branch,
+	              updated_at = NOW()
 	RETURNING id
      `;
 	  
