@@ -967,14 +967,14 @@ exports.createUserProfile = async (req, res) => {
      const profileQuery = `
 	INSERT INTO users_profile (user_id, gender, birth, email, sector, branch)
         VALUES ($1, $2, $3, $4, $5, $6)
-        RETURNING *;
 	ON CONFLICT (user_id)
 	DO UPDATE SET gender = EXCLUDED.gender,
                       birth  = EXCLUDED.birth,
 		      email  = EXCLUDED.email,
 	              sector = EXCLUDED.sector,
 	              branch = EXCLUDED.branch
-	  `;
+	RETURNING id
+     `;
 	  
     const values = [user_id, gender, birth, safeEmail, sector, branch];
     const profileResult = await pool.query(profileQuery, values);
