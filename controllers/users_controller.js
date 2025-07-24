@@ -972,7 +972,8 @@ exports.createUserProfile = async (req, res) => {
                       birth  = EXCLUDED.birth,
 		      email  = EXCLUDED.email,
 	              sector = EXCLUDED.sector,
-	              branch = EXCLUDED.branch
+	              branch = EXCLUDED.branch,
+	              updated_at = NOW
 	RETURNING id
      `;
 	  
