@@ -911,7 +911,7 @@ exports.checkUserProfile = async (req, res) => {
 exports.createUserProfile = async (req, res) => {
   console.log('createUserProfile : start... ');
   const { username, androidId, gender, birth, email, sector, branch } = req.body;
-  console.log('createUserProfile : username : ', username, ' android_id : ', android_id, ' gender : ', gender, ' birth : ', birth, ' email : ', email, ' sector : ', sector, ' branch : ', branch);
+  console.log('createUserProfile : username : ', username, ' androidId : ', androidId, ' gender : ', gender, ' birth : ', birth, ' email : ', email, ' sector : ', sector, ' branch : ', branch);
  
   //test
   //return res.status(400).json({ error: 'username or android_id is required to identify the user.' });
