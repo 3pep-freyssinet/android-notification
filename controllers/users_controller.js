@@ -945,7 +945,7 @@ exports.createUserProfile = async (req, res) => {
       WHERE username = $1 OR android_id = $2
       LIMIT 1
     `;
-    const userResult = await pool.query(userQuery, [username, android_id]);
+    const userResult = await pool.query(userQuery, [username, androidId]);
 
     if (userResult.rowCount === 0) {
       console.log('createUserProfile : User not found in users_notification.');     
