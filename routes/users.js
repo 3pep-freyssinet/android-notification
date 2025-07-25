@@ -15,6 +15,7 @@ router.post('/login',             authMiddleware, usersController.loginUser);   
 router.post('/verify-user',       usersController.verifyUser);                       // POST /users/verify-user
 //router.post('/suggest-user',    usersController.suggestUser);                      // POST /users/suggest-user
 router.post('/user-profile',      usersController.createUserProfile);                // POST /users/user-profile
+router.post('/update-user-profile', authMiddleware, usersController.updateUserProfile); // POST /users/update-user-profile
 router.post('/check-user-profile',      usersController.checkUserProfile);           // POST /users/check-user-profile
 
 router.post('/change-password',   authMiddleware, usersController.changePassword);   // POST /users/change-password
