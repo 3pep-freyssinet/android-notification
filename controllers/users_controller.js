@@ -873,6 +873,16 @@ exports.verifyUser = async (req, res) => {
    }
 }
 
+// update the user profile
+exports.updateUserProfile = async (req, res) => {
+  	console.log('updateUserProfile : Start...');
+  	const { email} = req.body;
+  	console.log('updateUserProfile : email : ', email);
+
+	//get the 'user.id' from the request
+	
+
+}
 
 //check if there is a profile associated with is username
 exports.checkUserProfile = async (req, res) => {
