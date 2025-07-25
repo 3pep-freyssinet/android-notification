@@ -889,10 +889,10 @@ exports.updateUserProfile = async (req, res) => {
 
 	try{
       		const userQuery = `
-      		UPDATE users_profile SET email = email 
-      		WHERE user_id = $1
+      		UPDATE users_profile SET email = $1 
+      		WHERE user_id = $2
       		`;
-      		const userResult = await pool.query(userQuery, [userId]);
+      		const userResult = await pool.query(userQuery, [email, userId]);
 
       		console.log('updateUserProfile : userResult.rows.length : ', userResult.rows.length); 
 	  
