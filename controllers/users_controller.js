@@ -879,10 +879,34 @@ exports.updateUserProfile = async (req, res) => {
   	const { email} = req.body;
   	console.log('updateUserProfile : email : ', email);
 
-	//get the 'user.id' from the request
+	//get the 'userId' from the request
+    	const userId = req.user.userId;
 	
+	if (!userId) {
+    		console.log('updateUserProfile : userId is required.');  
+    		return res.status(400).json({ error: 'userId is required.' });
+  	}
 
+	try{
+      		const userQuery = `
+      		UPDATE users_profile SET email = email 
+      		WHERE user_id = $1
+      		`;
+      		const userResult = await pool.query(userQuery, [userId]);
+
+      		console.log('updateUserProfile : userResult.rows.length : ', userResult.rows.length); 
+	  
+      		const profileUpdated = (userResult.rows.length == 1) ? 'success' : 'failure'
+      
+      		console.log('updateUserProfile : profileUpdated : ', profileUpdated); 
+      
+      		return res.status(200).json({ profileUpdated: profileUpdated})
+   	}catch(error){
+		console.error('updateUserProfile : update user profile error:', error);
+        	res.status(500).json({ error: 'update user profile error'  });
+   	}
 }
+
 
 //check if there is a profile associated with is username
 exports.checkUserProfile = async (req, res) => {
