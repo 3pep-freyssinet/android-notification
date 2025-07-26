@@ -873,6 +873,34 @@ exports.verifyUser = async (req, res) => {
    }
 }
 
+// Get user profile 
+exports.getUserProfile = async (req, res) => {
+  	console.log('getUserProfile : Start...');
+  	
+	//const { email} = req.body;
+	const username = req.query.username;
+	if(!username){
+		console.log('getUserProfile : username is required.');  
+    		return res.status(400).json({ error: 'username is required.' });
+	}
+  	console.log('getUserProfile : username : ', username);
+	try{
+		const userQuery = `
+      		SELECT gender, birth, email, sector, branch FROM users_profile 
+      		WHERE user_id = (SELECT id FROM users_notification WHERE username = $1)
+      		`;
+      		const userResult = await pool.query(userQuery, [username]);
+
+      		console.log('getUserProfile : userResult.rows.length : ', userResult.rows.length); 
+		console.log('getUserProfile : userResult.rows[0] : ', JSON.stringify(userResult.rows[0]); 
+      		return res.status(200).json({ profile: userResult.rows[0]})
+   	}catch(error){
+		console.error('getUserProfile : get user profile error:', error);
+        	res.status(500).json({ error: 'get user profile error'});
+   	}
+}
+
+
 // Get user email
 exports.getUserEmail = async (req, res) => {
   	console.log('getUserEmail : Start...');
@@ -898,7 +926,6 @@ exports.getUserEmail = async (req, res) => {
 		console.error('getUserEmail : get user email error:', error);
         	res.status(500).json({ error: 'get user email error'});
    	}
-
 }
 
 // update the user email profile
@@ -917,7 +944,7 @@ exports.updateUserProfile = async (req, res) => {
 
 	try{
       		const userQuery = `
-      		UPDATE users_profile SET email = $1 
+      		UPDATE users_profile SET email = $1, updated_at = NOW()
       		WHERE user_id = (SELECT id FROM users_notification WHERE username = $2)
 	        RETURNING id;
       		`;
