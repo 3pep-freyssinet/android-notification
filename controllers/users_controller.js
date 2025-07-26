@@ -919,12 +919,13 @@ exports.updateUserProfile = async (req, res) => {
       		const userQuery = `
       		UPDATE users_profile SET email = $1 
       		WHERE user_id = (SELECT id FROM users_notification WHERE username = $2)
+	        RETURNING id;
       		`;
       		const userResult = await pool.query(userQuery, [email, username]);
 
-      		console.log('updateUserProfile : userResult.rows.length : ', userResult.rows.length); 
+      		console.log('updateUserProfile : userResult.rows.id : ', userResult.rows[0].id); 
 	  
-      		const profileUpdated = (userResult.rows.length == 1) ? 'success' : 'failure'
+      		const profileUpdated = (userResult.rows[0].id) ? 'success' : 'failure'
       
       		console.log('updateUserProfile : profileUpdated : ', profileUpdated); 
       
