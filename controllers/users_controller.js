@@ -873,6 +873,31 @@ exports.verifyUser = async (req, res) => {
    }
 }
 
+// Get user email
+exports.getUserEmail = async (req, res) => {
+  	console.log('getUserEmail : Start...');
+  	
+	const username = req.query.username;
+	
+	//const { email} = req.body;
+  	console.log('getUserEmail : username : ', username);
+       try{
+		const userQuery = `
+      		SELECT email FROM users_profile 
+      		WHERE user_id = (SELECT id FROM users_notification WHERE username = $1)
+      		`;
+      		const userResult = await pool.query(userQuery, [username]);
+
+      		console.log('getUserEmail : userResult.rows.length : ', userResult.rows.length); 
+		console.log('getUserEmail : userResult.row[0].email : ', userResult.row[0].email); 
+      		return res.status(200).json({ email: userResult.row[0].email})
+   	}catch(error){
+		console.error('getUserEmail : get user email error:', error);
+        	res.status(500).json({ error: 'get user email error'});
+   	}
+
+}
+
 // update the user profile
 exports.updateUserProfile = async (req, res) => {
   	console.log('updateUserProfile : Start...');
