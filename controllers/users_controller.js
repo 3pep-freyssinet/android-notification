@@ -901,26 +901,26 @@ exports.getUserEmail = async (req, res) => {
 
 }
 
-// update the user profile
+// update the user email profile
 exports.updateUserProfile = async (req, res) => {
   	console.log('updateUserProfile : Start...');
-  	const { email} = req.body;
-  	console.log('updateUserProfile : email : ', email);
+  	const { username, email} = req.body;
+  	console.log('updateUserProfile : username : ', username, ' email : ', email);
 
-	//get the 'userId' from the request
-    	const userId = req.user.userId;
+	//get the 'userId' from the request sent by the middleware. Sometimes, there is not jwt, then 'req.user' is null. So, we base the query on 'username'
+    	//const userId = req.user.userId;
 	
-	if (!userId) {
-    		console.log('updateUserProfile : userId is required.');  
-    		return res.status(400).json({ error: 'userId is required.' });
+	if (!username) {
+    		console.log('updateUserProfile : username is required.');  
+    		return res.status(400).json({ error: 'username is required.' });
   	}
 
 	try{
       		const userQuery = `
       		UPDATE users_profile SET email = $1 
-      		WHERE user_id = $2
+      		WHERE user_id = (SELECT id FROM users_notification WHERE username = $2)
       		`;
-      		const userResult = await pool.query(userQuery, [email, userId]);
+      		const userResult = await pool.query(userQuery, [email, username]);
 
       		console.log('updateUserProfile : userResult.rows.length : ', userResult.rows.length); 
 	  
