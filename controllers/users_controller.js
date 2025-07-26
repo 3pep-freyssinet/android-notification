@@ -892,7 +892,7 @@ exports.getUserProfile = async (req, res) => {
       		const userResult = await pool.query(userQuery, [username]);
 
       		console.log('getUserProfile : userResult.rows.length : ', userResult.rows.length); 
-		console.log('getUserProfile : userResult.rows[0] : ', JSON.stringify(userResult.rows[0]); 
+		console.log('getUserProfile : userResult.rows[0] : ', JSON.stringify(userResult.rows[0])); 
       		return res.status(200).json({ profile: userResult.rows[0]})
    	}catch(error){
 		console.error('getUserProfile : get user profile error:', error);
