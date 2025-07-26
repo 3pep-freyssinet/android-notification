@@ -18,6 +18,7 @@ router.post('/user-profile',      usersController.createUserProfile);           
 router.post('/update-user-profile', authMiddleware, usersController.updateUserProfile); // POST /users/update-user-profile
 router.post('/check-user-profile',   usersController.checkUserProfile);              // POST /users/check-user-profile
 router.get('/get-email',          authMiddleware, usersController.getUserEmail);     // GET /users/get-email?username=
+router.get('/get-user-profile',   authMiddleware, usersController.getUserProfile);   // GET /users/get-user-profile?username=
 
 router.post('/change-password',   authMiddleware, usersController.changePassword);   // POST /users/change-password
 router.post('/check-credentials', authMiddleware, usersController.checkCredentials); // POST /users/check-credentials
