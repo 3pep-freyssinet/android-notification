@@ -102,7 +102,8 @@ exports.checkPinLockout = async (req, res) => {
    console.log('checkPinLockout : start');
    const androidId  = req.params.androidId;
    const firebaseId = req.params.firebaseId;
-	
+   
+   console.log('checkPinLockout : androidId : ', androidId, ' firebaseId : ', firebaseId);
 
    if((!androidId) && (!firebaseId)){
     console.log('checkPinLockout : androidId or firebaseId are required');
