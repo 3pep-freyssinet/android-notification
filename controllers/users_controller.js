@@ -96,6 +96,21 @@ exports.sendEmail = async (req, res) => {
   }
 }
 
+
+//Check pin lockout
+exports.checkPinLockout = async (req, res) => {
+   console.log('checkPinLockout : start');
+   const { androidId, firebaseId, lockoutTime } = req.body;
+
+   if((!androidId) && (!firebaseId)){
+    console.log('checkPinLockout : androidId or firebaseId are required');
+	   return res.status(400).json({
+           error: 'Android ID or Firebase ID is required',
+           });   
+   }
+	
+}
+
 //Save pin lockout
 exports.savePinLockout = async (req, res) => {
    console.log('savePinLockout : start');
