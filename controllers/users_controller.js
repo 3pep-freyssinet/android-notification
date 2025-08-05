@@ -140,6 +140,7 @@ try{
         });
    }
 
+   console.log('checkPinLockout : result_.rows.lockout_time : ', result_.rows.lockout_time);
    const lockout = ((result_) && (result_.rows.length == 1)) ? result_.rows.lockout_time : null;
 	   
    console.log('checkPinLockout : lockout found : lockout : ', lockout);
