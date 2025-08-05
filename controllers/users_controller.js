@@ -113,7 +113,7 @@ exports.savePinLockout = async (req, res) => {
 
 try{	
    //get userId from 'users_notification' table
-   const query = `SELECT id FROM users_notificatio WHERE android_id = $1 `;
+   const query = `SELECT id FROM users_notification WHERE android_id = $1 `;
    // Execute the query
    const result = await pool.query(query, [androidId]);
     
