@@ -101,7 +101,7 @@ exports.savePinLockout = async (req, res) => {
    console.log('savePinLockout : start');
    const { androidId, firebaseId, lockoutTime } = req.body;
 
-   if((!androidId) || (!firebaseId)){
+   if((!androidId) && (!firebaseId)){
     console.log('savePinLockout : androidId or firebaseId are required');
 	   return res.status(400).json({
            error: 'Android ID or Firebase ID is required',
