@@ -100,7 +100,9 @@ exports.sendEmail = async (req, res) => {
 //Check pin lockout
 exports.checkPinLockout = async (req, res) => {
    console.log('checkPinLockout : start');
-   const { androidId, firebaseId, lockoutTime } = req.body;
+   const androidId  = req.params.androidId;
+   const firebaseId = req.params.firebaseId;
+	
 
    if((!androidId) && (!firebaseId)){
     console.log('checkPinLockout : androidId or firebaseId are required');
