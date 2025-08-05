@@ -44,6 +44,9 @@ router.post('/close-session',       authMiddleware,   usersController.closeSessi
 router.get('/get-change-password-session-progress',   authMiddleware,   usersController.getChangePasswordSessionProgress);  // GET /users/get-change-password-session-progress
 router.get('/check-change-password-session',          authMiddleware,   usersController.checkChangePasswordSession);        // GET /users/check-change-password-session
 
+router.post('/save-pin-lockout',                      usersController.savePinLockout);                  // POST /users/save-pin-lockout
+
+
 router.delete('/clear-change-password-session',       authMiddleware,   usersController.clearChangePasswordSession);        // DELETE /users/clear-change-password-session
 
 router.patch('/update-firebase-id', authMiddleware, resolveUserIdMiddleware, usersController.updateFirebaseId);             // PATCH /users/update-firebase-id
