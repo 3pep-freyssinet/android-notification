@@ -107,6 +107,12 @@ exports.savePinLockout = async (req, res) => {
            error: 'Android ID or Firebase ID is required',
            });   
    }
+   if(!lockoutTime){
+    console.log('savePinLockout : lockoutTime is required');
+	   return res.status(400).json({
+           error: 'lockoutTime is required',
+           });   
+   }
    console.log('savePinLockout : androidId : ', androidId, ' firebaseId : ',  firebaseId, ' lockoutTime : ', lockoutTime);
    //convert lockoutTime from int to timestamps
    const lockoutTime_ = new Date(lockoutTime);
