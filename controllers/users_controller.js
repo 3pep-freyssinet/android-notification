@@ -142,11 +142,14 @@ try{
 
    console.log('checkPinLockout : result_.rows.lockout_time : ', result_.rows[0].lockout_time);
    const lockout = ((result_) && (result_.rows.length == 1)) ? result_.rows[0].lockout_time : null;
-	   
-   console.log('checkPinLockout : lockout found : lockout : ', lockout);
+  
+   //convert timestamp date to int
+   const lockout_ = new Date(lockout).getTime();
+	
+   console.log('checkPinLockout : lockout found : lockout : ', lockout_);
     return res.status(200).json({
            success: 'lockout found',
-	    lockout:lockout,
+	    lockout:lockout_,
     });		       	
 } catch (error) {
     console.error('checkPinLockout failed:', error);
