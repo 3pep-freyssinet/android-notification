@@ -114,10 +114,12 @@ exports.savePinLockout = async (req, res) => {
            });   
    }
    //convert lockoutTime from int to timestamps
-   const lockoutTime_ = new Date(lockoutTime);
-   console.log('savePinLockout : androidId : ', androidId, ' firebaseId : ',  firebaseId, ' lockoutTime : ', lockoutTime, ' lockoutTime_ : ', lockoutTime_);
+   // extract int from string
+   const lockoutTime_ = parseInt(lockoutTime);
+   //convert int to timestamp
+   const lockoutTime__ = new Date(lockoutTime_);
+   console.log('savePinLockout : androidId : ', androidId, ' firebaseId : ',  firebaseId, ' lockoutTime : ', lockoutTime__);
   
-
 try{	
    //get userId from 'users_notification' table
    const query = `SELECT id FROM users_notification WHERE android_id = $1 `;
@@ -144,7 +146,7 @@ try{
 	  `;
 	   
 	// Execute the query
-	const result_ = await pool.query(query_, [userId, lockoutTime_]);
+	const result_ = await pool.query(query_, [userId, lockoutTime__]);
 	
 	if((!result_) && (result_.rows.length != 1)){     
           console.log('savePinLockout : cannot insert or update lockout time');
