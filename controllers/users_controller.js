@@ -109,11 +109,13 @@ exports.savePinLockout = async (req, res) => {
    }
    console.log('savePinLockout : androidId : ', androidId, ' firebaseId : ',  firebaseId, ' lockoutTime : ', lockoutTime);
    //convert lockoutTime from int to timestamps
-   
+   const lockoutTime_ = new Date(lockoutTime);
+
+try{	
    //get userId from 'users_notification' table
-	 const query = `SELECT id FROM users_notificatio WHERE android_id = $1 `;
-	// Execute the query
-	const result = await pool.query(query, [androidId]);
+   const query = `SELECT id FROM users_notificatio WHERE android_id = $1 `;
+   // Execute the query
+   const result = await pool.query(query, [androidId]);
     
     var userId;
     if((!result) && (result.rows.length != 1)){     
@@ -125,8 +127,8 @@ exports.savePinLockout = async (req, res) => {
     userId = result.rows[0].id;
     console.log('savePinLockout : userId : ', userId);
 						
-   //insert 'lockoutTime' in table.
-   const query = `
+   //insert 'lockoutTime_' in timestamp format in table.
+   const query_ = `
 		INSERT INTO lockout_user (user_id, lockout_time)
 		VALUES ($1, $2) 
 		ON CONFLICT (user_id)
@@ -135,12 +137,26 @@ exports.savePinLockout = async (req, res) => {
 	  `;
 	   
 	// Execute the query
-	const result = await pool.query(query, [userId, lockoutTime]);
-   
+	const result_ = await pool.query(query_, [userId, lockoutTime_]);
+	
+	if((!result_) && (result_.rows.length != 1)){     
+          console.log('savePinLockout : cannot insert or update lockout time');
+	   return res.status(403).json({
+           error: 'cannot insert or update lockout time',
+           }); 
+        }
+        console.log('savePinLockout : successful insert or update lockout time : id : ', result_.rows[0].id);
+	return res.status(200).json({
+           success: 'successfull insert or update lockout time',
+        });
+  } catch (error) {
+    console.error('savePinLockout failed:', error);
+    res.status(500).json({
+      code: 'SERVER_ERROR',
+      error: 'Server error during lockout',
+    });
+  }
 }
-
-
-
 
 //lookup by id. Search user by android id or firebase id
 exports.lookupById = async (req, res) => {
