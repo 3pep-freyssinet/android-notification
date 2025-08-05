@@ -111,6 +111,47 @@ exports.checkPinLockout = async (req, res) => {
            error: 'Android ID or Firebase ID is required',
            });   
    }
+try{	
+   //get userId from 'users_notification' table
+   const query = `SELECT id FROM users_notification WHERE android_id = $1 `;
+   // Execute the query
+   const result = await pool.query(query, [androidId]);
+    
+    var userId;
+    if((!result) && (result.rows.length != 1)){     
+        console.log('checkPinLockout : user not found');
+	   return res.status(403).json({
+           error: 'user not found',
+           }); 
+    }
+    userId = result.rows[0].id;
+    console.log('savePinLockout : userId : ', userId);
+
+    //get 'lockoutTime'
+    const query_ = `SELECT lockout_time FROM lockout_user WHERE user_id = $1 `;
+   // Execute the query
+   const result_ = await pool.query(query_, [userId]);
+
+   if((!result_) || (result_.rows.length != 1)){
+	console.log('checkPinLockout : lockout not found');
+	   return res.status(403).json({
+           error: 'lockout not found',
+   });
+
+   const lockout = ((result_) && (result_.rows.length == 1)) ? result_.rows.lockout_time : null;
+	   
+   console.log('checkPinLockout : lockout found : lockout : ', lockout);
+    return res.status(200).json({
+           success: 'lockout found',
+	    lockout:lockout,
+    });		       	
+} catch (error) {
+    console.error('checkPinLockout failed:', error);
+    res.status(500).json({
+      code: 'SERVER_ERROR',
+      error: 'Server error during lockout',
+    });
+  }
 	
 }
 
