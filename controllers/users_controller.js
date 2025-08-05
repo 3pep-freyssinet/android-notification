@@ -96,6 +96,52 @@ exports.sendEmail = async (req, res) => {
   }
 }
 
+//Save pin lockout
+exports.savePinLockout = async (req, res) => {
+   console.log('savePinLockout : start');
+   const { androidId, firebaseId, lockoutTime } = req.body;
+
+   if((!androidId) || (!firebaseId)){
+    console.log('savePinLockout : androidId or firebaseId are required');
+	   return res.status(400).json({
+           error: 'Android ID or Firebase ID is required',
+           });   
+   }
+   console.log('savePinLockout : androidId : ', androidId, ' firebaseId : ',  firebaseId, ' lockoutTime : ', lockoutTime);
+   //convert lockoutTime from int to timestamps
+   
+   //get userId from 'users_notification' table
+	 const query = `SELECT id FROM users_notificatio WHERE android_id = $1 `;
+	// Execute the query
+	const result = await pool.query(query, [androidId]);
+    
+    var userId;
+    if((!result) && (result.rows.length != 1)){     
+        console.log('savePinLockout : user not found');
+	   return res.status(403).json({
+           error: 'user not found',
+           }); 
+    }
+    userId = result.rows[0].id;
+    console.log('savePinLockout : userId : ', userId);
+						
+   //insert 'lockoutTime' in table.
+   const query = `
+		INSERT INTO lockout_user (user_id, lockout_time)
+		VALUES ($1, $2) 
+		ON CONFLICT (user_id)
+		DO UPDATE SET lockout_time = $2  
+                RETURNING id;
+	  `;
+	   
+	// Execute the query
+	const result = await pool.query(query, [userId, lockoutTime]);
+   
+}
+
+
+
+
 //lookup by id. Search user by android id or firebase id
 exports.lookupById = async (req, res) => {
    console.log('lookupById : start');
