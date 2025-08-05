@@ -115,7 +115,7 @@ exports.savePinLockout = async (req, res) => {
    }
    //convert lockoutTime from int to timestamps
    const lockoutTime__ = Date.parse(lockoutTime);
-   const lockoutTime_ = new Date(lockoutTime__));
+   const lockoutTime_ = new Date(lockoutTime__);
    
    console.log('savePinLockout : androidId : ', androidId, ' firebaseId : ',  firebaseId, ' lockoutTime : ', lockoutTime, ' lockoutTime_ : ', lockoutTime_);
   
