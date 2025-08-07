@@ -99,6 +99,7 @@ exports.sendEmail = async (req, res) => {
 
 //Check pin lockout
 exports.checkPinLockout = async (req, res) => {
+   const maxRetries = 3;
    console.log('checkPinLockout : start');
    const androidId  = req.query.androidId;
    const firebaseId = req.query.firebaseId;
@@ -128,29 +129,58 @@ try{
     userId = result.rows[0].id;
     console.log('savePinLockout : userId : ', userId);
 
-    //get 'lockoutTime'
-    const query_ = `SELECT lockout_time FROM lockout_user WHERE user_id = $1 `;
+	//get 'retry' and 'retryTime' values from 'lockout_user' table.
+    const query_ = `SELECT retry, retry_time FROM lockout_user WHERE user_id = $1 `;
     // Execute the query
     const result_ = await pool.query(query_, [userId]);
 
-   if((!result_) || (result_.rows.length != 1)){
-	console.log('checkPinLockout : lockout not found');
+   if((!result_) || (result_.rows.length > 1)){  //0, 1 possible
+	console.log('checkPinLockout : attempts data not found');
 	   return res.status(403).json({
-           error: 'lockout not found',
+           error: 'attempts data not found',
         });
    }
-
-   console.log('checkPinLockout : result_.rows.lockout_time : ', result_.rows[0].lockout_time);
-   const lockout = ((result_) && (result_.rows.length == 1)) ? result_.rows[0].lockout_time : null;
+   if (result_.rows.length === 0) {
+      return res.status(200).json({ lockedOut: false, retriesLeft: maxRetries });
+    }
+	
+   console.log('checkPinLockout : retry : ', result_.rows[0].retry, ' retryTime : ', result_.rows[0].retry_time);
   
    //convert timestamp date to int
-   const lockout_ = new Date(lockout).getTime();
+   //const lockout_ = new Date(lockout).getTime();
+    const lockoutDurationMs = 60 * 60 * 1000; // 1 hour
+    const now = Date.now();
+    const lockoutStart = new Date(lockoutResult.rows[0].retry_time).getTime(); 
 	
+   if (retry >= maxRetries) {
+  	const diff = now - lockoutStart;
+  	if (diff < lockoutDurationMs) {
+    	const minutesLeft = Math.ceil((lockoutDurationMs - diff) / 60000);
+    	return res.status(200).json({ lockedOut: true, minutesLeft });
+  	} else {
+    	// Lockout expired: reset retry
+    	await pool.query(`UPDATE lockout_user SET retry = 0 WHERE user_id = $1`, [userId]);
+    	return res.status(200).json({ lockedOut: false, retriesLeft: maxRetries });
+  	}
+	} else {
+  	// 🔴 Persist retry count and timestamp, even if user is not yet locked
+  	await pool.query(
+    	`UPDATE lockout_user SET retry = $1, retry_time = $2 WHERE user_id = $3`,
+    	[retry, new Date(), userId]
+  	);
+   
+  	return res.status(200).json({
+    lockedOut: false,
+    retriesLeft: maxRetries - retry
+   });
+  }
+	/*
    console.log('checkPinLockout : lockout found : lockout : ', lockout_);
     return res.status(200).json({
            success: 'lockout found',
 	    lockout:lockout_,
-    });		       	
+    });
+	*/
 } catch (error) {
     console.error('checkPinLockout failed:', error);
     res.status(500).json({
