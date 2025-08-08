@@ -307,7 +307,7 @@ try{
 async function getLockoutRow(userId){
   console.log('getLockoutRow(userId) :', userId);
   try {
-    const result = await pool.query('SELECT retry, retry_time FROM lockout_users WHERE id = $1', [userId]);
+    const result = await pool.query('SELECT retry, retry_time FROM lockout_user WHERE id = $1', [userId]);
     
     if (result.rows.length > 0) {
       return result.rows[0];
