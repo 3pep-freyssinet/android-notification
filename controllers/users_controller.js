@@ -307,9 +307,10 @@ try{
 async function getLockoutRow(userId){
   console.log('getLockoutRow(userId) :', userId);
   try {
-    const result = await pool.query('SELECT retry, retry_time FROM lockout_user WHERE id = $1', [userId]);
+    const result = await pool.query('SELECT retry, retry_time FROM lockout_user WHERE user_id = $1', [userId]);
     
     if (result.rows.length > 0) {
+	  console.log('getLockoutRow, result.rows[0] :', result.rows[0]);
       return result.rows[0];
     } else {
       throw new Error('No retry and retry_time found for this user with id : ', userId );
