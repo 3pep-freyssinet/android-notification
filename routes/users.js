@@ -46,6 +46,7 @@ router.get('/check-change-password-session',          authMiddleware,   usersCon
 
 router.post('/save-pin-lockout',                      usersController.savePinLockout);                  // POST /users/save-pin-lockout
 router.get('/check-pin-lockout',                      usersController.checkPinLockout);                 // GET  /users/check-pin-lockout?androidId=" + androidId + "&firebaseId=" + firebaseId)
+router.post('/report-pin-attempt', authMiddleware,    usersController.reportPinAttempt);                // POST /users/report-pin-attempt
 
 router.delete('/clear-change-password-session',       authMiddleware,   usersController.clearChangePasswordSession);        // DELETE /users/clear-change-password-session
 
