@@ -164,7 +164,7 @@ try{
     return res.status(200).json({ lockedOut: false, retriesLeft: maxRetries - 1 });
   }
 
-  const retry = lockoutRow.retry;
+  const retry     = lockoutRow.retry;
   const retryTime = lockoutRow.retry_time;
 
   if (retry >= maxRetries) {
@@ -189,7 +189,21 @@ try{
   }
 };
 
-async function getLockoutRow(userId)
+async function getLockoutRow(userId){
+  console.log('getLockoutRow(userId) :', userId);
+  try {
+    const result = await pool.query('SELECT retry, retry_time FROM lockout_users WHERE id = $1', [userId]);
+    
+    if (result.rows.length > 0) {
+      return result.rows[0]:
+    } else {
+      throw new Error('No retry and retry_time found for this user with id : ', userId );
+    }
+  } catch (error) {
+    console.error('Error fetching lockout data from the database:', error);
+    throw error;
+  }
+}
 
 //Save pin lockout
 exports.savePinLockout = async (req, res) => {
