@@ -144,13 +144,14 @@ try{
     userId = result.rows[0].id;
     console.log('checkPinLockout : userId : ', userId);
   	const userId = user.id;
+   
+	//get 'retry' and 'retryTime' from 'lockout_user' table
+    const lockoutRow = await getLockoutRow(userId);
 
-  const lockoutRow = await getLockoutRow(userId);
-
-  if (result === "success") {
-    if (lockoutRow && lockoutRow.retry > 0) {
-      await pool.query(`UPDATE lockout_user SET retry = 0 WHERE user_id = $1`, [userId]);
-      console.log("Lockout reset after success");
+    if (result === "success") {
+    	if (lockoutRow && lockoutRow.retry > 0) {
+      	await pool.query(`UPDATE lockout_user SET retry = 0 WHERE user_id = $1`, [userId]);
+      	console.log("Lockout reset after success");
     }
     return res.status(200).json({ lockedOut: false, retriesLeft: maxRetries });
   }
@@ -188,6 +189,7 @@ try{
   }
 };
 
+async function getLockoutRow(userId)
 
 //Save pin lockout
 exports.savePinLockout = async (req, res) => {
