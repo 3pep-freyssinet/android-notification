@@ -170,14 +170,18 @@ try{
     const diff = now - new Date(retryTime);
     if (diff < lockoutDurationMs) {
       const minutesLeft = Math.ceil((lockoutDurationMs - diff) / 60000);
-      return res.status(200).json({ lockedOut: true, minutesLeft });
+      return res.status(200).json({ lockedOut: true, timeLeft:minutesLeft });
     } else {
       await pool.query(`UPDATE lockout_user SET retry = 1, retry_time = $1 WHERE user_id = $2`, [now, userId]);
       return res.status(200).json({ lockedOut: false, retriesLeft: maxRetries - 1 });
     }
   } else {
     await pool.query(`UPDATE lockout_user SET retry = retry + 1, retry_time = $1 WHERE user_id = $2`, [now, userId]);
-    return res.status(200).json({ lockedOut: false, retriesLeft: maxRetries - retry - 1 });
+    //return res.status(200).json({ lockedOut: false, retriesLeft: maxRetries - retry - 1 });
+	return res.status(200).json({
+  		success: 'Lockout recorded',
+  		retryTime: retryTime.getTime() // returns ms since epoch
+	});
   }
 } catch (error) {
     console.error('savePinLockout failed:', error);
