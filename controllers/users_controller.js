@@ -132,7 +132,7 @@ exports.reportPinAttempt = async (req, res) => {
 	  
     const lockoutRow = await getLockoutRow(userId);
     const retry      = lockoutRow.retry;
-	const retryTime  = lockoutRow.retryTime;
+	const retryTime  = lockoutRow.retry_Time;
 	  
 	console.log('reportPinAttempt : retry :', retry, ' retryTime : ', retryTime);
 	  
