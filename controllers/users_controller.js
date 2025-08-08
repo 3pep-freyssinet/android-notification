@@ -97,8 +97,12 @@ exports.sendEmail = async (req, res) => {
 }
 
 /*
-convert timestamp date to int
-const lockout_ = new Date(lockout).getTime();
+   // extract int wrapped in strin
+   const lockoutTime_ = parseInt(lockoutTime);
+   //convert int to timestamp
+   const lockoutTime__ = new Date(lockoutTime_);
+   //convert timestamp to int
+   const time = new Date(lockoutTime__).getTime();
 */
 
 //Check pin lockout
