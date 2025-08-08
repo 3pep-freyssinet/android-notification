@@ -112,13 +112,13 @@ exports.checkPinLockout = async (req, res) => {
     console.log('checkPinLockout : start');
    
 	//const androidId  = req.query.androidId;
-   //const firebaseId = req.query.firebaseId;
+    //const firebaseId = req.query.firebaseId;
    
-  const { androidId, firebaseId, result } = req.body;
+    const { androidId, firebaseId, result } = req.body;
 
-  if ((!androidId) && (!firebaseId)) {
-    return res.status(400).json({ error: "androidId or firebase is required" });
-  }
+    if ((!androidId) && (!firebaseId)) {
+    	return res.status(400).json({ error: "androidId or firebase is required" });
+    }
 	
 try{
 	/*
@@ -133,7 +133,6 @@ try{
     // Execute the query
     const result = await pool.query(query, [androidId]);
 	
-	var userId;
     if((!result) && (result.rows.length != 1)){     
         console.log('checkPinLockout : user not found');
 	   return res.status(404).json({
@@ -141,9 +140,9 @@ try{
            }); 
     }
 	
-    userId = result.rows[0].id;
+    const userId = result.rows[0].id;
     console.log('checkPinLockout : userId : ', userId);
-  	const userId = user.id;
+  	
    
 	//get 'retry' and 'retryTime' from 'lockout_user' table
     const lockoutRow = await getLockoutRow(userId);
