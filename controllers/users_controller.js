@@ -110,7 +110,7 @@ exports.sendEmail = async (req, res) => {
 exports.reportPinAttempt = async (req, res) => {
   console.log('reportPinAttempt : start');
   const { androidId, result } = req.body;
-  console.log('reportPinAttempt : result :', result);
+  console.log('reportPinAttempt : androidId : ', androidId, ' result :', result);
   const maxRetries = 3;
   const lockoutDurationMs = 60 * 60 * 1000;
   const now = new Date();
