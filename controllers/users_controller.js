@@ -105,8 +105,107 @@ exports.sendEmail = async (req, res) => {
    const time = new Date(lockoutTime__).getTime();
 */
 
-//Check pin lockout
+
+// report Pin Attempt
+exports.reportPinAttempt = async (req, res) => {
+  const { androidId, result } = req.body;
+  const maxRetries = 3;
+  const lockoutDurationMs = 60 * 60 * 1000;
+  const now = new Date();
+
+  if (!androidId || !result) {
+    return res.status(400).json({ error: "androidId and result are required" });
+  }
+
+  try {
+    const userResult = await pool.query(`SELECT id FROM users_notification WHERE android_id = $1`, [androidId]);
+    if (!userResult.rows.length) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const userId = userResult.rows[0].id;
+    const lockoutRow = await getLockoutRow(userId);
+
+    if (result === "success") {
+      if (lockoutRow && lockoutRow.retry > 0) {
+        await pool.query(`UPDATE lockout_user SET retry = 0 WHERE user_id = $1`, [userId]);
+      }
+      return res.status(200).json({ success: "Reset after success", lockedOut: false, retriesLeft: maxRetries });
+    }
+
+    // result === "failure"
+    if (!lockoutRow) {
+      await pool.query(`INSERT INTO lockout_user (user_id, retry, retry_time) VALUES ($1, 1, $2)`, [userId, now]);
+      return res.status(200).json({ lockedOut: false, retriesLeft: maxRetries - 1, retryTime: now.getTime() });
+    }
+
+    const retry = lockoutRow.retry;
+    const retryTime = lockoutRow.retry_time;
+
+    if (retry >= maxRetries) {
+      const diff = now - new Date(retryTime);
+      if (diff < lockoutDurationMs) {
+        const minutesLeft = Math.ceil((lockoutDurationMs - diff) / 60000);
+        return res.status(200).json({ lockedOut: true, timeLeft: minutesLeft });
+      } else {
+        // lockout expired → reset retry
+        await pool.query(`UPDATE lockout_user SET retry = 1, retry_time = $1 WHERE user_id = $2`, [now, userId]);
+        return res.status(200).json({ lockedOut: false, retriesLeft: maxRetries - 1, retryTime: now.getTime() });
+      }
+    } else {
+      await pool.query(`UPDATE lockout_user SET retry = retry + 1, retry_time = $1 WHERE user_id = $2`, [now, userId]);
+      return res.status(200).json({ lockedOut: false, retriesLeft: maxRetries - retry - 1, retryTime: now.getTime() });
+    }
+  } catch (error) {
+    console.error("reportPinAttempt failed:", error);
+    res.status(500).json({ code: "SERVER_ERROR", error: "Server error during PIN attempt report" });
+  }
+};
+
+// Check pin lockout
 exports.checkPinLockout = async (req, res) => {
+  const lockoutDurationMs = 60 * 60 * 1000; // 1 hour
+  const { androidId } = req.query;
+
+  if (!androidId) {
+    return res.status(400).json({ error: "androidId is required" });
+  }
+
+  try {
+    const userResult = await pool.query(`SELECT id FROM users_notification WHERE android_id = $1`, [androidId]);
+    if (!userResult.rows.length) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const userId = userResult.rows[0].id;
+
+    const lockoutRow = await getLockoutRow(userId);
+    if (!lockoutRow) {
+      return res.status(200).json({ lockedOut: false, retriesLeft: 3 });
+    }
+
+    const retry     = lockoutRow.retry;
+    const retryTime = lockoutRow.retry_time;
+    const now       = new Date();
+
+    if (retry >= 3) {
+      const diff = now - new Date(retryTime);
+      if (diff < lockoutDurationMs) {
+        const minutesLeft = Math.ceil((lockoutDurationMs - diff) / 60000);
+        return res.status(200).json({ lockedOut: true, timeLeft: minutesLeft });
+      }
+    }
+
+    return res.status(200).json({ lockedOut: false, retriesLeft: 3 - retry });
+
+  } catch (error) {
+    console.error("checkPinLockout failed:", error);
+    res.status(500).json({ code: "SERVER_ERROR", error: "Server error during lockout check" });
+  }
+};
+
+//Check pin lockout. Not called. It is splitted in 2 parts : 'checkPinLockout' and 'reportPinAttempt '. See above.
+exports.checkPinLockout_ = async (req, res) => {
     const maxRetries = 3;
     const lockoutDurationMs = 60 * 60 * 1000; // 1 hour
     console.log('checkPinLockout : start');
