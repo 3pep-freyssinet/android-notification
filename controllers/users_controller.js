@@ -153,7 +153,7 @@ exports.reportPinAttempt = async (req, res) => {
     //const retry = lockoutRow.retry;
     //const retryTime = lockoutRow.retry_time;
 
-    if (retry >= maxRetries) {
+    if (retry >= (maxRetries - 1)) {
       const diff = now - new Date(retryTime);
       if (diff < lockoutDurationMs) {
         const minutesLeft = Math.ceil((lockoutDurationMs - diff) / 60000);
