@@ -136,6 +136,8 @@ exports.reportPinAttempt = async (req, res) => {
 	
 	//console.log('reportPinAttempt : lockoutRow :', lockoutRow);
 	console.log('reportPinAttempt : retry :', retry, ' retryTime : ', retryTime);
+	
+	  console.log('-----------------------------');
 	  
     if (result === "success") {
       if (lockoutRow && lockoutRow.retry > 0) {
@@ -159,7 +161,7 @@ exports.reportPinAttempt = async (req, res) => {
     //const retry = lockoutRow.retry;
     //const retryTime = lockoutRow.retry_time;
 
-    if (retry >= (maxRetries - 1)) {
+    if (retry >= (maxRetries)) {
       const diff = now - new Date(retryTime);
       if (diff < lockoutDurationMs) {
 		//lockout
