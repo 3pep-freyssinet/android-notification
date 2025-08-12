@@ -207,7 +207,6 @@ exports.checkPinLockout = async (req, res) => {
 		  retriesLeft: maxTries,
 	      retryTime: new Date(),
 		  timeLeft: 0 });
-	  });
     }
 
     const retry     = lockoutRow.retry;
