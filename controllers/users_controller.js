@@ -146,8 +146,14 @@ exports.reportPinAttempt = async (req, res) => {
 
     // result === "failure"
     if (!lockoutRow) {
+	  //first time
       await pool.query(`INSERT INTO lockout_user (user_id, retry, retry_time) VALUES ($1, 1, $2)`, [userId, now]);
-      return res.status(200).json({ lockedOut: false, retriesLeft: maxRetries - 1, retryTime: now.getTime() });
+      return res.status(200).json({ 
+		  lockedOut: false,
+		  retriesLeft: maxRetries - 1,
+		  retryTime: now.getTime(),
+	      timeLeft: 0
+	  });
     }
 
     //const retry = lockoutRow.retry;
@@ -156,19 +162,37 @@ exports.reportPinAttempt = async (req, res) => {
     if (retry >= (maxRetries - 1)) {
       const diff = now - new Date(retryTime);
       if (diff < lockoutDurationMs) {
+		//lockout
         const minutesLeft = Math.ceil((lockoutDurationMs - diff) / 60000);
-		console.log('reportPinAttempt : timeLeft: ', minutesLeft);
-        return res.status(200).json({ lockedOut: true, timeLeft: minutesLeft });
+		console.log('reportPinAttempt : lockout : true, timeLeft: ', minutesLeft);
+        return res.status(200).json({
+			lockedOut: true,
+			retriesLeft: 0,
+			retryTime: now.getTime(),
+			timeLeft: minutesLeft
+		});
+  
       } else {
         // lockout expired → reset retry
         await pool.query(`UPDATE lockout_user SET retry = 1, retry_time = $1 WHERE user_id = $2`, [now, userId]);
-		console.log('reportPinAttempt : retriesLeft : ', (maxRetries - 1), ' retryTime : ', now.getTime()); 
-        return res.status(200).json({ lockedOut: false, retriesLeft: maxRetries - 1, retryTime: now.getTime() });
+		console.log('reportPinAttempt : lockout : false , retriesLeft : ', (maxRetries - 1), ' retryTime : ', now.getTime()); 
+        return res.status(200).json({ 
+			lockedOut: false,
+			retriesLeft: maxRetries - 1,
+			retryTime: now.getTime(),
+		    timeLeft: 0
+		});
       }
     } else {
-      await pool.query(`UPDATE lockout_user SET retry = retry + 1, retry_time = $1 WHERE user_id = $2`, [now, userId]);
+	  //the retries continue
+      await pool.query(`UPDATE lockout_user SET retry = $1, retry_time = $2 WHERE user_id = $3`, [(retry + 1), now, userId]);
 	  console.log('reportPinAttempt : retriesLeft : ', (maxRetries - retry -1), ' retryTime : ', now.getTime()); 
-      return res.status(200).json({ lockedOut: false, retriesLeft: maxRetries - retry - 1, retryTime: now.getTime() });
+      return res.status(200).json({
+		  lockedOut: false,
+		  retriesLeft: maxRetries - retry - 1,
+		  retryTime: now.getTime(),
+	     timeLeft: 0
+	  });
     }
   } catch (error) {
     	console.error("reportPinAttempt failed:", error);
