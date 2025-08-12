@@ -179,15 +179,21 @@ exports.reportPinAttempt = async (req, res) => {
 // Check pin lockout
 exports.checkPinLockout = async (req, res) => {
   const lockoutDurationMs = 60 * 60 * 1000; // 1 hour
+  
+  console.log('checkPinLockout : start'); 
+  
   const { androidId } = req.query;
+  console.log('checkPinLockout : androidId : ', androidId); 
 
   if (!androidId) {
+	console.log('checkPinLockout :androidId is required '); 
     return res.status(400).json({ error: "androidId is required" });
   }
 
   try {
     const userResult = await pool.query(`SELECT id FROM users_notification WHERE android_id = $1`, [androidId]);
     if (!userResult.rows.length) {
+	  console.log('checkPinLockout : user not found'); 
       return res.status(404).json({ error: "User not found" });
     }
 
@@ -195,6 +201,7 @@ exports.checkPinLockout = async (req, res) => {
 
     const lockoutRow = await getLockoutRow(userId);
     if (!lockoutRow) {
+	  console.log('checkPinLockout :lockedOut: false, retriesLeft: 3 '); 
       return res.status(200).json({ lockedOut: false, retriesLeft: 3 });
     }
 
@@ -206,10 +213,12 @@ exports.checkPinLockout = async (req, res) => {
       const diff = now - new Date(retryTime);
       if (diff < lockoutDurationMs) {
         const minutesLeft = Math.ceil((lockoutDurationMs - diff) / 60000);
+		console.log('checkPinLockout :lockedOut: true, timeLeft:', minutesLeft); 
         return res.status(200).json({ lockedOut: true, timeLeft: minutesLeft });
       }
     }
-
+	  
+    console.log('checkPinLockout :lockedOut: false, retriesLeft:', (3 - retry)); 
     return res.status(200).json({ lockedOut: false, retriesLeft: 3 - retry });
 
   } catch (error) {
