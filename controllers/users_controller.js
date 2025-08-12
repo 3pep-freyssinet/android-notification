@@ -217,6 +217,7 @@ exports.checkPinLockout = async (req, res) => {
 	  //max tries reached
       const diff = now - new Date(retryTime);
       if (diff < lockoutDurationMs) {
+		//the user is locked or still locked
         const minutesLeft = Math.ceil((lockoutDurationMs - diff) / 60000);
 		console.log('checkPinLockout :lockedOut: true, timeLeft:', minutesLeft); 
         return res.status(200).json({
@@ -224,7 +225,16 @@ exports.checkPinLockout = async (req, res) => {
 			retriesLeft: 0,
             retryTime: retryTime.getTime(),
 			timeLeft: minutesLeft });
-      }
+      }else{
+	  //the lock is removed, the user is free
+		console.log('checkPinLockout :lockedOut: false, timeLeft:', 0); 
+        return res.status(200).json({
+			lockedOut: false,
+			retriesLeft: maxTries,
+            retryTime: now,
+			timeLeft: 0 });
+	  }
+	}
 	  //the tries continue
 	  
     console.log('checkPinLockout :lockedOut: false, retriesLeft:', (maxTries - retry)); 
