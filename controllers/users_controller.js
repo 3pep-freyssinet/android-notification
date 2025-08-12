@@ -232,7 +232,7 @@ exports.checkPinLockout = async (req, res) => {
       return res.status(200).json({ 
 		  lockedOut: false,
 		  retriesLeft: maxTries,
-	      retryTime: new Date(),
+	      retryTime: new Date().getTime(), //ms
 		  timeLeft: 0 });
     }
 
@@ -250,7 +250,7 @@ exports.checkPinLockout = async (req, res) => {
         return res.status(200).json({
 			lockedOut: true,
 			retriesLeft: 0,
-            retryTime: retryTime.getTime(),
+            retryTime: new Date(retryTime).getTime(), //ms
 			timeLeft: minutesLeft });
       }else{
 	  //the lock is removed, the user is free
@@ -258,7 +258,7 @@ exports.checkPinLockout = async (req, res) => {
         return res.status(200).json({
 			lockedOut: false,
 			retriesLeft: maxTries,
-            retryTime: now,
+            retryTime: new Date().getTime(), //ms
 			timeLeft: 0 });
 	  }
 	}
@@ -268,7 +268,7 @@ exports.checkPinLockout = async (req, res) => {
     return res.status(200).json({ 
 		lockedOut: false,
 		retriesLeft: maxTries - retry,
-	    retryTime: retryTime.getTime(),
+	    retryTime: new Date(retryTime).getTime(), //ms
 		timeLeft: 0
 	});
 
