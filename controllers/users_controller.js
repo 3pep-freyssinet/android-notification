@@ -112,7 +112,7 @@ exports.reportPinAttempt = async (req, res) => {
   const { androidId, result } = req.body;
   console.log('reportPinAttempt : androidId : ', androidId, ' result :', result);
   const maxRetries = 3;
-  const lockoutDurationMs = 60 * 60 * 1000;
+  const lockoutDurationMs = 5 * 60 * 1000; //5 min
   const now = new Date();
 
 	
