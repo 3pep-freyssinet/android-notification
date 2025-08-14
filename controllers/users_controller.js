@@ -111,9 +111,9 @@ exports.reportPinAttempt = async (req, res) => {
   console.log('reportPinAttempt : start');
   const { androidId, result } = req.body;
   console.log('reportPinAttempt : androidId : ', androidId, ' result :', result);
-  const maxRetries = 3;
+  const maxRetries        = 3;
   const lockoutDurationMs = 5 * 60 * 1000; //5 min
-  const now = new Date();
+  const now               = new Date();
 
 	
   if ( !result) {
@@ -165,7 +165,7 @@ exports.reportPinAttempt = async (req, res) => {
       const diff = now - new Date(retryTime);
       if (diff < lockoutDurationMs) {
 		//lockout
-        const minutesLeft = Math.ceil((lockoutDurationMs - diff) / 60000);
+        const minutesLeft = Math.ceil((lockoutDurationMs - diff) / (60 * 1000));
 		console.log('reportPinAttempt : lockout : true, timeLeft: ', minutesLeft);
         return res.status(200).json({
 			lockedOut: true,
@@ -205,7 +205,7 @@ exports.reportPinAttempt = async (req, res) => {
 
 // Check pin lockout
 exports.checkPinLockout = async (req, res) => {
-  const lockoutDurationMs = 60 * 60 * 1000; // 1 hour
+  const lockoutDurationMs = 5 * 60 * 1000; // 5 hours    change also in 'reportPinAttempt' just above.
   const maxTries = 3;
   console.log('checkPinLockout : start'); 
   
