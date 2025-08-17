@@ -141,7 +141,7 @@ exports.reportPinAttempt = async (req, res) => {
     if (result === "success") {
       if (lockoutRow && lockoutRow.retry > 0) {
 		console.log('reportPinAttempt : success : lockedOut : false, retriesLeft :', maxRetries, ' retryTime : ', now, ' timeLeft : ', 0 );
-        await pool.query(`UPDATE lockout_user SET retry = 0 WHERE user_id = $1`, [userId]);
+        await pool.query(`UPDATE lockout_user SET retry = 0, retry_time = $1 WHERE user_id = $2`, [now, userId]);
       }
       return res.status(200).json({
 		  status:'success',
