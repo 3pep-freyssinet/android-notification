@@ -114,7 +114,6 @@ exports.reportPinAttempt = async (req, res) => {
   const maxRetries        = 3;
   const lockoutDurationMs = 5 * 60 * 1000; //5 min
   const now               = new Date();
-  const nowLong           = new Date()
 
   if ( !result) {
     return res.status(400).json({ error: "result is required" });
@@ -141,7 +140,7 @@ exports.reportPinAttempt = async (req, res) => {
 	  
     if (result === "success") {
       if (lockoutRow && lockoutRow.retry > 0) {
-		console.log('reportPinAttempt : success : lockedOut : false, retriesLeft :', maxRetries, ' retryTime : ', now, ' timeLeft : ', 0 );
+		console.log('reportPinAttempt : success : lockedOut : false, retriesLeft :', maxRetries, ' retryTime : ', now, ' : ', now.getTime(), ' timeLeft : ', 0 );
         await pool.query(`UPDATE lockout_user SET retry = 0, retry_time = $1 WHERE user_id = $2`, [now, userId]);
       }
       return res.status(200).json({
