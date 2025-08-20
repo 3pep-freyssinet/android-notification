@@ -145,6 +145,7 @@ exports.reportPinAttempt = async (req, res) => {
 		console.log('reportPinAttempt : success : lockedOut : false, retriesLeft :', maxRetries, ' retryTime : ', now, ' : ', new Date(now).getTime(), ' timeLeft : ', 0 );
         await pool.query(`UPDATE lockout_user SET retry = 0, retry_time = $1 WHERE user_id = $2`, [now, userId]);
       }
+	  console.log('reportPinAttempt : before return : retryTime : ', new Date(now).getTime());
       return res.status(200).json({
 		  status:'success',
 		  lockedOut: false,
