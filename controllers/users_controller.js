@@ -114,6 +114,7 @@ exports.reportPinAttempt = async (req, res) => {
   const maxRetries        = 3;
   const lockoutDurationMs = 5 * 60 * 1000; //5 min
   const now               = new Date();
+  const nowLong           = new Date()
 
   if ( !result) {
     return res.status(400).json({ error: "result is required" });
