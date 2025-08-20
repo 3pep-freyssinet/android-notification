@@ -136,9 +136,9 @@ exports.reportPinAttempt = async (req, res) => {
 	//console.log('reportPinAttempt : lockoutRow :', lockoutRow);
 	console.log('reportPinAttempt : retry :', retry, ' retryTime : ', retryTime);
 	
-	  console.log('-----------------------------');
-	  
+	 
     if (result === "success") {
+	  console.log('----------------success-------------');
       if (lockoutRow && lockoutRow.retry > 0) {
 		console.log('reportPinAttempt : success : lockedOut : false, retriesLeft :', maxRetries, ' retryTime : ', now, ' : ', now.getTime(), ' timeLeft : ', 0 );
         await pool.query(`UPDATE lockout_user SET retry = 0, retry_time = $1 WHERE user_id = $2`, [now, userId]);
@@ -151,7 +151,8 @@ exports.reportPinAttempt = async (req, res) => {
 	      timeLeft: 0
 	 });
     }
-
+   console.log('------------end success-----------------');
+	  
     // result === "failure"
     if (!lockoutRow) {
 	  //first time
