@@ -2857,18 +2857,19 @@ exports.loginUser = async (req, res) => {
 	
     console.log('loginUser : username : ', username, ' password : ', password, ' androidId : ', androidId, ' firebaseId : ', firebaseId);
 	    
-    try {
-        // Check if the user exists
-        const userResult = await pool.query('SELECT * FROM users_notification WHERE username = $1', [username]);
+  try {
+    // Check if the user exists
+    const userResult = await pool.query('SELECT * FROM users_notification WHERE username = $1', [username]);
 
-	console.log('loginUser : (userResult.rows.length === 0) : ', (userResult.rows.length === 0));
+	//console.log('loginUser : (userResult.rows.length === 0) : ', (userResult.rows.length === 0));
     
-        if (userResult.rows.length === 0) {
+    if (userResult.rows.length === 0) {
             return res.status(400).json({ error: 'Invalid username or password' });
-        }
-        //Here the user exists.
+    }
+		
+    //Here the user exists.
 	    
-        const user = userResult.rows[0];
+    const user = userResult.rows[0];
 	console.log('(login : user : ', user, ' userId : ', user.id);
 
 	/*
@@ -2902,8 +2903,8 @@ exports.loginUser = async (req, res) => {
 	
 	//Here the the fields 'failed_attempts' and 'lockout_until' are updated.
 	    
-        // Compare the password with the hashed password stored in the database
-        const passwordMatch = await bcrypt.compare(password, user.password);
+    // Compare the password with the hashed password stored in the database
+    const passwordMatch = await bcrypt.compare(password, user.password);
 		
 	console.log('passwordMatch : ', passwordMatch);
 		
@@ -2932,7 +2933,7 @@ exports.loginUser = async (req, res) => {
 			});
 			}
 		}
-		
+		//here, the password matches
 		console.log('passwordMatch : failedAttempts ', user.failed_attempts);
              
 		//if (!passwordMatch) {
