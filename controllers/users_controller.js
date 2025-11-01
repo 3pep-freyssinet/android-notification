@@ -2851,8 +2851,115 @@ exports.updateUser = async (req, res) => {
   }
 };
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// Login a user
+// backend/login.js
+
+const bcrypt = require('bcrypt');
+const { pool } = require('./db'); // Your DB pool
+const { handleTokens } = require('./tokens'); // JWT + refresh token handler
+
+const MAX_ATTEMPTS = 5;
+const LOCKOUT_DURATION = 60 * 60 * 1000; // 1 hour in ms
+
 exports.loginUser = async (req, res) => {
+    const { username, password, androidId, firebaseId } = req.body;
+
+    try {
+        // 1️⃣ Check if user exists
+        const userResult = await pool.query(
+            'SELECT * FROM users_notification WHERE username = $1',
+            [username]
+        );
+        if (userResult.rows.length === 0) {
+            return res.status(400).json({ error: 'Invalid username or password' });
+        }
+
+        const user = userResult.rows[0];
+
+        // 2️⃣ Device binding check (1 user = 1 device)
+        if (user.android_id && user.android_id !== androidId) {
+            return res.status(403).json({
+                error: 'Device not recognized. Login denied.'
+            });
+        }
+
+        // 3️⃣ Check lockout
+        if (user.lockout_until && new Date() < user.lockout_until) {
+            return res.status(403).json({
+                error: `Account locked. Try again after ${Math.ceil((user.lockout_until - new Date()) / 60000)} minutes`
+            });
+        }
+
+        // 4️⃣ Verify password
+        const passwordMatch = await bcrypt.compare(password, user.password);
+        if (!passwordMatch) {
+            const failedAttempts = (user.failed_attempts || 0) + 1;
+
+            if (failedAttempts >= MAX_ATTEMPTS) {
+                const lockoutUntil = new Date(Date.now() + LOCKOUT_DURATION);
+                await pool.query(
+                    'UPDATE users_notification SET failed_attempts = $1, lockout_until = $2 WHERE username = $3',
+                    [failedAttempts, lockoutUntil, username]
+                );
+                return res.status(403).json({
+                    error: `Account locked due to too many failed attempts. Try again in ${LOCKOUT_DURATION / 60000} minutes.`
+                });
+            } else {
+                await pool.query(
+                    'UPDATE users_notification SET failed_attempts = $1 WHERE username = $2',
+                    [failedAttempts, username]
+                );
+                return res.status(400).json({
+                    error: `Invalid credentials. ${MAX_ATTEMPTS - failedAttempts} attempts remaining.`
+                });
+            }
+        }
+
+        // 5️⃣ Reset failed attempts & lockout
+        await pool.query(
+            'UPDATE users_notification SET failed_attempts = 0, lockout_until = NULL WHERE username = $1',
+            [username]
+        );
+
+        // 6️⃣ Update Firebase ID if changed
+        if (user.firebase_id !== firebaseId) {
+            await pool.query(
+                'UPDATE users_notification SET firebase_id = $2 WHERE username = $1',
+                [username, firebaseId]
+            );
+        }
+
+        // 7️⃣ Generate JWT + refresh token
+        const { jwt_token, refresh_token, refresh_expires_at } = await handleTokens(user);
+
+        // 8️⃣ Update session info
+        await pool.query(
+            `UPDATE sessions
+             SET connected_at = CURRENT_TIMESTAMP,
+                 is_session_closed = false
+             WHERE users_notification_id = $1`,
+            [user.id]
+        );
+
+        // 9️⃣ Send success response
+        return res.status(200).json({
+            message: 'User logged in successfully',
+            jwt_token,
+            refresh_token,
+            refresh_expiry: refresh_expires_at,
+            is_session_closed: false
+        });
+
+    } catch (error) {
+        console.error('loginUser error:', error);
+        return res.status(500).json({
+            error: 'Internal server error. Please try again later.'
+        });
+    }
+};
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Login a user
+exports.loginUser_ = async (req, res) => {
     const { username, password, androidId, firebaseId } = req.body;
 	
     console.log('loginUser : username : ', username, ' password : ', password, ' androidId : ', androidId, ' firebaseId : ', firebaseId);
