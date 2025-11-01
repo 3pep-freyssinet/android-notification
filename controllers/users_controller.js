@@ -2853,8 +2853,8 @@ exports.updateUser = async (req, res) => {
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // backend/login.js
 
-const bcrypt = require('bcrypt');
-const { pool } = require('./db'); // Your DB pool
+//const bcrypt = require('bcrypt');
+//const { pool } = require('./db'); // Your DB pool
 const { handleTokens } = require('./tokens'); // JWT + refresh token handler
 
 const MAX_ATTEMPTS = 5;
