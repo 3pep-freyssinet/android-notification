@@ -1451,6 +1451,89 @@ exports.createUserProfile = async (req, res) => {
 
 // Register a new user
 exports.registerUser = async (req, res) => {
+    console.log("REGISTER REQUEST");
+
+    const { username, password, androidId, firebaseId } = req.body;
+
+    try {
+        // 1) Validate input exists
+        if (!username || !password || !androidId) {
+            return res.status(400).json({ message: "Missing required fields" });
+        }
+
+        // 2) Check if username exists
+        const userCheck = await pool.query(
+            "SELECT id FROM users_notification WHERE username = $1",
+            [username]
+        );
+
+        if (userCheck.rows.length > 0) {
+            return res.status(400).json({ message: "Username already exists" });
+        }
+
+        // 3) Enforce 1 user = 1 device
+        const deviceCheck = await pool.query(
+            "SELECT id, username FROM users_notification WHERE android_id = $1",
+            [androidId]
+        );
+
+        if (deviceCheck.rows.length > 0) {
+            return res.status(403).json({
+                message: "This device is already linked to another account"
+            });
+        }
+
+        // (Optional) Check Firebase ID too
+        if (firebaseId) {
+            const firebaseCheck = await pool.query(
+                "SELECT id FROM users_notification WHERE firebase_id = $1",
+                [firebaseId]
+            );
+
+            if (firebaseCheck.rows.length > 0) {
+                return res.status(403).json({
+                    message: "This device (Firebase ID) is already linked to another account"
+                });
+            }
+        }
+
+        // 4) Hash password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // 5) Insert new user
+        const result = await pool.query(
+            `INSERT INTO users_notification (username, password, android_id, firebase_id)
+             VALUES ($1, $2, $3, $4) RETURNING id`,
+            [username, hashedPassword, androidId, firebaseId || null]
+        );
+
+        const userId = result.rows[0].id;
+
+        // 6) Create session
+        await pool.query(
+            `INSERT INTO sessions (users_notification_id, is_session_closed)
+             VALUES ($1, false)`,
+            [userId]
+        );
+
+        // 7) Issue JWT + Refresh Token
+        const { jwt_token, refresh_token, refresh_expires_at } = await handleTokens({ id: userId });
+
+        res.status(200).json({
+            message: "User registered successfully",
+            jwt_token,
+            refresh_token,
+            refresh_expiry: refresh_expires_at,
+            is_session_closed: false
+        });
+
+    } catch (error) {
+        console.error("Register Error:", error);
+        res.status(500).json({ message: "Server error" });
+    }
+};
+
+exports.registerUser_ = async (req, res) => {
     // Register user endpoint
     
     console.log('register\n');
