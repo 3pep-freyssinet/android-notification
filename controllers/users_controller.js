@@ -1460,7 +1460,8 @@ exports.registerUser = async (req, res) => {
 	console.log('register : username : ', username, ' password : ', password, ' androidId : ', androidId, ' firebaseId : ', firebaseId, ' sector : ', sector, ' branch : ', branch);
 	
 	res.status(200).json({ message: 'User registered successfully' });
-        if(true)return;
+    
+	//if(true)return;
 	
     try {
         // Check if user already exists
