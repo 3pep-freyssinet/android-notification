@@ -2364,7 +2364,7 @@ exports.changePassword = async (req, res) => {
         res.status(500).json({ message: 'Server error' });
   }
 }
-console.log('changePassword : user before saveJWTToken : ', user);
+console.log('user before saveJWTToken : ', user);
 
 // Save jwt token to database for a user
 
