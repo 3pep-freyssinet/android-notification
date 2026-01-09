@@ -1506,8 +1506,8 @@ exports.registerUser = async (req, res) => {
              VALUES ($1, $2, $3, $4) RETURNING id`,
             [username, hashedPassword, androidId, firebaseId || null]
         );
-
-        const userId = result.rows[0].id;
+        const user   = result.rows[0];
+        const userId = user.id;
 
         // 6) Create session
         await pool.query(
@@ -1517,7 +1517,7 @@ exports.registerUser = async (req, res) => {
         );
 
         // 7) Issue JWT + Refresh Token
-        const { jwt_token, refresh_token, refresh_expires_at } = await handleTokens({ id: userId });
+        const { jwt_token, refresh_token, refresh_expires_at } = await handleTokens(user);
 
         res.status(200).json({
             message: "User registered successfully",
