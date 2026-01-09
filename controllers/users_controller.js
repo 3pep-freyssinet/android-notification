@@ -2272,9 +2272,12 @@ exports.changePassword = async (req, res) => {
     const userId = await getUserId__(username);
     if(userId == null){
 	   console.warn('User not found for username:', username);
-           return res.status(404).json({ message: 'User not found' });
+       return res.status(404).json({ message: 'User not found' });
     }
     console.log('changePassword : userId : ', userId);
+
+	//build a minimal 'user'.
+	const {user} = {id:userId,username:username}
    
     //if(true)return;
 	   
