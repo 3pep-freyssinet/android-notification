@@ -1508,7 +1508,7 @@ exports.registerUser = async (req, res) => {
         );
 		
         //build a minimal 'user'.
-	    const {user} = {id:result.row[0].id,username:username};
+	    const {user} = {id:result.rows[0].id,username:username};
         console.log("registerUser id : ", user.id);
 		
         // 6) Create session
