@@ -2278,8 +2278,9 @@ exports.changePassword = async (req, res) => {
     console.log('changePassword : userId : ', userId);
 
 	//build a minimal 'user'.
-	const {user} = {id:userId,username:username}
-   
+	const user = {id:userId,username:username}
+   console.log('changePassword : user minimal : ', user);
+	   
     //if(true)return;
 	   
     // Fetch stored password hash and last changed date
