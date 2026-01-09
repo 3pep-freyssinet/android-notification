@@ -1506,8 +1506,9 @@ exports.registerUser = async (req, res) => {
              VALUES ($1, $2, $3, $4) RETURNING id`,
             [username, hashedPassword, androidId, firebaseId || null]
         );
-        const user   = result.rows[0];
-        const userId = user.id;
+		
+        //build a minimal 'user'.
+	    const {user} = {id:id,username:username}
 
         // 6) Create session
         await pool.query(
