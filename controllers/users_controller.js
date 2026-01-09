@@ -1514,7 +1514,7 @@ exports.registerUser = async (req, res) => {
         await pool.query(
             `INSERT INTO sessions (users_notification_id, is_session_closed)
              VALUES ($1, false)`,
-            [userId]
+            [user.id]
         );
 
         // 7) Issue JWT + Refresh Token
