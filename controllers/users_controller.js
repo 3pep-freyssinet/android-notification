@@ -2384,7 +2384,7 @@ async function saveJWTToken(user, jwt_token, created_at, expire_at) {
 			*/
 			
 			const result = await pool.query(`
-  			INSERT INTO jwt_tokens (user.id,, jwt_token, user.username, last_updated, expire_at)
+  			INSERT INTO jwt_tokens (user_id, jwt_token, username, last_updated, expire_at)
   			VALUES ($1, $2, $3, $4, $5)
  			 ON CONFLICT (user_id) 
   			DO UPDATE SET 
