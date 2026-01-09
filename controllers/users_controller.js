@@ -3284,7 +3284,9 @@ async function handleTokens (user){
 		JWT_SECRET, 					// Secret key
 		{ expiresIn: JWT_EXPIRY } 			// Token expiry
 	);
-		
+	
+	console.log('user before saveJWTToken : ', user);
+	
 	//save jwt Token in database
 	const save_jwt_token = await saveJWTToken(user, jwt_token, created_at, jwt_expires_at);
 	
