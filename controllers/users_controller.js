@@ -1508,7 +1508,7 @@ exports.registerUser = async (req, res) => {
         );
 		
         //build a minimal 'user'.
-	    const {user} = {id:id,username:username}
+	    const {user} = {id:result.id,username:username};
 
         // 6) Create session
         await pool.query(
