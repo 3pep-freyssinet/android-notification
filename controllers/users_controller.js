@@ -3284,7 +3284,8 @@ async function handleTokens (user){
 	    
 	const refresh_expires_at = new Date(now + expiryDays_ * 24 * 60 * 60 * 1000);
 	console.log('register : refresh_expires_at : ', refresh_expires_at);
-	    
+
+	console.log('register before jwt creation : user.username : ', user.username);
 	// Generate a JWT for the registered user
 	const jwt_token = jwt.sign(
 		{ userId: user.id, username: user.username }, 	// Payload
